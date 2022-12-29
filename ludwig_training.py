@@ -1,5 +1,5 @@
-import pandas as pd   # Note: added import
-from ludwig.api import LudwigModel  # Note: added import
+import pandas as pd   # Commentary: added import
+from ludwig.api import LudwigModel  # Commentary: added import
 
 # read csv file into pandas dataframe
 df = pd.read_csv('data.csv')

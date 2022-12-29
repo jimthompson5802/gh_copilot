@@ -13,7 +13,7 @@ config = {
         # categorical feature called my_category
         {'name': 'my_category', 'type': 'category'},
         # image feature called my_image with torchvision encoder resnet-18
-        {'name': 'my_image', 'type': 'image', 'encoder': 'resnet-18'}  # Note: requires modification
+        {'name': 'my_image', 'type': 'image', 'encoder': 'resnet-18'}  # Commentary: requires modification
     ],
     'output_features': [
         # categorical feature called target

@@ -11,7 +11,7 @@ df = pd.DataFrame(X, columns=['input_feat_1', 'input_feat_2', 'input_feat_3', 'i
 df['target'] = y
 
 # print first 5 rows of dataframe
-print(df.head())   # Note: added print statement
+print(df.head())   # Commentary: wrapped print statement
 
 # save dataframe to csv file
 df.to_csv('data.csv', index=False)
