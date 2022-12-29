@@ -4,10 +4,10 @@ import pandas as pd
 df = pd.read_csv('data.csv')
 
 # print first 5 rows of dataframe
-df.head()
+print(df.head())   # Note: added print statement
 
 # print last 5 rows of dataframe
-df.tail()
+print(df.tail())  # Note: added print statement
 
 # Random forest regression model on the dataset
 from sklearn.ensemble import RandomForestRegressor
