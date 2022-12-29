@@ -6,14 +6,15 @@ Unless noted otherwise, all Python programs in this repo were created using GitH
 
 **NOTE:**  Code lines marked with `# Commentary:` designate Copilot generated code that required or requires modification to run.
 
-| File                              | Description                                                  |
-|-----------------------------------|--------------------------------------------------------------|
-| create_synthetic_training_data.py | Create synthetic training data for the model                 |
-| flask_app.py                      | Flask app to peform simple computation on two numbers.       |
-| flask_app2.py                     | Second implementation for flask app.                         |
-|simple_examples.py| Simple examples of using Co-pilot                            |
-|random_forest_training.py| Scikit-learning random forest training for regression model. |
-|ludwig_training.py| Ludwig training for regression model.                        |
-|ludwig_training_with_image.py| Ludwig training for classification model with image.         |
+| File                                                                                                                            | Description                                                                                                       |
+|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| [create_synthentic_training_data.py](https://github.com/jimthompson5802/gh_copilot/blob/main/create_synthetic_training_data.py) | Create synthetic training data for the model                                                                      |
+| [flask_app.py](https://github.com/jimthompson5802/gh_copilot/blob/main/flask_app.py)                                            | Flask app to peform simple computation on two numbers.                                                            |
+| [flask_app2.py](https://github.com/jimthompson5802/gh_copilot/blob/main/flask_app2.py)                                          | Second implementation for flask app to perform simple computation of two numbers.                                 |
+| [flask_app3.py](https://github.com/jimthompson5802/gh_copilot/blob/main/flask_app3.py)                                          | Flask application to return the average of three numbers.  Copilot generated the code from only one comment line. |
+| [simple_examples.py](https://github.com/jimthompson5802/gh_copilot/blob/main/simple_examples.py)                                | Simple examples of using Co-pilot                                                                                 |
+| [random_forest_training.py](https://github.com/jimthompson5802/gh_copilot/blob/main/random_forest_training.py)                  | Scikit-learning random forest training for regression model.                                                      |
+| [ludwig_training.py](https://github.com/jimthompson5802/gh_copilot/blob/main/ludwig_training.py)                                | Ludwig training for regression model.                                                                             |
+| [ludwig_training_with_image.py](https://github.com/jimthompson5802/gh_copilot/blob/main/ludwig_training_with_image.py)          | Ludwig training for classification model with image.                                                              |
 
 
