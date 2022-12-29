@@ -1,5 +1,5 @@
 # import missing Flask module
-from flask import Flask, request
+from flask import Flask, request  # Note: added import
 
 
 # function to add two numbers
@@ -82,5 +82,5 @@ def compute():
     return compute_value_result.format(result)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)  # Note: modified to run on port 8080 and any source
 
