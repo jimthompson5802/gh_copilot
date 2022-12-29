@@ -1,25 +1,21 @@
-# fix missing LudwigModel import error
-from ludwig.api import LudwigModel
+import pandas as pd   # Note: added import
+from ludwig.api import LudwigModel  # Note: added import
 
-# define pandas, numpy
-import pandas as pd
-import numpy as np
-
-
-# from local csv file, read in data
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv')
+# read csv file into pandas dataframe
+df = pd.read_csv('data.csv')
 
 # define Ludwig config dictionary
 config = {
-    # define 3 numerical input features
+    # define 4 numerical input features
     'input_features': [
         {'name': 'input_feat_1', 'type': 'numerical'},
         {'name': 'input_feat_2', 'type': 'numerical'},
         {'name': 'input_feat_3', 'type': 'numerical'},
+        {'name': 'input_feat_4', 'type': 'numerical'},
     ],
-    # define 1 binary output feature
+    # define 1 numerical output feature
     'output_features': [
-        {'name': 'target', 'type': 'binary'},
+        {'name': 'target', 'type': 'numerical'},
     ],
     # train for 50 epochs, batch size of 64 and learning rate of 0.01
     'training': {'epochs': 50, 'batch_size': 64, 'learning_rate': 0.01},
@@ -30,4 +26,7 @@ model = LudwigModel(config)
 
 # train model
 train_stats = model.train(data_df=df)
+
+# save model
+model.save('model')
 
