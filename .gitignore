@@ -1,3 +1,7 @@
 .idea
 
+# data files
 *.csv
+
+# model files
+*.sav
