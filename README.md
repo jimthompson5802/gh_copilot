@@ -16,6 +16,7 @@ Unless noted otherwise, all Python programs in this repo were created using GitH
 | [ludwig_training.py](https://github.com/jimthompson5802/gh_copilot/blob/main/ludwig_training.py)                                | Ludwig training for regression model.                                                                             |
 | [ludwig_training_with_image.py](https://github.com/jimthompson5802/gh_copilot/blob/main/ludwig_training_with_image.py)          | Ludwig training for classification model with image.                                                              |
 | [random_forest_training.py](https://github.com/jimthompson5802/gh_copilot/blob/main/random_forest_training.py)                  | Scikit-learning random forest training for regression model.                                                      |
+| [ray_tune_example.py](https://github.com/jimthompson5802/gh_copilot/blob/main/ray_tune_example.py)                              | Example of using Copilot to perform hyperparameter tuning using Ray Tune.                                         |
 | [simple_examples.py](https://github.com/jimthompson5802/gh_copilot/blob/main/simple_examples.py)                                | Simple examples of using Copilot                                                                                  |
 | [spark_session_setp.py](https://github.com/jimthompson5802/gh_copilot/blob/main/spark_session_setup.py)                         | Code fragment to initialize a Spark session.                                                                      |
 
