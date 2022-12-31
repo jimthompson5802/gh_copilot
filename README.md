@@ -21,5 +21,5 @@ Unless noted otherwise, all Python programs in this repo were created using GitH
 | [simple_examples.py](https://github.com/jimthompson5802/gh_copilot/blob/main/simple_examples.py)                                | Simple examples of using Copilot for Python                                                                                                                               |
 | [simple_examples.c](https://github.com/jimthompson5802/gh_copilot/blob/main/simple_examples.c)                                  | Simple examples using Copilot for C                                                                                                                                       |
 | [spark_session_setp.py](https://github.com/jimthompson5802/gh_copilot/blob/main/spark_session_setup.py)                         | Code fragment to initialize a Spark session.                                                                                                                              |
-
+| [torch_model_training.py](https://github.com/jimthompson5802/gh_copilot/blob/main/torch_model_training.py)                      | PyTorch training for regression model and save the trained model to file.                                                                                                 |
 

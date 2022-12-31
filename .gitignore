@@ -5,7 +5,9 @@
 
 # model files
 *.sav
+*.pth
 
 # plot files
 *.png
+
 
