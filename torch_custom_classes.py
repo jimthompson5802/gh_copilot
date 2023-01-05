@@ -18,6 +18,26 @@ class CustomModel(nn.Module):
         return x
 
 
+# Commentary: notice mis-spellings in the following comment
+# pytroch custome model class MyClass with 4 layers of 256, 128, 64, 32 nodes
+class MyClass(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(MyClass, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, 32)
+        self.fc5 = nn.Linear(32, output_dim)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = F.relu(self.fc4(x))
+        x = self.fc5(x)
+        return x
+
+
 # class for custom pytorch dataset
 class CustomDataset(Dataset):
     def __init__(self, data, target):
