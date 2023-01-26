@@ -34,3 +34,7 @@ Unless noted otherwise, all Python programs in this repo were created using GitH
 | [sample_go_code.go](https://github.com/jimthompson5802/gh_copilot/blob/main/sample_go_code.go)                                  | Example of using Copilot to generate variety of Go code fragments.                                                                                                        |
 | [sample_java_code.java](https://github.com/jimthompson5802/gh_copilot/blob/main/sample_java_code.java)                          | Example of using Copilot to generate variety of Java code fragments.                                                                                                      |
 | [simple_examples.c](https://github.com/jimthompson5802/gh_copilot/blob/main/simple_examples.c)                                  | Simple examples using Copilot for C                                                                                                                                       |
+
+
+### Codex Directory
+The `codex` directory contain examples of using Copilot to generate code for a Python project. [Codex API](https://beta.openai.com/docs/guides/code)
