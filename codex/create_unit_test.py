@@ -6,7 +6,6 @@ import os
 
 import openai
 
-# if the script is run as a command line script, run the main function
 if __name__ == "__main__":
     # the argument parser is used to parse command line arguments
     parser = argparse.ArgumentParser()

@@ -4,7 +4,7 @@ Example code for using Codex API
 
 ## Documentation:
 * [Codex model](https://beta.openai.com/docs/models/codex)
-* [Codex User Guidie](https://beta.openai.com/docs/guides/code/code-completion-limited-beta)
+* [Codex User Guide](https://beta.openai.com/docs/guides/code/code-completion-limited-beta)
 * [Codex API documentation](https://beta.openai.com/docs/api-reference/code-completion)
 
 ## Contents
