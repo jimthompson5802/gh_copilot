@@ -7,7 +7,13 @@ These unit tests were generated with the Codex recommmended prompt:
 def
 ```
 
-Generated test for `ludwig_example0.py`.  The main issue with the following generated test is that the `forward()` method is not tested.  Only attributes created in the constructor are validated.
+Generated test for [`ludwig_example0.py`](https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example0.py).  
+
+Noted issues in generated code: 
+* The `forward()` method is not tested.  Only attributes created in the constructor are validated.
+* Missing required imports
+* Truncated code
+
 ```python
  test_fc_stack():
     fc_stack = FCStack(
@@ -62,7 +68,14 @@ Generated test for `ludwig_example0.py`.  The main issue with the following gene
             {"input
 ```
 
-Generated test for `ludwig_example1.py`. Issue with this test, no assertions are generated.
+Generated test for [`ludwig_example1.py`](https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example1.py). 
+
+Noted issues in generated code: 
+* The `forward()` method is not tested.
+* no assertions are generated
+* Missing required imports
+* truncated code
+
 ```python
 
  test_stacked_cnn():
@@ -120,12 +133,15 @@ and changing Codex api parameters:
 
 the generated unit tests are better but still require some manual fix-up.
 
-Generated test for `ludwig_example0.py` with updated prompt.  This new test performs these expected operations:
+Generated test for [`ludwig_example0.py`](https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example0.py) with updated prompt.  This new test performs these expected operations:
 * generates synthetic data for testing
 * Executes the `forward()` method with the synthetic data
 * tests the output shape
 
-Note: generated code is truncated.
+Noted issues in generated code: 
+* generated code is truncated
+* Multiple tests generated, could be handled via `@pytest.mark.parametrize`
+* Missing required imports
 
 ```python 
  test_forward():
@@ -181,12 +197,16 @@ def test_forward_no_layers_residual():
 def test_forward_no_layers_residual_norm():
 ```
 
-Generated test for `ludwig_example1.py` with updated prompt.  This new test performs these expected operations:
+Generated test for [`ludwig_example1.py`](https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example1.py) with updated prompt.  This new test performs these expected operations:
 * generates synthetic data for testing
 * Executes the `forward()` method with the synthetic data
 * tests the output shape
 
-Note: generated code is truncated.
+Noted issues in generated code: 
+* generated code is truncated
+* Wrong dtype for synthetic data
+* Does not account for `batch_size` when generating synthetic data or testing output shape
+* missing required imports
 
 ```python
  test_forward():
