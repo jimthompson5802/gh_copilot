@@ -47,21 +47,24 @@ if __name__ == "__main__":
         print(f">>>>source:\n{source}\n\n")
 
         # create prompt for code completion to generate unit test
-        prompt = source + "\n# Unit test\ndef"
+        if "ludwig" in source_file:
+            prompt = source + "\n# Unit test forward method\ndef"
+        else:
+            prompt = source + "\n# Unit test\ndef"
 
         # get code completion for prompt
         response = openai.Completion.create(
             model="code-davinci-002",
             prompt=prompt,
-            temperature=0,
-            max_tokens=256,
+            temperature=0.1,
+            max_tokens=512,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
         )
 
         # print generated unit test
-        print(f"{response.choices[0].text}")
+        print(f">>>>Recommended unit test:\n{response.choices[0].text}")
 
         # write generated unit test to the specified directory
         with open(os.path.join(args.test_dir, "test_" + source_file), 'w') as f:
