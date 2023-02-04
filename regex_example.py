@@ -3,7 +3,7 @@ import re
 THE_STRING = (
     "This is a string with a number in it: 12345\n"
     "Now is the time for all good men to come to the aid of their country.\n"
-    "See the quick red fox jump over the lazy brown dog."
+    "See the quick red fox jump over the lazy brown dog.\n"
 )
 
 # Code above this comment line was manually typed in.
@@ -27,6 +27,15 @@ def count_matches(pattern, string):
     print(f"String: {string}")
     print(">>>Count of Matches:")
     print(len(re.findall(pattern, string)))
+    print()
+
+# function to print all lines with a match in a regular expression
+def print_lines(pattern, string):
+    print(f"Pattern: {pattern}")
+    print(f"String: {string}")
+    print(">>>Lines with Matches:")
+    for match in re.finditer(pattern, string):
+        print(f"  {match.group()}")
     print()
 
 
@@ -55,3 +64,9 @@ if __name__ == "__main__":
 
     # count number of words that start with "t" or "T"
     count_matches(r"\b[tT]\w+", THE_STRING)
+
+    # print lines that contain the word "the"
+    print_lines(r".*the.*", THE_STRING)
+
+    # print lines that contain a word with the letter "z"
+    print_lines(r".*\w*z\w*.*", THE_STRING)
