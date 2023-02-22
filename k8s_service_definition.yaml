@@ -1,0 +1,82 @@
+# k8s mainfest file to deploy service my-service in namespace my-namespace
+# and expose it as a LoadBalancer service
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  namespace: my-namespace
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-service
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-service
+  namespace: my-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-service
+  template:
+    metadata:
+      labels:
+        app: my-service
+    spec:
+      containers:
+      - name: my-service
+        image: nginx
+        ports:
+        - containerPort: 8080
+
+# define istio gateway and virtual service
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: my-service-gateway
+  namespace: my-namespace
+spec:
+    selector:
+        istio: ingressgateway
+    servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+        hosts:
+        - "my-service.example.com"
+        - "my-service.example.com:80"
+        - "my-service.example.com:443"
+        - "my-service.example.com:8080"
+        - "my-service.example.com:8443"
+        - "my-service.example.com:8888"
+
+---
+# isio virtual servicie with uri redirect /this-service to the service
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: my-service-virtual-service
+  namespace: my-namespace
+spec:
+    hosts:
+    - "my-service.example.com"
+    gateways:
+    - my-service-gateway
+    http:
+    - match:
+        - uri:
+            prefix: /this-service
+        rewrite:
+        uri: /
+        route:
+        - destination:
+            host: my-service
+            port:
+            number: 80
