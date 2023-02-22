@@ -1,0 +1,23 @@
+# base ubuntu image
+FROM ubuntu:14.04
+
+# install the application
+RUN apt-get update && apt-get install -y \
+    python \
+    python-pip \
+    python-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# copy the application files to the container
+COPY . /app
+
+# install the application
+RUN pip install -r /app/requirements.txt
+
+# expose the port
+EXPOSE 5000
+
+# run the application
+CMD ["python", "/app/app.py"]
+
