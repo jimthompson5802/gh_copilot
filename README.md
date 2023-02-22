@@ -39,9 +39,10 @@ Unless noted otherwise, all Python programs in this repo were created using GitH
 
 
 ### DevOps Examples
-| File                                                                                                                            | Description                                              |
-|---------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| [k8s_service_definition.yaml](https://github.com/jimthompson5802/gh_copilot/blob/main/k8s_service_definition.yaml)              | Kubernetes service definition with istio Virtual Service |
+| File                                                                                                                            | Description                                                                 |
+|---------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [Dockerfile_example](https://github.com/jimthompson5802/gh_copilot/blob/main/Dockerfile_example)                                | Example of using Copilot to generate Dockerfile                             |
+| [k8s_service_definition.yaml](https://github.com/jimthompson5802/gh_copilot/blob/main/k8s_service_definition.yaml)              | Copilot generating Kubernetes service definition with istio Virtual Service |
 
 ### Codex Directory
 The `codex` directory contain examples of using Copilot to generate code for a Python project. [Codex API](https://beta.openai.com/docs/guides/code)
