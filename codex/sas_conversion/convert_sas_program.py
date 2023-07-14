@@ -13,8 +13,8 @@ with open('/openai/.openai/api_key.json') as f:
 openai.api_key = api['key']
 
 # Function to translate SAS code to Python
-def translate_sas_to_python(sas_code):
-    prompt = f'convert this SAS program to Python using the sklearn package:\n\n{sas_code}\n\nPython code:'
+def translate_sas_to_python(prompt, sas_code):
+    prompt = f'{prompt}:\n\n{sas_code}\n\nPython code:'
 
     response = openai.Completion.create(
         engine='text-davinci-003',
@@ -43,7 +43,8 @@ if __name__ == '__main__':
         sas_code = f.read()
 
     # translate sas code to python
-    python_code = translate_sas_to_python(sas_code)
+    prompt = "convert this SAS program to Python"
+    python_code = translate_sas_to_python(prompt, sas_code)
 
     # write python code to file
     # get file name from sas file name
