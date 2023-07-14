@@ -14,18 +14,18 @@ openai.api_key = api['key']
 
 # Function to translate SAS code to Python
 def translate_sas_to_python(prompt, sas_code):
-    prompt = f'{prompt}:\n\n{sas_code}\n\nPython code:'
+    completion_prompt = f'{prompt}:\n\n{sas_code}\n\nPython code:'
 
-    response = openai.Completion.create(
-        engine='text-davinci-003',
-        prompt=prompt,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",   #'text-davinci-003',
+        messages=[{"role": "user", "content": completion_prompt}],
         max_tokens=2048,
         temperature=0.0,
         n=1,
         stop=None,
     )
 
-    python_code = response.choices[0].text.strip()
+    python_code = response.choices[0].message.content.strip()
     return python_code
 
 if __name__ == '__main__':
@@ -42,6 +42,7 @@ if __name__ == '__main__':
     with open(args.sas_file, 'r') as f:
         sas_code = f.read()
 
+    print(f"starting conversion for {args.sas_file}...")
     # translate sas code to python
     prompt = "convert this SAS program to Python"
     python_code = translate_sas_to_python(prompt, sas_code)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     with open(python_file, 'w') as f:
         f.write(python_code)
 
-    print("ALL DONE!")
+    print(f"finished conversion for {args.sas_file}...created {python_file}")
 
 
 
