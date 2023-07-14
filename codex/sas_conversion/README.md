@@ -1,5 +1,9 @@
 # Examples of SAS files to Python code conversion
 
+Directories:
+- sas_code: source SAS files
+- converted_python: converted Python files
+
 ## Source for example SAS files
 SAS User Guide [examples](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/titlepage.htm)
 
