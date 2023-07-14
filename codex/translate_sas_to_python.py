@@ -55,3 +55,23 @@ run;
 # Translate SAS code to Python
 python_code = translate_sas_to_python(sas_code)
 print(python_code)
+
+
+### generated output ###
+# # Import the necessary packages
+# import pandas as pd
+# from sklearn.linear_model import LinearRegression
+#
+# # Read in the CSV file
+# mydata = pd.read_csv('path_to_csv_file.csv')
+#
+# # Generate the linear regression model
+# X = mydata[['x1', 'x2', 'x3']]
+# y = mydata['y']
+# model = LinearRegression()
+# model.fit(X, y)
+#
+# # Print model diagnostics
+# print('Model intercept:', model.intercept_)
+# print('Model coefficients:', model.coef_)
+# print('Model R-squared:', model.score(X, y))
