@@ -14,16 +14,16 @@ openai.api_key = api['key']
 def translate_sas_to_python(sas_code):
     prompt = f'convert this SAS program to Python using the sklearn package:\n\n{sas_code}\n\nPython code:'
 
-    response = openai.Completion.create(
-        engine='text-davinci-003',
-        prompt=prompt,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-16k",   #'text-davinci-003',
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=2048,
         temperature=0.0,
         n=1,
         stop=None,
     )
 
-    python_code = response.choices[0].text.strip()
+    python_code = response.choices[0].message.content.strip()
     return python_code
 
 # Example SAS code to translate
