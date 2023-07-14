@@ -12,7 +12,7 @@ openai.api_key = api['key']
 
 # get code completion for prompt
 response = openai.Completion.create(
-  model="code-davinci-002",
+  model="text-davinci-003",
   prompt="# function to add two numbers",
   temperature=0,
   max_tokens=256,
