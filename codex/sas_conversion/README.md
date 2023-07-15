@@ -7,10 +7,11 @@ Directories:
 ## Source for example SAS files
 SAS User Guide [examples](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/titlepage.htm)
 
-| SAS file | Description |
-|---------|-------------|
-| example1.sas | https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_corr_examples02.htm |
-| example2.sas| Handcrafted |
+| SAS file | Description                                                                                                                                                             |
+|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| example1.sas | https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_corr_examples02.htm                                                                            |
+| example2.sas| Handcrafted                                                                                                                                                             |
+| sql_example1.sas | https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/sqlproc/p015vwpsg8pas3n135iy1t43o1mc.htm.  Using prompt "convert sas program to python using sqlalchemy library" |
 
 
 ## Sample execution
@@ -18,7 +19,7 @@ SAS User Guide [examples](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5
 Arguments:
 - input SAS file
 - output directory
-- --prompt: prompt used by the LLM
+- --prompt: LLM prompt, default is "convert this SAS program to Python"
 
 Example execution:
 ```bash
