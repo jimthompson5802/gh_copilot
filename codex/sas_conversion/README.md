@@ -18,9 +18,13 @@ SAS User Guide [examples](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5
 Arguments:
 - input SAS file
 - output directory
+- --prompt: prompt used by the LLM
 
 Example execution:
 ```bash
 python convert_sas_program.py  sas_files/example1.sas converted_python
+
+python convert_sas_program.py  sas_files/example1.sas converted_python --prompt "convert sas program to python code using sklearn library"  
+
 ```
 
