@@ -36,15 +36,21 @@ if __name__ == '__main__':
     # retrieve output directory from second parameter in command line
     parser.add_argument("output_dir", help="Directory to write Python file to")
 
+    #retrieve prompt from third parameter in command line, with default value
+    parser.add_argument(
+        "--prompt",
+        help="Prompt to use for conversion",
+        default="convert this SAS program to Python")
+
     args = parser.parse_args()
 
     # read in sas file
     with open(args.sas_file, 'r') as f:
         sas_code = f.read()
 
-    print(f"starting conversion for {args.sas_file}...")
+    print(f"starting conversion for {args.sas_file}...with prompt '{args.prompt}'")
     # translate sas code to python
-    prompt = "convert this SAS program to Python"
+    prompt = args.prompt
     python_code = translate_sas_to_python(prompt, sas_code)
 
     # write python code to file
