@@ -11,6 +11,7 @@ SAS User Guide [examples](https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5
 |---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | example1.sas | https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_corr_examples02.htm                                                                            |
 | example2.sas| Handcrafted                                                                                                                                                             |
+| macro_example1.sas | Handcrafted |
 | sql_example1.sas | https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/sqlproc/p015vwpsg8pas3n135iy1t43o1mc.htm.  Using prompt "convert sas program to python using sqlalchemy library" |
 
 
