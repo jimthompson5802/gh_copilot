@@ -31,3 +31,6 @@ python convert_sas_program.py  sas_files/example1.sas converted_python --prompt 
 
 ```
 
+## Inline SAS Code Conversion
+
+File: `inline_sas_code_conversion.py` demonstrates using the IDE to convert SAS code to Python code.  Python code can be generated as a block or one line at a time.
