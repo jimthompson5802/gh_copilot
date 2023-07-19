@@ -65,3 +65,5 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
   * Incorrectly describes the final step as, "the code prints a messaging the start and completion of the documetnation process".  The correct description is "the code prints a message for completing the documentation process".
 
 * Generating markdown or html (`documentation4.md` and `documentation5.html`, respectively).  Generates the same text.  Able to take advantage of simple Markdown directives.  However, html output is only raw text.  More resarch is needed in this area.  May need to utilize few shot learning techniques to get right formatting of output.
+
+* add `documenation2a.txt` that generates docstring for function in `generate_documentation.py` program.  Generated docstring is accurate.  However, source code is inlcuded even though prompt specified no source code should be generated.
