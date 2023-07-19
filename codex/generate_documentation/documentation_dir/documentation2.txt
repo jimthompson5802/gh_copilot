@@ -1,0 +1,174 @@
+```python
+# -*- coding: utf-8 -*-
+
+import numpy as np
+from numpy.linalg import eigvals, inv, solve, matrix_rank, pinv, svd
+from scipy import stats
+import pandas as pd
+from patsy import DesignInfo
+
+from statsmodels.compat.pandas import Substitution
+from statsmodels.base.model import Model
+from statsmodels.iolib import summary2
+__docformat__ = 'restructuredtext en'
+
+
+def _multivariate_ols_fit(endog, exog, method='svd', tolerance=1e-8):
+    """
+    Fit a multivariate linear regression model using ordinary least squares.
+
+    Parameters
+    ----------
+    endog : array_like
+        The dependent variable(s) of shape (nobs, k_endog).
+    exog : array_like
+        The independent variable(s) of shape (nobs, k_exog).
+    method : str, optional
+        The method used to calculate the regression coefficients and other
+        statistics. Supported methods are 'svd' (default) and 'pinv'.
+    tolerance : float, optional
+        The tolerance used to check the singularity of the covariance matrix.
+
+    Returns
+    -------
+    params : array_like
+        The estimated regression coefficients of shape (k_exog, k_endog).
+    df_resid : int
+        The residual degrees of freedom.
+    inv_cov : array_like
+        The inverse of the covariance matrix of the regression coefficients.
+    sscpr : array_like
+        The sums of squares and cross-products of residuals.
+
+    Raises
+    ------
+    ValueError
+        If the number of rows in `endog` and `exog` are not equal.
+        If the covariance of `x` is singular.
+
+    Notes
+    -----
+    This function calculates the matrices necessary for hypotheses testing.
+
+    """
+    ...
+
+
+def multivariate_stats(eigenvals, r_err_sscp, r_contrast, df_resid, tolerance=1e-8):
+    """
+    Calculate statistics for multivariate linear regression.
+
+    Parameters
+    ----------
+    eigenvals : array_like
+        The eigenvalues of the covariance matrix of the regression coefficients.
+    r_err_sscp : int
+        The rank of the sums of squares and cross-products of residuals.
+    r_contrast : int
+        The rank of the contrast matrix.
+    df_resid : int
+        The residual degrees of freedom.
+    tolerance : float, optional
+        The tolerance used to check the singularity of the covariance matrix.
+
+    Returns
+    -------
+    results : DataFrame
+        A DataFrame containing the calculated statistics.
+
+    """
+    ...
+
+
+def _multivariate_ols_test(hypotheses, fit_results, exog_names, endog_names):
+    """
+    Perform hypothesis tests for multivariate linear regression.
+
+    Parameters
+    ----------
+    hypotheses : list
+        A list of tuples specifying the hypotheses to test.
+    fit_results : tuple
+        A tuple containing the results of the multivariate OLS fit.
+    exog_names : list
+        A list of the names of the independent variables.
+    endog_names : list
+        A list of the names of the dependent variables.
+
+    Returns
+    -------
+    results : dict
+        A dictionary containing the results of the hypothesis tests.
+
+    Raises
+    ------
+    ValueError
+        If the length of `hypotheses` is not 2, 3, or 4.
+        If the contrast matrix `L` is not a 2-dimensional array.
+        If the number of columns in `L` is not equal to the number of independent variables.
+        If the transform matrix `M` is not a 2-dimensional array.
+        If the number of rows in `M` is not equal to the number of dependent variables.
+        If the constant matrix `C` is not a 2-dimensional array.
+        If the number of rows in `L` is not equal to the number of rows in `C`.
+        If the number of columns in `M` is not equal to the number of columns in `C`.
+
+    """
+    ...
+
+
+class _MultivariateOLS(Model):
+    """
+    A class representing a multivariate linear regression model.
+
+    Parameters
+    ----------
+    endog : array_like
+        The dependent variable(s) of shape (nobs, k_endog).
+    exog : array_like
+        The independent variable(s) of shape (nobs, k_exog).
+    missing : str, optional
+        The method used to handle missing values. Default is 'none'.
+    hasconst : bool, optional
+        Whether or not the model includes a constant term. Default is None.
+    **kwargs
+        Additional keyword arguments to be passed to the base class.
+
+    Raises
+    ------
+    ValueError
+        If there is only one dependent variable.
+
+    """
+    ...
+
+
+class _MultivariateOLSResults:
+    """
+    A class representing the results of a multivariate linear regression model.
+
+    Parameters
+    ----------
+    fitted_mv_ols : _MultivariateOLS
+        The fitted multivariate OLS model.
+
+    """
+    ...
+
+
+class MultivariateTestResults:
+    """
+    A class representing the results of hypothesis tests for multivariate linear regression.
+
+    Parameters
+    ----------
+    results : dict
+        A dictionary containing the results of the hypothesis tests.
+    endog_names : list
+        A list of the names of the dependent variables.
+    exog_names : list
+        A list of the names of the independent variables.
+
+    """
+    ...
+
+```
