@@ -10,4 +10,7 @@
 # plot files
 *.png
 
+# allow these files
+!codex/generate_documentation/images/*.png
+
 
