@@ -4,11 +4,11 @@ source for example code: https://github.com/statsmodels/statsmodels/blob/main/st
 Prepared source file by removing all docstrings and comments.
 
 ## Prompts:
-| Prompt | output file                    |
-|--------|--------------------------------|
-|produce a general description of the code and describe what it does| documentation_dir/example1.txt |
-|generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.| documentation_dir/example2.txt |
-|generate docstring following the PEP guidelines for each method or function.| documentation_dir/example3.txt |
+| Prompt | output file                          |
+|--------|--------------------------------------|
+|produce a general description of the code and describe what it does| documentation_dir/documentation1.txt |
+|generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.| documentation_dir/documentation2.txt |
+|generate docstring following the PEP guidelines for each method or function.| documentation_dir/documentation3.txt |
 
 ## Sample execution
 
@@ -46,4 +46,9 @@ Traceback (most recent call last):
     raise self.handle_error_response(
 openai.error.InvalidRequestError: This model's maximum context length is 4097 tokens. However, you requested 5556 tokens (3508 in the messages, 2048 in the completion). Please reduce the length of the messages or completion.
 ```
-* if output exceeds max token length parameter, the output is truncated.
+* if output exceeds max token length parameter, the output is truncated.  Resolved by increasing the parameter `max_tokens` from 2K to 8K in the `openai.ChatCompletion.create()` call.
+
+* generated documentation `documentation1.txt`, for the most part, reflects the processing in the module.  Depending on the level of detailed required, there are the missing details:
+  * Missing detail for `_multivariate_ols_test`.  The generated documentation does not identify the call to `_multivariate_test(hypotheses, exog_names, endog_names, fn)`, which in turns calls  `multivariate_stats(eigv2, p, q, df_resid)`.  In other words, there is no indication of the nested function calls.
+  * Missing documentation for the internal function `_multivariate_test`.
+  * Missing detail on call to `patsy.DesignInfo()`
