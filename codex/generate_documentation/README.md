@@ -3,12 +3,14 @@
 source for example code: https://github.com/statsmodels/statsmodels/blob/main/statsmodels/multivariate/multivariate_ols.py
 Prepared source file by removing all docstrings and comments.
 
+Also generated documentation for this program, `generate_documentation.py`.
+
 ## Prompts:
-| Prompt | output file                          |
-|--------|--------------------------------------|
-|produce a general description of the code and describe what it does| documentation_dir/documentation1.txt |
-|generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.| documentation_dir/documentation2.txt |
-|generate docstring following the PEP guidelines for each method or function.| documentation_dir/documentation3.txt |
+| Prompt | output file                                                                 |
+|--------|-----------------------------------------------------------------------------|
+|produce a general description of the code and describe what it does| documentation_dir/documentation1.txt, documentation_dir/documentation1a.txt |
+|generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.| documentation_dir/documentation2.txt                                        |
+|generate docstring following the PEP guidelines for each method or function.| documentation_dir/documentation3.txt                                        |
 
 ## Sample execution
 
@@ -48,7 +50,13 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 ```
 * if output exceeds max token length parameter, the output is truncated.  Resolved by increasing the parameter `max_tokens` from 2K to 8K in the `openai.ChatCompletion.create()` call.
 
-* generated documentation `documentation1.txt`, for the most part, reflects the processing in the module.  Depending on the level of detailed required, there are the missing details:
+* generated documentation `documentation1.txt` file, for the most part, reflects the processing in the module.  Depending on the level of detailed required, there are the missing details:
   * Missing detail for `_multivariate_ols_test`.  The generated documentation does not identify the call to `_multivariate_test(hypotheses, exog_names, endog_names, fn)`, which in turns calls  `multivariate_stats(eigv2, p, q, df_resid)`.  In other words, there is no indication of the nested function calls.
   * Missing documentation for the internal function `_multivariate_test`.
   * Missing detail on call to `patsy.DesignInfo()`
+
+* Generated documentation file `documentation3.txt`.  Depending on requirement, the prompt to generate documentation should prevent copying of original source code.  There is the possibility of dropping code when generating the documentation file.  In this example, the in-line comments are dropped. ![](images/stripped_in-line_comments.png)
+
+* Generated documentation for program `generate_documentation.py` (file `documentation1a.txt`), for the most part, reflects the processing in the module.  It misses describing a step and incorrectly describes the final step in the module.
+  * Missing description of issuing a message at the start of the processing
+  * Incorrectly describes the final step as, "the code prints a messaging the start and completion of the documetnation process".  The correct description is "the code prints a message for completing the documentation process".

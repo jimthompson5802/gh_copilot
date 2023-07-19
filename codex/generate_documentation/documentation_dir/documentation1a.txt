@@ -1,0 +1,9 @@
+This code is used to access the OpenAI Codex API and generate documentation for a given source code file. 
+
+The code starts by importing the necessary libraries and modules. It then retrieves the API key from a JSON file and sets it as the API key for OpenAI.
+
+The main function in the code is `generate_documentation()`, which takes a prompt and source code as input. It creates a completion prompt by combining the prompt and source code. It then makes a request to the OpenAI ChatCompletion API using the GPT-3.5-turbo-16k model. The response from the API contains the generated documentation text, which is extracted and returned.
+
+In the `if __name__ == '__main__':` block, the code retrieves the source file name and documentation file name from the command line arguments. It also allows for an optional prompt to be provided. The source file is then read and passed to the `generate_documentation()` function along with the prompt. The generated documentation text is then written to the documentation file.
+
+Finally, the code prints a message indicating the start and completion of the documentation process.
