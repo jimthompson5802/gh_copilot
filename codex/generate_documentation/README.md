@@ -6,11 +6,14 @@ Prepared source file by removing all docstrings and comments.
 Also generated documentation for this program, `generate_documentation.py`.
 
 ## Prompts:
-| Prompt | output file                                                                 |
-|--------|-----------------------------------------------------------------------------|
-|produce a general description of the code and describe what it does| documentation_dir/documentation1.txt, documentation_dir/documentation1a.txt |
-|generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.| documentation_dir/documentation2.txt                                        |
-|generate docstring following the PEP guidelines for each method or function.| documentation_dir/documentation3.txt                                        |
+| Prompt                                                                                                                                                              | output file                                                                 |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| produce a general description of the code and describe what it does                                                                                                 | documentation_dir/documentation1.txt, documentation_dir/documentation1a.txt |
+| generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.                                             | documentation_dir/documentation2.txt                                        |
+| generate docstring following the PEP guidelines for each method or function.                                                                                        | documentation_dir/documentation3.txt                                        |
+| produce a general description of the code and describe what it does.  output in markdown format. For each function, method or class show as a markdown bullet item. | documentation_dir/documentation4.md                                         |                                         |                                       |
+| "produce a general description of the code and describe what it does.  output in html format. Paragraphs should be delineated by with <p> and </p> tags.             | documentation_dir/documentation5.html|                                       |                                       |
+
 
 ## Sample execution
 
@@ -60,3 +63,5 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 * Generated documentation for program `generate_documentation.py` (file `documentation1a.txt`), for the most part, reflects the processing in the module.  It misses describing a step and incorrectly describes the final step in the module.
   * Missing description of issuing a message at the start of the processing
   * Incorrectly describes the final step as, "the code prints a messaging the start and completion of the documetnation process".  The correct description is "the code prints a message for completing the documentation process".
+
+* Generating markdown or html (`documentation4.md` and `documentation5.html`, respectively).  Generates the same text.  Able to take advantage of simple Markdown directives.  However, html output is only raw text.  More resarch is needed in this area.  May need to utilize few shot learning techniques to get right formatting of output.

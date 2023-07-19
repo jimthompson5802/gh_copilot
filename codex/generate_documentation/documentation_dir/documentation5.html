@@ -1,0 +1,15 @@
+The code is a Python implementation of multivariate linear regression using ordinary least squares (OLS). It includes functions for fitting the regression model, performing hypothesis tests, and generating summary statistics.
+
+The main function in the code is `_multivariate_ols_fit`, which takes the endogenous variables (`endog`) and exogenous variables (`exog`) as input and fits the OLS model. It calculates the regression coefficients, the inverse of the covariance matrix, and the sums of squares and cross-products of residuals.
+
+The code also includes a function `multivariate_stats` that calculates various statistics for hypothesis testing, such as Wilks' lambda, Pillai's trace, Hotelling-Lawley trace, and Roy's greatest root.
+
+The function `_multivariate_ols_test` performs hypothesis tests based on the fitted model. It takes a list of hypotheses, each specified as a tuple of the form `(name, L, M, C)`, where `name` is the name of the hypothesis, `L` is the contrast matrix, `M` is the transform matrix, and `C` is the constant matrix. It uses the function `fn` to calculate the test statistics and degrees of freedom.
+
+The class `_MultivariateOLS` is a wrapper for the OLS model, providing a convenient interface for fitting the model and accessing the results. The class `_MultivariateOLSResults` stores the results of the fitted model and provides methods for accessing and summarizing the results.
+
+The class `MultivariateTestResults` stores the results of hypothesis tests and provides methods for accessing and summarizing the results.
+
+The code also includes a function `summary` that generates a summary of the fitted model or the hypothesis test results in HTML format. The function `summary_frame` returns the results as a multi-index dataframe.
+
+Overall, the code provides a comprehensive implementation of multivariate linear regression using OLS and includes functions for fitting the model, performing hypothesis tests, and generating summary statistics.
