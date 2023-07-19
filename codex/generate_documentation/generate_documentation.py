@@ -12,7 +12,7 @@ with open('/openai/.openai/api_key.json') as f:
 # set API key
 openai.api_key = api['key']
 
-# Function to translate SAS code to Python
+# Function to generate documentation for a source module
 def generate_documentation(prompt, source_code):
     completion_prompt = f'{prompt}:\n\n{source_code}\n\nPython code:'
 
