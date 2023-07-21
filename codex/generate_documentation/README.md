@@ -108,3 +108,5 @@ if __name__ == "__main__":
 ```
 
 * Ran across [reference to a plug-in](https://go.swimm.io/code_documentation?utm_term=generate%20documentation%20from%20source%20code&utm_campaign=Search-Generic-NA-Q1Y23&utm_source=adwords&utm_medium=ppc&hsa_acc=6532259166&hsa_cam=19568644920&hsa_grp=144814353589&hsa_ad=656320086155&hsa_src=g&hsa_tgt=kwd-354894782823&hsa_kw=generate%20documentation%20from%20source%20code&hsa_mt=p&hsa_net=adwords&hsa_ver=3&gclid=Cj0KCQjw2eilBhCCARIsAG0Pf8sxPi59Wvak_KSgGOJsM3g3R-iT7j0pchPeWP4pim4aN_ScDHBmWU4aAlWtEALw_wcB) that "generates" documentation in the IDE.  Sparse website.  Seems like early days start-up.
+
+* Not LLM related.  `Sphinx` utility generates html formatted documentation from embedded `docstring` in the code.
