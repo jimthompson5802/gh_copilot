@@ -5,6 +5,10 @@ Prepared source file by removing all docstrings and comments.
 
 Also generated documentation for this program, `generate_documentation.py`.
 
+## Key source files:
+- `generate_documentation.py`: Original program to generate documentation from code.
+- `generate_detailed_documentation.py`: Generates detailed documentation from code using Python's `ast` library to extract specific program components, e.g., functions, to feed into the LLM.
+
 ## Prompts:
 | Prompt                                                                                                                                                              | output file                                                                 |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
