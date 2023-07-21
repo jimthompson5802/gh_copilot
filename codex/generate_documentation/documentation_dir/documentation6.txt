@@ -1,0 +1,15 @@
+This code defines a function called `_multivariate_ols_fit` that performs multivariate ordinary least squares (OLS) regression. 
+
+The function takes three arguments: `endog` (the dependent variable), `exog` (the independent variables), and optional arguments `method` and `tolerance`. 
+
+The function first checks if the number of observations in `endog` and `exog` are the same. If not, it raises a `ValueError` indicating that the number of rows should be the same.
+
+Next, the function calculates the degrees of freedom for the residuals (`df_resid`) by subtracting the number of independent variables (`k_exog`) from the number of observations (`nobs`).
+
+The function then checks the `method` argument. If it is set to `'pinv'`, it calculates the regression coefficients matrix (`params`) using the Moore-Penrose pseudo-inverse of `exog` (`pinv_x`). It also calculates the inverse of the product of `exog` and its transpose (`inv_cov`). If the rank of `inv_cov` is less than the number of independent variables, it raises a `ValueError` indicating that the covariance of `exog` is singular. Finally, it calculates the sums of squares and cross-products of residuals (`sscpr`) using the formula `Y'Y - (X * params)'B * params`, where `Y` is `endog` and `X` is `exog`. It returns the regression coefficients (`params`), degrees of freedom for residuals (`df_resid`), inverse covariance matrix (`inv_cov`), and sums of squares and cross-products of residuals (`sscpr`).
+
+If the `method` argument is set to `'svd'`, it performs singular value decomposition (SVD) on `exog` using the `svd` function. It checks if any of the singular values (`s`) are smaller than the `tolerance` value. If so, it raises a `ValueError` indicating that the covariance of `exog` is singular. It then calculates the regression coefficients (`params`) using the SVD components (`u`, `s`, `v`). It also calculates the inverse covariance matrix (`inv_cov`) using the SVD components. Finally, it calculates the sums of squares and cross-products of residuals (`sscpr`) using the same formula as before. It returns the regression coefficients (`params`), degrees of freedom for residuals (`df_resid`), inverse covariance matrix (`inv_cov`), and sums of squares and cross-products of residuals (`sscpr`).
+
+If the `method` argument is neither `'pinv'` nor `'svd'`, it raises a `ValueError` indicating that the method is not supported.
+
+Overall, this code performs multivariate OLS regression using either the Moore-Penrose pseudo-inverse or singular value decomposition methods, depending on the specified `method`. It calculates the regression coefficients, degrees of freedom for residuals, inverse covariance matrix, and sums of squares and cross-products of residuals.

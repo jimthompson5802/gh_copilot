@@ -1,0 +1,13 @@
+This code defines a class called `MultivariateTestResults`. 
+
+The `__init__` method is the constructor for the class. It takes three parameters: `results`, `endog_names`, and `exog_names`. It initializes three instance variables: `results`, `endog_names`, and `exog_names`, which are assigned the values of the corresponding parameters.
+
+The `__str__` method returns a string representation of the object. It calls the `summary` method and converts its result to a string.
+
+The `__getitem__` method allows accessing elements of the `results` attribute using square bracket notation.
+
+The `summary_frame` method returns the results as a multiindex dataframe. It iterates over the keys of the `results` attribute, creates a temporary dataframe with the statistics and adds a column with the key as the effect. It then concatenates all the temporary dataframes and sets the index to be a multiindex with the levels 'Effect' and 'Statistic'.
+
+The `summary` method returns a summary of the results. It creates a `Summary` object, adds a title, and then iterates over the keys of the `results` attribute. For each key, it adds a dictionary with an empty key-value pair, a dataframe with the statistics, and optionally, dataframes for the contrast, transform, and constant. Finally, it returns the `Summary` object.
+
+Overall, this code defines a class for storing and summarizing multivariate test results. It provides methods for accessing and displaying the results in a structured manner.

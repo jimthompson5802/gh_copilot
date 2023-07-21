@@ -6,13 +6,14 @@ Prepared source file by removing all docstrings and comments.
 Also generated documentation for this program, `generate_documentation.py`.
 
 ## Prompts:
-| Prompt                                                                                                                                                              | output file                                                                 |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| produce a general description of the code and describe what it does                                                                                                 | documentation_dir/documentation1.txt, documentation_dir/documentation1a.txt |
-| generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.                                             | documentation_dir/documentation2.txt, documentation_dir/documentation2a.txt |
-| generate docstring following the PEP guidelines for each method or function.                                                                                        | documentation_dir/documentation3.txt                                        |
-| produce a general description of the code and describe what it does.  output in markdown format. For each function, method or class show as a markdown bullet item. | documentation_dir/documentation4.md                                         |                                         |                                       |
-| "produce a general description of the code and describe what it does.  output in html format. Paragraphs should be delineated by with \<p\> and \</p\> tags.        | documentation_dir/documentation5.html                                       |                                       |                                       |
+| Prompt| output file                                                                         |
+|-------|-------------------------------------------------------------------------------------|
+| produce a general description of the code and describe what it does                                                                                                 | documentation_dir/documentation1.txt, documentation_dir/documentation1a.txt         |
+| generate docstring following the PEP guidelines for each method or function.  do not include source code in the output.                                             | documentation_dir/documentation2.txt, documentation_dir/documentation2a.txt         |
+| generate docstring following the PEP guidelines for each method or function.                                                                                        | documentation_dir/documentation3.txt                                                |
+| produce a general description of the code and describe what it does.  output in markdown format. For each function, method or class show as a markdown bullet item. | documentation_dir/documentation4.md                                                 |
+| "produce a general description of the code and describe what it does.  output in html format. Paragraphs should be delineated by with \<p\> and \</p\> tags.        | documentation_dir/documentation5.html                                               |
+| explain the code.| documentation_dir/documentation6.txt, documentation_dir/documentation7.txt          |
 
 
 ## Sample execution
