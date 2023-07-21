@@ -3,9 +3,7 @@
      ```x = 2 * y```
 
 $$
-
 x = 2 \times y
-
 $$
 
 
@@ -13,9 +11,7 @@ $$
      ```x = 2 * y + 3```
 
 $$
-
 x = 2 \cdot y + 3
-
 $$
 
 
@@ -23,9 +19,7 @@ $$
      ```x = 2 * y / (3 * z)```
 
 $$
-
 x = \frac{{2 \cdot y}}{{3 \cdot z}}
-
 $$
 
 
@@ -33,9 +27,7 @@ $$
      ```sscpr = np.subtract(y.T.dot(y), t.T.dot(t))```
 
 $$
-
 sscpr = np.subtract(y.T.dot(y), t.T.dot(t))
-
 $$
 
 
@@ -43,7 +35,5 @@ $$
      ```t = x.dot(params)```
 
 $$
-
 t = x \cdot \text{{params}}
-
 $$

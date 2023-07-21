@@ -66,7 +66,7 @@ def main():
         prompt = f"{prompt1} ```{source_code}```"
         documentation_text_list.append(prompt)
         documentation_text = generate_documentation(prompt)
-        documentation_text = documentation_text.replace("\[","$$\n").replace("\]","\n$$")
+        documentation_text = documentation_text.replace("\[","$$").replace("\]","$$")
         documentation_text_list.append(documentation_text)
 
     with open(args.documentation_file,"w") as f:
