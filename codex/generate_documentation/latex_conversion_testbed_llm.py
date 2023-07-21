@@ -53,6 +53,7 @@ def main():
         "x = 2 * y",
         "x = 2 * y + 3",
         "x = 2 * y / (3 * z)",
+        "roots = -b + np.sqrt(b**2 - 4*a*c)) / (2*a)",
         "sscpr = np.subtract(y.T.dot(y), t.T.dot(t))",
         "t = x.dot(params)",
     ]

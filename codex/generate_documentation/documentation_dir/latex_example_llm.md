@@ -24,6 +24,14 @@ $$
 
 
     convert the source code delimited by triple backticks to LaTeX
+     ```roots = -b + np.sqrt(b**2 - 4*a*c)) / (2*a)```
+
+$$
+\text{{roots}} = \frac{{-b + \sqrt{{b^2 - 4ac}}}}{{2a}}
+$$
+
+
+    convert the source code delimited by triple backticks to LaTeX
      ```sscpr = np.subtract(y.T.dot(y), t.T.dot(t))```
 
 $$
