@@ -1,0 +1,18 @@
+This code defines a function called `_multivariate_ols_fit` that performs multivariate ordinary least squares (OLS) regression. 
+
+The function takes three arguments: `endog`, `exog`, and `method`. 
+- `endog` is a numpy array representing the dependent variable(s) in the regression. 
+- `exog` is a numpy array representing the independent variable(s) in the regression. 
+- `method` is a string indicating the method to use for calculating the regression coefficients and other statistics. The default method is 'svd', but 'pinv' is also supported. 
+
+The function first checks if the number of observations in `endog` and `exog` are the same. If not, it raises a ValueError. 
+
+Next, it calculates the degrees of freedom for the residuals. 
+
+If the method is 'pinv', it calculates the regression coefficients using the Moore-Penrose pseudoinverse of `exog` and the formula `params = pinv_x.dot(y)`. It also calculates the inverse of `x'x` (where `x'` is the transpose of `x`) using the pseudoinverse and checks if it is singular. Finally, it calculates the sums of squares and cross-products of residuals using the formula `sscpr = np.subtract(y.T.dot(y), t.T.dot(t))`, where `t = x.dot(params)`.
+
+If the method is 'svd', it performs singular value decomposition (SVD) on `exog` using the `svd` function. It checks if any of the singular values are below a tolerance value and raises a ValueError if so. It then calculates the regression coefficients using the SVD components and the formula `params = v.T.dot(np.diag(invs)).dot(u.T).dot(y)`. It also calculates the inverse of `x'x` using the SVD components and checks if it is singular. Finally, it calculates the sums of squares and cross-products of residuals using the formula `sscpr = np.subtract(y.T.dot(y), t.T.dot(t))`, where `t = np.diag(s).dot(v).dot(params)`.
+
+If the method is neither 'pinv' nor 'svd', it raises a ValueError.
+
+The function returns a tuple containing the regression coefficients (`params`), the degrees of freedom for the residuals (`df_resid`), the inverse of `x'x` (`inv_cov`), and the sums of squares and cross-products of residuals (`sscpr`).
