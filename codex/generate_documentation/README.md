@@ -69,3 +69,5 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 * Generating markdown or html (`documentation4.md` and `documentation5.html`, respectively).  Generates the same text.  Able to take advantage of simple Markdown directives.  However, html output is only raw text.  More resarch is needed in this area.  May need to utilize few shot learning techniques to get right formatting of output.
 
 * add `documenation2a.txt` that generates docstring for function in `generate_documentation.py` program.  Generated docstring is accurate.  However, source code is inlcuded even though prompt specified no source code should be generated.
+
+* addition of doctring content affects documentation generation.  With docstrings, the generated documentation contains less detail.  This may be the result of adding more context that may confuse the LLM.  More research is needed to determine if this applies to all modules or the `multievariate_ols.py` module.
