@@ -18,6 +18,25 @@ openai.api_key = api['key']
 
 # Function to generate documentation for a source module
 def generate_documentation(prompt, source_code, model="gpt-3.5-turbo-16k"):
+    """
+    Generates documentation for Python code using an OpenAI LLM model.
+
+    Parameters:
+    - prompt (str): The prompt or introduction to the code.
+    - source_code (str): The Python source code to be documented.
+    - model (str): The model to be used for generating the documentation (default is "gpt-3.5-turbo-16k").
+
+    Returns:
+    - documentation_text (str): The generated documentation for the given source code.
+
+    Example Usage:
+
+    >>> prompt = "Generate documentation for this python code."
+    >>> source_code = 'print(\"Hello, world!\")'
+    >>> documentation = generate_documentation(prompt, source_code)
+    >>> print(documentation)
+
+    """
     completion_prompt = f'{prompt}:\n\n{source_code}\n\nPython code:'
 
     response = openai.ChatCompletion.create(

@@ -14,6 +14,26 @@ openai.api_key = api['key']
 
 # Function to generate documentation for a source module
 def generate_documentation(prompt, source_code):
+    """
+    Generates Python documentation for the given prompt and source code.
+
+    Args:
+        prompt (str): The description or prompt for generating the documentation.
+        source_code (str): The Python source code to be documented.
+
+    Returns:
+        str: The generated Python documentation.
+
+    Raises:
+        OpenAIError: If there is an error in the OpenAI API request.
+
+    Examples:
+        >>> prompt = "Generate Python documentation for a function"
+        >>> source_code = "def greet(name):\n    '''This function greets the given name.'''\n    print('Hello,', name)"
+        >>> documentation = generate_documentation(prompt, source_code)
+        >>> print(documentation)
+    """
+
     completion_prompt = f'{prompt}:\n\n{source_code}\n\nPython code:'
 
     response = openai.ChatCompletion.create(
