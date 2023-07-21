@@ -71,3 +71,38 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 * add `documenation2a.txt` that generates docstring for function in `generate_documentation.py` program.  Generated docstring is accurate.  However, source code is inlcuded even though prompt specified no source code should be generated.
 
 * addition of doctring content affects documentation generation.  With docstrings, the generated documentation contains less detail.  This may be the result of adding more context that may confuse the LLM.  More research is needed to determine if this applies to all modules or the `multievariate_ols.py` module.
+
+* Used `ChatGPT` to get initial  version of software to extract certain source code elements,i.e., function and class definitions.  prompt used: `example python program to read in another python program and to extract the source code for each function or class`
+```python
+import ast
+
+def extract_functions_and_classes(file_path):
+    with open(file_path, 'r') as file:
+        source_code = file.read()
+
+    tree = ast.parse(source_code)
+
+    functions_and_classes = []
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef):
+            function_name = node.name
+            function_source = ast.get_source_segment(source_code, node)
+            functions_and_classes.append((function_name, function_source))
+
+        if isinstance(node, ast.ClassDef):
+            class_name = node.name
+            class_source = ast.get_source_segment(source_code, node)
+            functions_and_classes.append((class_name, class_source))
+
+    return functions_and_classes
+
+if __name__ == "__main__":
+    python_file_path = "path/to/your/python_file.py"
+    extracted_functions_and_classes = extract_functions_and_classes(python_file_path)
+
+    for name, source in extracted_functions_and_classes:
+        print(f"Name: {name}")
+        print(f"Source code:\n{source}\n{'=' * 50}")
+
+```
