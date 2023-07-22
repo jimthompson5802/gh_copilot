@@ -90,7 +90,7 @@ def main():
 
         # generate documentation for functions
         if isinstance(node, ast.FunctionDef):
-            # extract relevation function information
+            # extract relevant function information
             function_name = node.name
             function_source = ast.get_source_segment(source_code, node)
 
@@ -103,6 +103,35 @@ def main():
             prompt = ""
             documentation_text = generate_documentation(prompt, function_source)
             documentation_text_list.append(f"### **Function Details**\n{documentation_text}\n\n")
+
+        # generate documentation for classes
+        elif isinstance(node, ast.ClassDef):
+            # extract relevant class information
+            class_name = node.name
+            class_source = ast.get_source_segment(source_code, node)
+
+            # generate overview of class
+            prompt = f"produce a general description of the class {class_name} and describe what it does"
+            documentation_text = generate_documentation(prompt, class_source)
+            documentation_text_list.append(f"## Class **`{class_name}`** Overview\n{documentation_text}\n\n")
+
+            # generate documentation for class methods
+            for class_node in node.body:
+                if isinstance(class_node, ast.FunctionDef):
+                    # extract relevant function information
+                    method_name = class_node.name
+                    print(f"generating doc for method {node.name}.{method_name}()")
+                    method_source = ast.get_source_segment(source_code, class_node)
+
+                    # generate overview of function
+                    prompt = f"produce a general description of the method {method_name} and describe what it does"
+                    documentation_text = generate_documentation(prompt, method_source)
+                    documentation_text_list.append(f"### Method **`{method_name}`** Overview\n{documentation_text}\n\n")
+
+                    # generate detailed description of function
+                    prompt = ""
+                    documentation_text = generate_documentation(prompt, method_source)
+                    documentation_text_list.append(f"#### **Method Details**\n{documentation_text}\n\n")
 
     # consolidate all the generated documentation text into single markdown file
     documentation_text = "".join(documentation_text_list)
