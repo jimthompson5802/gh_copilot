@@ -1,13 +1,12 @@
 # Access OpenAI Codex API
 import argparse
 import ast
-from collections import namedtuple
+from datetime import datetime
 import json
 import os
 
 import openai
 
-DocumentationItem = namedtuple("DocumentationItem", ["name", "doc_type", "documentation"])
 
 # Retrieve API from json file
 with open('/openai/.openai/api_key.json') as f:
@@ -54,6 +53,7 @@ def generate_documentation(prompt, source_code, model="gpt-3.5-turbo-16k"):
 
 # main function
 def main():
+    start_time = datetime.now()
     # retrieve source file name from first parameter in command line
     parser = argparse.ArgumentParser()
     parser.add_argument("source_file", help="Source file to document")
@@ -71,17 +71,26 @@ def main():
     # create file name for python file
     documentation_file = args.documentation_file
 
+    documentation_text_list = []
+
     # create high level module documentation
     module_name = os.path.basename(args.source_file)
-    module_description = generate_documentation(
-        "produce a general description of the code and describe what it does",
-        source_code
-    )
+    try:
+        module_description = generate_documentation(
+            "produce a general description of the code and describe what it does",
+            source_code
+        )
 
-    # initialize list of documentation text with module documentation
-    documentation_text_list = [
-        f"# Module:`{module_name}` Overview\n\n{module_description}\n\n"
-    ]
+        # initialize list of documentation text with module documentation
+        documentation_text_list.append(
+            f"# Module:`{module_name}` Overview\n\n{module_description}\n\n"
+        )
+    except openai.error.InvalidRequestError as e:
+        print(f"Error generating module level documentation: {e}")
+        documentation_text_list.append(
+            f"# Module:`{module_name}` Overview\n\n"
+            f"## **Error in generating module level documentation**\n\n"
+        )
 
     # parse source code into abstract syntax tree to pull out lower level details
     tree = ast.parse(source_code)
@@ -94,15 +103,30 @@ def main():
             function_name = node.name
             function_source = ast.get_source_segment(source_code, node)
 
-            # generate overview of function
-            prompt = f"produce a general description of the function {function_name} and describe what it does"
-            documentation_text = generate_documentation(prompt, function_source)
-            documentation_text_list.append(f"## Function **`{function_name}`** Overview\n{documentation_text}\n\n")
+            try:
+                # generate overview of function
+                prompt = f"produce a general description of the function {function_name} and describe what it does"
+                documentation_text = generate_documentation(prompt, function_source)
+                documentation_text_list.append(f"## Function **`{function_name}`** Overview\n{documentation_text}\n\n")
+            except openai.error.InvalidRequestError as e:
+                print(f"Error generating function overview documentation: {e}")
+                documentation_text_list.append(
+                    f"## Function **`{function_name}`** Overview\n"
+                    f"### **Error in generating function overview documentaiton**\n\n"
+                )
 
-            # generate detailed description of function
-            prompt = ""
-            documentation_text = generate_documentation(prompt, function_source)
-            documentation_text_list.append(f"### **Function Details**\n{documentation_text}\n\n")
+
+                # generate detailed description of function
+            try:
+                prompt = ""
+                documentation_text = generate_documentation(prompt, function_source)
+                documentation_text_list.append(f"### **Function Details**\n{documentation_text}\n\n")
+            except openai.error.InvalidRequestError as e:
+                print(f"Error generating function detail documentation: {e}")
+                documentation_text_list.append(
+                    f"### **Error in generating function detail documentation**\n\n"
+                )
+
 
         # generate documentation for classes
         elif isinstance(node, ast.ClassDef):
@@ -111,9 +135,16 @@ def main():
             class_source = ast.get_source_segment(source_code, node)
 
             # generate overview of class
-            prompt = f"produce a general description of the class {class_name} and describe what it does"
-            documentation_text = generate_documentation(prompt, class_source)
-            documentation_text_list.append(f"## Class **`{class_name}`** Overview\n{documentation_text}\n\n")
+            try:
+                prompt = f"produce a general description of the class {class_name} and describe what it does"
+                documentation_text = generate_documentation(prompt, class_source)
+                documentation_text_list.append(f"## Class **`{class_name}`** Overview\n{documentation_text}\n\n")
+            except openai.error.InvalidRequestError as e:
+                print(f"Error generating class level documentation: {e}")
+                documentation_text_list.append(
+                    f"# Class **`{module_name}`** Overview\n\n"
+                    f"## **Error in generating class level documentation**\n\n"
+                )
 
             # generate documentation for class methods
             for class_node in node.body:
@@ -140,7 +171,12 @@ def main():
     with open(documentation_file, 'w') as f:
         f.write(documentation_text)
 
-    print(f"finished documenting {args.source_file}...created {documentation_file}")
+    elapsed_time = datetime.now() - start_time
+
+    print(
+        f"finished documenting {args.source_file}...created {documentation_file} "
+        f"elapsed time {elapsed_time.total_seconds():01.0f} seconds"
+    )
 
 
 if __name__ == '__main__':
