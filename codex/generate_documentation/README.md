@@ -116,3 +116,45 @@ if __name__ == "__main__":
 * Not LLM related.  `Sphinx` utility generates html formatted documentation from embedded `docstring` in the code.
 
 * Technically feasible to use LLM to generate LaTex from Python code if the Python code contains only mathematical expressions.  See `latex_conversion_testbed_llm.py` and `documentation_dir/latex_example_llm.md`  However, it is not clear at this time on a way to consistently determine if a Python statement contains only mathematical expressions.  This is a potential area of research.  Also current implementation inovkes the OpenAI once for each Python statement.  This has performance and cost implications. ![](images/latex_generation_with_llm.png)
+
+* Performance metrics:
+
+| Module                               | Size (KB) | Elapsed Time (sec) | Issues During Generation                                                                                                                                                             |
+|--------------------------------------|:---------:|:------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `multivariate_ols.py`                |    13     |        149         | None.                                                                                                                                                                                |
+| `large_modules/llm.py`               |    31     |        231         | None.                                                                                                                                                                                |
+| `large_modules/image_feature.py`     |    41     |        348         | None.                                                                                                                                                                                |
+| `large_modules/trainer.py`           |    61     |        245         | Token limit exception when generating module level description and one class level description. Work-around with try-except wrapper.  No issues in generating rest of documentation. |
+| `large_modules/sequence_encoders.py` |    95     |        341         | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                                 |
+| `large_modules/visualize.py`         |    169    |        672         | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                                 |
+
+```text
+d13a3c1aaf2c:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/sequence_encoders.py documentation_dir/large_module_sequence_encoders.md
+starting to document large_modules/sequence_encoders.py
+Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 18813 tokens. Please reduce the length of the messages.
+<ast.Import object at 0x7f5bb97a64f0>
+<ast.ImportFrom object at 0x7f5bb97a65b0>
+<ast.Import object at 0x7f5bb97a65e0>
+
+
+738b84ef2ef9:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/visualize.py documentation_dir/large_module_visualize.md
+starting to document large_modules/visualize.py
+Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 37728 tokens. Please reduce the length of the messages.
+<ast.Import object at 0x7f6b1ca5fd00>
+<ast.Import object at 0x7f6b1ca5fc40>
+<ast.Import object at 0x7f6
+
+
+f8141bedd994:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/trainer.py documentation_dir/large_module_trainer.md
+starting to document large_modules/trainer.py
+Error generating module level documentation: This model's maximum context length is 16385 tokens. However, you requested 19266 tokens (11170 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
+<ast.Expr object at 0x7f86f6e04070>
+<ast.Import object at 0x7f86f6e04100>
+
+<ast.Assign object at 0x7fb06579d9d0>
+<ast.ClassDef object at 0x7fb06579d970>
+Error generating class level documentation: This model's maximum context length is 16385 tokens. However, you requested 18488 tokens (10392 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
+generating doc for method Trainer.get_schema_cls()
+generating doc for method Trainer.__init__()
+
+```
