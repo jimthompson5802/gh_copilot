@@ -56,6 +56,7 @@ def main():
         "roots = -b + np.sqrt(b**2 - 4*a*c)) / (2*a)",
         "sscpr = np.subtract(y.T.dot(y), t.T.dot(t))",
         "t = x.dot(params)",
+        "invs = 1. / s",
     ]
 
     prompt1 = """

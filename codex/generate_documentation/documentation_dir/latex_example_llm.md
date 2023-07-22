@@ -45,3 +45,11 @@ $$
 $$
 t = x \cdot \text{{params}}
 $$
+
+
+    convert the source code delimited by triple backticks to LaTeX
+     ```invs = 1. / s```
+
+$$
+\text{{invs}} = \frac{1}{s}
+$$
