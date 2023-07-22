@@ -68,7 +68,7 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 
 * Generated documentation for program `generate_documentation.py` (file `documentation1a.txt`), for the most part, reflects the processing in the module.  It misses describing a step and incorrectly describes the final step in the module.
   * Missing description of issuing a message at the start of the processing
-  * Incorrectly describes the final step as, "the code prints a messaging the start and completion of the documetnation process".  The correct description is "the code prints a message for completing the documentation process".
+  * Incorrectly describes the final step as, "the code prints a messaging the start and completion of the documentation process".  The correct description is "the code prints a message for completing the documentation process".
 
 * Generating markdown or html (`documentation4.md` and `documentation5.html`, respectively).  Generates the same text.  Able to take advantage of simple Markdown directives.  However, html output is only raw text.  More resarch is needed in this area.  May need to utilize few shot learning techniques to get right formatting of output.
 
@@ -115,4 +115,4 @@ if __name__ == "__main__":
 
 * Not LLM related.  `Sphinx` utility generates html formatted documentation from embedded `docstring` in the code.
 
-* Technically feasible to use LLM to generate LaTex from Python code if the Python code contains only mathematical expressions.  See `latex_conversion_testbed_llm.py` and `documentation_dir/latex_example_llm.md`  However, it is not clear at this time on a way to consistently determine if a Python statement contains only mathematical expressions.  This is a potential area of research.  Also current implementation inovkes the OpenAI once for each Python statement.  This has performance and cost implications.
+* Technically feasible to use LLM to generate LaTex from Python code if the Python code contains only mathematical expressions.  See `latex_conversion_testbed_llm.py` and `documentation_dir/latex_example_llm.md`  However, it is not clear at this time on a way to consistently determine if a Python statement contains only mathematical expressions.  This is a potential area of research.  Also current implementation inovkes the OpenAI once for each Python statement.  This has performance and cost implications. ![](images/latex_generation_with_llm.png)
