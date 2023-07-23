@@ -119,14 +119,14 @@ if __name__ == "__main__":
 
 * Performance metrics:
 
-| Module                               | Size (KB) | Elapsed Time (sec) | Issues During Generation                                                                                                                                                             |
-|--------------------------------------|:---------:|:------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `multivariate_ols.py`                |    13     |        149         | None.                                                                                                                                                                                |
-| `large_modules/llm.py`               |    31     |        231         | None.                                                                                                                                                                                |
-| `large_modules/image_feature.py`     |    41     |        348         | None.                                                                                                                                                                                |
-| `large_modules/trainer.py`           |    61     |        263         | Token limit exception when generating module level description and one class level description. Work-around with try-except wrapper.  No issues in generating rest of documentation. |
-| `large_modules/sequence_encoders.py` |    95     |        341         | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                                 |
-| `large_modules/visualize.py`         |    169    |        672         | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                                 |
+| Module                               | Size (KB) | Elapsed Time (sec) | API Calls | Issues During Generation                                                                                                                                                        |
+|--------------------------------------|:---------:|:------------------:|:---------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `multivariate_ols.py`                |    13     |        149         |    34     | None.                                                                                                                                                                           |
+| `large_modules/llm.py`               |    31     |        223         |    71     | None.                                                                                                                                                                           |
+| `large_modules/image_feature.py`     |    41     |        313         |    92     | None.                                                                                                                                                                           |
+| `large_modules/trainer.py`           |    61     |        217         |    61     | Token limit exception when generating module level description and one class level description. Work-around with try-except wrapper.  No issues in generating rest of documentation. |
+| `large_modules/sequence_encoders.py` |    95     |        310         |    91     | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                            |
+| `large_modules/visualize.py`         |    169    |        587         |    138    | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                            |
 
 ```text
 d13a3c1aaf2c:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/sequence_encoders.py documentation_dir/large_module_sequence_encoders.md

@@ -2,34 +2,32 @@
 
 The code defines a class called `LLM` which is a subclass of `BaseModel`. The `LLM` class represents a large language model (LLM) and provides methods for training, evaluating, and generating text using the model.
 
-The code imports various libraries and modules including `contextlib`, `logging`, `os`, `tempfile`, `typing`, `numpy`, `torch`, `transformers`, and several modules from the `ludwig` package.
+The code begins by importing various libraries and modules needed for the implementation. It then defines the `DictWrapper` class, which is a wrapper for a dictionary-like object that allows for iteration over keys. This class is used to wrap the `LudwigFeatureDict` module, which contains input and output features of the LLM.
 
-The `LLM` class has several methods and attributes:
+The `LLM` class has several methods and attributes. Here is a summary of each:
 
-- `type()`: A static method that returns the type of the model as a string.
-- `__init__()`: The constructor method that initializes the `LLM` object. It takes several arguments including a configuration object, random seed, and device.
-- `create_feature_dict()`: A method that creates a feature dictionary for the model.
-- `output_feature_decoder`: A property that returns the output feature decoder module of the model.
-- `initialize_adapter()`: A method that initializes the adapter for fine-tuning the model.
-- `to_device()`: A method that moves the model to the specified device.
-- `build_outputs()`: A class method that builds and returns the output feature(s) of the model.
-- `forward()`: A method that performs a forward pass of the model given input tensors and returns the output tensors.
-- `generate()`: A method that generates text using the model given input tensors.
-- `train_loss()`: A method that computes the training loss for the model given targets and predictions.
-- `eval_loss()`: A method that computes the evaluation loss for the model given targets and predictions.
-- `outputs_to_predictions()`: A method that converts the model's output tensors to predictions for each output feature.
-- `save()`: A method that saves the model to a specified path.
-- `load()`: A method that loads the model from a specified path.
-- `get_args()`: A method that returns the initialization arguments for constructing the model.
-- `_generate_merged_ids()`: A private method that merges input and target tensors and creates attention masks for the merged tensors.
-- `_add_left_padding()`: A private method that adds left padding to input tensors.
-- `_create_attention_mask()`: A private method that creates attention masks for input tensors.
-- `get_augmentation_pipelines()`: A method that returns the augmentation pipelines for the model.
-- `realign_target_and_prediction_tensors()`: A helper function that realigns the target tensor with the predictions for text metrics computation.
+- `type()`: A static method that returns the type of the model, which is "llm".
+- `__init__()`: The constructor method that initializes the LLM object. It takes a `config_obj` argument, which is an instance of `LLMModelConfig` that contains the configuration parameters for the LLM. It also takes optional arguments for random seed and device. The method initializes the LLM model by loading a pre-trained LLM model using the `AutoModelForCausalLM.from_pretrained()` method. It also initializes the tokenizer, input features, and output features of the LLM.
+- `create_feature_dict()`: A method that creates a dictionary-like object to store the input and output features of the LLM.
+- `output_feature_decoder`: A property that returns the decoder object for the output feature of the LLM.
+- `initialize_adapter()`: A method that initializes the adapter for the LLM model if an adapter configuration is provided.
+- `to_device()`: A method that moves the LLM model to the specified device (e.g., "cpu" or "cuda").
+- `build_outputs()`: A class method that builds and returns the output feature of the LLM.
+- `forward()`: A method that performs a forward pass through the LLM model and returns the logits tensor for fine-tuning the model.
+- `generate()`: A method that generates text using the LLM model.
+- `train_loss()`: A method that computes the training loss for the LLM model given targets and predictions.
+- `eval_loss()`: A method that computes the evaluation loss for the LLM model given targets and predictions.
+- `outputs_to_predictions()`: A method that converts the model's outputs to predictions for each output feature.
+- `save()`: A method that saves the LLM model to a specified path.
+- `load()`: A method that loads the LLM model from a specified path.
+- `get_args()`: A method that returns the initialization arguments for constructing the LLM model.
+- `_generate_merged_ids()`: A private method that merges the input_ids and target_ids together to create a unified tensor to pass into the model.
+- `_add_left_padding()`: A private method that adds left padding to the input_ids tensor.
+- `_create_attention_mask()`: A private method that creates an attention mask for the input_ids tensor.
+- `get_augmentation_pipelines()`: A method that returns the augmentation pipeline for the LLM model.
+- `realign_target_and_prediction_tensors()`: A helper function that realigns the target tensor with the predictions for text metrics evaluation.
 
-The code also defines a class called `DictWrapper` which is a wrapper for a `LudwigFeatureDict` module. This class allows for iteration over keys and provides methods for accessing and updating the underlying `LudwigFeatureDict` module.
-
-Overall, the code represents a large language model and provides functionality for training, evaluating, and generating text using the model.
+Overall, the code provides a class-based implementation of a large language model (LLM) with methods for training, evaluating, and generating text using the model.
 
 ## Class **`DictWrapper`** Overview
 The `DictWrapper` class is a wrapper for a `LudwigFeatureDict` module that allows for iteration over keys. It is designed to avoid exposing input and output features as modules of the Ludwig Language Model (LLM) in order to simplify training the underlying model and avoid confusion with systems like DeepSpeed.
@@ -52,7 +50,7 @@ The `__init__` method is a special method in Python classes that is automaticall
 
 In the given code, the `__init__` method takes in a parameter `obj` of type `LudwigFeatureDict`. The method assigns the value of `obj` to the `self.obj` attribute of the object being created. This means that the `obj` parameter can be accessed and used throughout the class using the `self.obj` attribute.
 
-Overall, the `__init__` method in this code is used to initialize the `obj` attribute of the object being created with the value passed as an argument.
+Overall, the `__init__` method initializes the `obj` attribute of the object with the value passed as an argument when creating the object.
 
 #### **Method Details**
 The given code is a constructor for a class. It takes an argument `obj` of type `LudwigFeatureDict` and assigns it to the instance variable `self.obj`. The purpose of this constructor is to initialize an object of the class with the given `obj` value.
@@ -61,14 +59,18 @@ The given code is a constructor for a class. It takes an argument `obj` of type 
 The method "get" is a function that takes a key as input and returns a torch.nn.Module object. It is defined within a class and is used to retrieve a specific value from a dictionary-like object called "obj". The "get" method is commonly used to access and retrieve values associated with a particular key in a dictionary.
 
 #### **Method Details**
-The given code is a method definition in a Python class. The method is named "get" and it takes two parameters: "self" and "key". The "-> torch.nn.Module" indicates that the method returns an object of type "torch.nn.Module".
+The given code is a method definition in a Python class. The method is named "get" and takes two parameters: "self" (which refers to the instance of the class) and "key" (which is the key to be used for retrieving an object).
 
-Inside the method, it calls the "get" method of the "obj" attribute of the class, passing the "key" parameter. The result of this call is then returned.
+The method returns the value associated with the given key from the "obj" attribute of the class instance. The "obj" attribute is expected to be an object that has a "get" method.
+
+The return type of the method is specified as "torch.nn.Module", indicating that the returned value should be an instance of the "torch.nn.Module" class.
 
 ### Method **`set`** Overview
-The method "set" is a function that takes in three parameters: "self" (which refers to the current instance of the class), "key" (a string), and "module" (an object of the torch.nn.Module class). 
+The method "set" is a function that takes in three parameters: "self", "key" (a string), and "module" (an object of the torch.nn.Module class). It does not return any value (None).
 
-The purpose of this method is to set a value in the "obj" attribute of the current instance. It does this by calling the "set" method of the "obj" attribute and passing the "key" and "module" parameters to it. The "set" method is expected to handle the logic of setting the value in the "obj" attribute.
+The purpose of this method is to set a key-value pair in the "obj" object. The "key" parameter is used as the key for the pair, and the "module" parameter is used as the corresponding value. The "obj" object is expected to have a "set" method that accepts a key-value pair and stores it internally.
+
+In summary, the "set" method allows the user to set a key-value pair in the "obj" object, where the key is a string and the value is an object of the torch.nn.Module class.
 
 #### **Method Details**
 The given code is a method definition in a Python class. The method is named "set" and it takes two parameters: "key" of type str and "module" of type torch.nn.Module. The method does not return anything (None).
@@ -85,13 +87,9 @@ By implementing the __len__ method, we can make our custom objects or collection
 #### **Method Details**
 The given code is a method definition for the `__len__` method in a class. This method is used to define the behavior of the `len()` function when called on an object of this class.
 
-The `__len__` method takes in one parameter, `self`, which refers to the object on which the method is called.
+The `__len__` method takes in one parameter, `self`, which refers to the object itself. Inside the method, it returns the length of the `self.obj` attribute using the `len()` function.
 
-Inside the method, it returns the length of the `self.obj` attribute using the `len()` function.
-
-The return type of this method is specified as `int` using the `->` syntax in the function signature.
-
-Note that this code snippet is incomplete and does not provide the complete context of the class or the `self.obj` attribute.
+The `__len__` method is typically used to implement the built-in `len()` function for custom objects. By defining this method, you can specify how the length of an object should be determined.
 
 ### Method **`__next__`** Overview
 The method __next__ is a special method in Python that is used to define the behavior of an iterator object. It is typically implemented in a class that also defines the __iter__ method.
@@ -103,13 +101,11 @@ In the given code, the __next__ method is defined with a return statement that u
 Note that the return type annotation of None indicates that the __next__ method does not return any specific value, but rather returns the next item in the iterator.
 
 #### **Method Details**
-The given code is a method definition for the `__next__` method in a class. This method is used to implement the iterator protocol in Python.
+The given code defines a `__next__` method for a class. This method is used to implement the iterator protocol in Python.
 
-The `__next__` method is expected to return the next item in the iterator. In this code, it returns the next item in the `self.obj` object by calling the `next` function on it.
+The `__next__` method returns the next element in the iterator. In this case, it returns the next element of the `self.obj` object. The `iter` function is used to create an iterator object from `self.obj`, and the `next` function is used to retrieve the next element from the iterator.
 
-The `iter` function is used to create an iterator object from the `self.obj` object. The `next` function is then called on this iterator object to get the next item.
-
-The return type annotation `-> None` indicates that this method does not return any value.
+The `-> None` annotation indicates that the method does not return any value.
 
 ### Method **`__iter__`** Overview
 The method __iter__ is a special method in Python that allows an object to be iterable. It is used to define the behavior of the object when it is iterated over using a loop or other iterable operations.
@@ -122,13 +118,13 @@ By implementing the __iter__ method, the class becomes iterable, meaning it can 
 This code defines an `__iter__` method for a class. The method returns an iterator object that iterates over the keys of the `obj` attribute of the class. The `obj` attribute is assumed to be a dictionary-like object that has a `keys()` method.
 
 ### Method **`keys`** Overview
-The method "keys" is a built-in method in Python that is used to retrieve all the keys from a dictionary or a dictionary-like object. It is typically used with objects that have a key-value structure, such as dictionaries, where each key is associated with a value.
+The method "keys" is a built-in method in Python that is used to retrieve all the keys from a dictionary or a dictionary-like object. It returns a list of strings containing all the keys present in the object.
 
-The method takes no arguments other than the "self" parameter, which refers to the object itself. It returns a list of all the keys present in the object.
+In the given code snippet, the method "keys" is defined as a member function of a class. It takes no arguments except for the implicit "self" parameter, which refers to the instance of the class. The method is annotated with a return type hint indicating that it returns a list of strings.
 
-In the given code snippet, the "keys" method is defined as a member function of a class. It is expected to be called on an object of that class. Inside the method, it simply calls the "keys" method of the "obj" attribute of the object and returns the result.
+Inside the method, it calls the "keys" method of the "obj" attribute, which is assumed to be a dictionary or a dictionary-like object. This method call retrieves all the keys from the object and returns them as a list of strings.
 
-The returned list of keys can be used for various purposes, such as iterating over the keys, accessing the corresponding values, or performing operations based on the keys present in the object.
+Overall, the "keys" method provides a convenient way to access and retrieve all the keys from a dictionary or a dictionary-like object in Python.
 
 #### **Method Details**
 The given code is a method definition for a function called "keys" that takes in a parameter "self" and returns a list of strings. The function is intended to be used as a method of an object.
@@ -138,7 +134,9 @@ The function implementation simply returns the keys of the "obj" attribute of th
 Note that the code snippet provided is incomplete and lacks the necessary import statements and class definition.
 
 ### Method **`values`** Overview
-The method "values" is a function that belongs to a class and returns a list of torch.nn.Module objects. It is used to retrieve all the values stored in the "obj" attribute of the class. The "obj" attribute is expected to be a dictionary-like object that contains torch.nn.Module objects as its values. This method allows accessing and manipulating these values in a convenient way.
+The method "values" is defined within a class and takes no arguments. It returns a list of torch.nn.Module objects. 
+
+This method is used to retrieve all the values stored in the "obj" attribute of the class. The "obj" attribute is expected to be a dictionary-like object that contains torch.nn.Module objects as its values. By calling this method, all the values stored in "obj" are extracted and returned as a list.
 
 #### **Method Details**
 The given code is a method definition in a Python class. It defines a method named "values" that takes in a parameter named "self" (which refers to the instance of the class) and returns a list of torch.nn.Module objects.
@@ -171,14 +169,14 @@ The method "update" is a function that belongs to a class and takes in two param
 
 The purpose of the "update" method is to update the "obj" attribute of the class instance with the provided "modules". It does this by calling the "update" method of the "obj" attribute and passing in the "modules" dictionary as an argument.
 
-The "update" method is expected to modify the "obj" attribute in some way based on the provided "modules". The specific implementation of the "update" method and its effects on the "obj" attribute would depend on the class and its intended functionality.
+The return type of the method is "None", indicating that it does not return any value.
 
 #### **Method Details**
 The given code is defining a method called "update" within a class. The method takes two parameters: "self" (which refers to the instance of the class) and "modules" (which is expected to be a dictionary with string keys and values of type torch.nn.Module).
 
 The method calls the "update" method of an object called "obj" (which is assumed to be an attribute of the class) and passes the "modules" dictionary as an argument.
 
-The return type of the method is None, indicating that it does not return any value.
+The return type of the method is None.
 
 ## Class **`LLM`** Overview
 The `LLM` class is a subclass of the `BaseModel` class. It represents a large language model (LLM) and is used for tasks such as text generation and fine-tuning. 
@@ -189,7 +187,7 @@ The `LLM` class has the following main functionalities:
 
 2. Forward Pass: The `forward` method takes input tensors and generates logits tensor for fine-tuning the model. It uses the LLM model to generate the logits and passes them through the output feature decoder to get the final predictions.
 
-3. Generation: The `generate` method takes input tensors and generates tokens using the LLM model. It uses the LLM model's `generate` method to generate the tokens.
+3. Generation: The `generate` method takes input tensors and generates tokens using the LLM model. It uses the LLM model's `generate` method to generate the text.
 
 4. Loss Computation: The `train_loss` method computes the training loss for the model given targets and predictions. It computes the loss for each output feature and applies regularization if specified.
 
@@ -197,11 +195,11 @@ The `LLM` class has the following main functionalities:
 
 6. Model Saving and Loading: The `save` method saves the model to a specified path, and the `load` method loads the model from a specified path.
 
-7. Device Management: The `to_device` method moves the model to a specified device.
+7. Device Management: The `to_device` method moves the model to the specified device.
 
 8. Augmentation Pipelines: The `get_augmentation_pipelines` method returns the augmentation pipeline for the model.
 
-Overall, the `LLM` class provides a high-level interface for working with large language models, including fine-tuning, generation, and evaluation.
+Overall, the `LLM` class provides an interface to interact with a large language model, perform text generation, fine-tuning, and compute losses for training and evaluation.
 
 ### Method **`type`** Overview
 The method type() is a function that returns a string value. It does not take any arguments. The purpose of this method is to return the value of the constant variable MODEL_LLM.
@@ -212,31 +210,33 @@ The given code is a function named "type" that returns a string. However, the va
 ### Method **`__init__`** Overview
 The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the object's attributes and perform any necessary setup.
 
-In this specific code, the `__init__` method takes several parameters: `config_obj`, `random_seed`, `device`, and any additional keyword arguments (`_kwargs`). It first calls the `__init__` method of the superclass (inherited class) using the `super()` function.
+In this specific code, the `__init__` method takes several parameters: `config_obj`, `random_seed`, `device`, and any additional keyword arguments (`_kwargs`). It first calls the `__init__` method of the superclass (inherited class) to perform any necessary initialization from the superclass.
 
-The method then assigns the `config_obj` parameter to the `self.config_obj` attribute, and assigns the `random_seed` parameter to both the `self._random_seed` attribute and the `random_seed` parameter of the superclass's `__init__` method.
+Then, it assigns the `config_obj` parameter to the `self.config_obj` attribute, and assigns the `random_seed` parameter to both the `self._random_seed` attribute and the `super()` call.
 
 Next, it sets the `self.model_name` attribute to the `model_name` attribute of the `config_obj`.
 
-It then loads a large language model using the `AutoModelForCausalLM.from_pretrained` method and assigns it to the `self.model` attribute. The model is initially loaded onto the CPU.
+It logs a message indicating that a large language model is being loaded, and then loads the language model using the `AutoModelForCausalLM.from_pretrained` method with the `model_name` from the `config_obj`. It also sets the `curr_device` attribute to the CPU device.
 
-The method determines the maximum length of the context (input + output tokens) by checking if the model's configuration has a `max_sequence_length` attribute or a `max_position_embeddings` attribute. If neither is present, it sets the `context_len` attribute to 2048.
+The method then determines the maximum length of the context (input + output tokens) based on the configuration of the model.
 
-The `max_new_tokens` attribute is set to the `max_new_tokens` attribute of the `generation` attribute of the `config_obj`. The `max_input_length` attribute is set to `context_len - max_new_tokens - 8`.
+It sets the `max_new_tokens` attribute to the `max_new_tokens` value from the `generation` attribute of the `config_obj`, and calculates the `max_input_length` based on the `context_len`, `max_new_tokens`, and a constant value.
 
-The method then initializes a tokenizer using the `AutoTokenizer.from_pretrained` method, with the `use_fast` parameter set to `True` (unless the model is of type `LlamaConfig`, in which case `use_fast` is set to `False`). The tokenizer's pad token is set using the `set_pad_token` function.
+The tokenizer is initialized using the `AutoTokenizer.from_pretrained` method with the `model_name` from the `config_obj`, and the `use_fast` flag is set based on the type of the model.
 
-The `generation` attribute is initialized with a `GenerationConfig` object created from the `generation` attribute of the `config_obj`.
+The `generation` attribute of the `config_obj` is converted to a `GenerationConfig` object and assigned to the `self.generation` attribute.
 
-The method then updates the `input_features` attribute by calling the `build_inputs` method with the `input_feature_configs` parameter set to the `input_features` attribute of the `config_obj`. If a `KeyError` is raised during this process, it is caught and re-raised with a more informative error message.
+Next, the method builds the input features using the `build_inputs` method with the `input_feature_configs` from the `config_obj`, and updates the `self.input_features` attribute with the result.
 
-The `output_feature_type` attribute is set to the `type` attribute of the first element in the `output_features` attribute of the `config_obj`.
+The `output_feature_type` attribute is set to the `type` attribute of the first output feature in the `output_features` attribute of the `config_obj`.
 
-The `output_features` attribute is updated by calling the `build_outputs` method with the `output_feature_configs` parameter set to the `output_features` attribute of the `config_obj`, and the `input_size` parameter set to the last dimension of the `input_shape` attribute if `output_feature_type` is `TEXT`, otherwise set to the `vocab_size` attribute of the model's configuration.
+The method then builds the output features using the `build_outputs` method with the `output_feature_configs` from the `config_obj` and the `input_size` based on the `input_shape` or the model's vocabulary size, depending on the `output_feature_type`. The result is updated in the `self.output_features` attribute.
 
-The `self._output_feature_decoder` attribute is set to a `ModuleWrapper` object created from the first item in the `output_features` attribute.
+The decoder object for the forward pass is extracted from the `self.output_features` and assigned to the `_output_feature_decoder` attribute.
 
-Finally, the method calls the `initialize_adapter` method and clears the data cache.
+Finally, the method initializes the PEFT adapter and clears the data cache.
+
+Overall, the `__init__` method initializes various attributes of the object based on the provided parameters and the configuration object. It also performs necessary setup for the language model and tokenizer.
 
 #### **Method Details**
 The given code is a constructor method (`__init__`) for a class. It initializes the object of the class with the provided arguments and sets up various attributes and configurations.
@@ -259,58 +259,65 @@ Here is a breakdown of what the code does:
 
 5. The constructor loads a large language model using the `AutoModelForCausalLM.from_pretrained` method from the `transformers` library. The loaded model is assigned to the `model` attribute.
 
-6. The `curr_device` attribute is set to `torch.device("cpu")`, indicating that the model is initially loaded onto the CPU.
+6. The constructor sets the `curr_device` attribute to `torch.device("cpu")`, indicating that the model is initially loaded onto the CPU.
 
 7. The constructor determines the maximum length of the context (input + output tokens) based on the model's configuration. If the model has a `max_sequence_length` attribute, it is used. Otherwise, if it has a `max_position_embeddings` attribute, it is used. If neither attribute is present, a default value of 2048 is used.
 
 8. The constructor sets the `max_new_tokens` attribute based on the `generation.max_new_tokens` value from the `config_obj`.
 
-9. The `max_input_length` attribute is set to `context_len - max_new_tokens - 8`. It represents the maximum length of the input tokens.
+9. The constructor calculates the `max_input_length` by subtracting `max_new_tokens` and 8 from the `context_len`.
 
 10. The constructor initializes a tokenizer using the `AutoTokenizer.from_pretrained` method from the `transformers` library. The tokenizer is assigned to the `tokenizer` attribute. The `use_fast` flag is set to `True` by default, but it is temporarily set to `False` if the model's configuration is of type `LlamaConfig`.
 
-11. The `set_pad_token` function is called to set the padding token for the tokenizer.
+11. The constructor sets the `generation` attribute by creating a `GenerationConfig` object from the `config_obj.generation` attribute.
 
-12. The constructor initializes a `GenerationConfig` object using the `config_obj.generation.to_dict()` method and assigns it to the `generation` attribute.
+12. The constructor attempts to build input features using the `build_inputs` method, passing the `input_feature_configs` from `config_obj`. The resulting input features are added to the `input_features` attribute.
 
-13. The constructor updates the `input_features` attribute by calling the `build_inputs` method with the `input_feature_configs` argument from `config_obj`. If any input feature has a name that conflicts with a class attribute of `torch`'s `ModuleDict`, a `KeyError` is raised.
+13. The constructor sets the `output_feature_type` attribute to the `type` of the first output feature in `config_obj.output_features`.
 
-14. The `output_feature_type` attribute is set to the `type` of the first output feature in `config_obj.output_features`.
+14. The constructor builds output features using the `build_outputs` method, passing the `output_feature_configs` from `config_obj` and the appropriate `input_size` based on the `output_feature_type`. The resulting output features are added to the `output_features` attribute.
 
-15. The constructor updates the `output_features` attribute by calling the `build_outputs` method with the `output_feature_configs` and `input_size` arguments from `config_obj`. The `input_size` is set to the model's vocabulary size if the `output_feature_type` is `TEXT`, otherwise it is set to the tokenizer's vocabulary size.
+15. The constructor extracts the decoder object for the forward pass from the `output_features` and assigns it to the `_output_feature_decoder` attribute.
 
-16. The constructor extracts the decoder object for the forward pass by wrapping the first item of `output_features` in a `ModuleWrapper` object and assigns it to the `_output_feature_decoder` attribute.
+16. The constructor initializes the PEFT adapter if one is provided.
 
-17. The constructor calls the `initialize_adapter` method to initialize the PEFT (Plug-and-Play Encoder-Free Transformer) adapter if one is provided.
+17. The constructor clears the data cache.
 
-18. The `clear_data_cache` function is called to clear the data cache.
-
-Overall, the constructor sets up the language model, tokenizer, input and output features, and other necessary configurations for the class object.
+Overall, the constructor initializes the object with the provided arguments, loads a language model, sets up a tokenizer, configures input and output features, and performs other necessary setup steps for the class.
 
 ### Method **`create_feature_dict`** Overview
 The method "create_feature_dict" is a function that returns an instance of the LudwigFeatureDict class wrapped in a DictWrapper object. 
 
-The purpose of this method is to create and initialize a dictionary-like object that will be used to store and manage features in the Ludwig library. The LudwigFeatureDict class likely provides methods and attributes to add, remove, and access features, as well as perform other operations related to feature management. The DictWrapper class is used to wrap the LudwigFeatureDict object, possibly to provide additional functionality or to enforce certain behaviors.
+The purpose of this method is to create and initialize a dictionary-like object that will be used to store and manage features in the Ludwig library. The LudwigFeatureDict class likely provides methods and attributes to add, remove, and access features, as well as perform other operations related to feature management. The DictWrapper class is used to wrap the LudwigFeatureDict object, possibly to provide additional functionality or to enforce certain constraints on how the feature dictionary is used.
 
 #### **Method Details**
-The given code defines a method called `create_feature_dict` that returns an instance of `DictWrapper` class, which is initialized with an instance of `LudwigFeatureDict` class.
+The given code defines a method called `create_feature_dict` that returns an instance of `DictWrapper` class, which takes an instance of `LudwigFeatureDict` class as an argument.
 
-Here is the modified code with proper indentation:
+Here is an example implementation of the `DictWrapper` and `LudwigFeatureDict` classes:
 
 ```python
-def create_feature_dict(self) -> LudwigFeatureDict:
-    return DictWrapper(LudwigFeatureDict())
+class DictWrapper:
+    def __init__(self, dictionary):
+        self.dictionary = dictionary
+
+class LudwigFeatureDict:
+    def __init__(self):
+        self.features = {}
+
+# Usage
+feature_dict = create_feature_dict()
+print(feature_dict.dictionary)
 ```
 
-Note: The code snippet provided is incomplete and does not provide the complete context.
+In this example, `create_feature_dict` method returns an instance of `DictWrapper` class, which wraps an empty instance of `LudwigFeatureDict` class.
 
 ### Method **`output_feature_decoder`** Overview
-The method "output_feature_decoder" returns the module associated with the output feature decoder. The output feature decoder is a component used in a larger system or model. By returning the module, this method allows access to the functionality and parameters of the output feature decoder for further use or analysis.
+The method "output_feature_decoder" returns the module associated with the output feature decoder. The output feature decoder is a component used in a larger system or model. By returning the module, this method allows access to the functionality and parameters of the output feature decoder for further processing or analysis.
 
 #### **Method Details**
 The given code is a method definition in a class. The method is named "output_feature_decoder" and it takes no arguments. It has a return type annotation of "OutputFeature".
 
-The method returns the "module" attribute of the "_output_feature_decoder" instance variable. The "_output_feature_decoder" is assumed to be an instance of a class that has a "module" attribute. The type of the "module" attribute is not specified in the given code.
+The method returns the "module" attribute of the "_output_feature_decoder" instance variable. The "_output_feature_decoder" is assumed to be an instance of a class that has a "module" attribute. The type of the "module" attribute is not specified in the code snippet.
 
 ### Method **`initialize_adapter`** Overview
 The method `initialize_adapter` is a function that initializes an adapter for fine-tuning the model. It first checks if an adapter configuration is provided. If so, it imports the `get_peft_model` function from the `peft` module. It then creates a `peft_config` object by converting the adapter configuration to a config object with the task type set to "CAUSAL_LM" and the tokenizer name or path set to the model name. 
@@ -319,21 +326,20 @@ Next, it updates the `self.model` attribute by calling the `get_peft_model` func
 
 After that, it logs some information about the trainable parameters for fine-tuning. It prints the type of adapter being used, and then calls the `print_trainable_parameters` method of the model to display a summary of the trainable parameters.
 
-Overall, the `initialize_adapter` method sets up the adapter for fine-tuning by wrapping the model with a PEFT model and provides information about the trainable parameters.
+Overall, the `initialize_adapter` method sets up the adapter for fine-tuning by wrapping the model with a PEFT model and logging information about the trainable parameters.
 
 #### **Method Details**
-The code snippet is defining a method called `initialize_adapter` within a class. This method is used to initialize an adapter for fine-tuning a model.
+The code defines a method called `initialize_adapter` that is part of a class. This method is used to initialize an adapter for fine-tuning a model.
 
-Here's a breakdown of what the code does:
+The method first checks if an adapter configuration is provided. If it is, the method imports the `get_peft_model` function from the `peft` module.
 
-1. It checks if an adapter configuration is provided (`self.config_obj.adapter`).
-2. If an adapter configuration is present, it imports the `get_peft_model` function from the `peft` module.
-3. It creates a new adapter configuration (`peft_config`) using the provided adapter configuration (`self.config_obj.adapter`) and other parameters like the task type and tokenizer name or path.
-4. It replaces the existing model with a new model obtained by calling the `get_peft_model` function with the original model and the new adapter configuration.
-5. It logs some information about the trainable parameters of the fine-tuned model.
-6. The method ends.
+Next, it creates a `peft_config` object by calling the `to_config` method on the adapter configuration object. It passes the task type as "CAUSAL_LM" and the tokenizer name or path as the model name.
 
-Note: The code assumes that the `logger` object is already defined and accessible within the class.
+Then, it updates the `self.model` attribute by calling the `get_peft_model` function with the original model and the `peft_config` object. This wraps the original model with a PEFT (Parameter-Efficient Fine-Tuning) model.
+
+After that, it logs some information about the trainable parameters for fine-tuning. It prints the type of adapter being used and calls the `print_trainable_parameters` method on the model to display a summary of the trainable parameters.
+
+Finally, it logs some separator lines for visual separation of the logged information.
 
 ### Method **`to_device`** Overview
 The `to_device` method is a method defined in a class. It takes a `device` parameter as input. 
@@ -371,24 +377,20 @@ If the model has an adapter (specified by `self.config_obj.adapter`), it loads t
 
 If the model does not have an adapter, it loads the model using `AutoModelForCausalLM.from_pretrained` with the temporary directory and `model_kwargs`.
 
-If the `device` is not a CUDA device or there is only one GPU available, it moves the model to the specified device using `self.model.to(device)`.
+If the `device` is not a CUDA device or there is only one GPU available, it moves the model to the specified `device` using `self.model.to(device)`.
 
 Finally, it updates the `self.curr_device` attribute with the new device and returns `self`.
 
 ### Method **`build_outputs`** Overview
-The method `build_outputs` takes in a collection of output feature configurations (`output_feature_configs`) and an input size (`input_size`). It returns a dictionary of output features.
+The method `build_outputs` takes in a collection of output feature configurations and an input size as parameters. It returns a dictionary of output features.
 
-The method first checks if there is more than one output feature configuration. If there is, it raises a `ValueError` indicating that only a single task is currently supported.
+The method first checks if there is more than one output feature configuration. If there is, it raises a ValueError indicating that only a single task is currently supported.
 
-Next, it retrieves the first output feature configuration from the collection and sets its input size to the provided `input_size`.
+Next, it retrieves the first output feature configuration from the collection and sets its input size to the provided input size.
 
-Then, it initializes an empty dictionary `output_features`.
+Then, it initializes an empty dictionary to store the output features. It calls the class method `build_single_output` to build a single output feature using the retrieved output feature configuration and the output_features dictionary. The resulting output feature is then added to the output_features dictionary using the name of the output feature configuration as the key.
 
-The method calls the class method `build_single_output` on `cls` (the class itself) passing the output feature configuration and the `output_features` dictionary. This method is responsible for building a single output feature based on the configuration.
-
-The resulting output feature is added to the `output_features` dictionary using the name of the output feature configuration as the key.
-
-Finally, the method returns the `output_features` dictionary.
+Finally, the method returns the output_features dictionary.
 
 #### **Method Details**
 The given code defines a function called `build_outputs` that takes in three parameters: `cls`, `output_feature_configs`, and `input_size`. 
@@ -401,24 +403,20 @@ Next, it retrieves the first element from `output_feature_configs` and assigns i
 
 The function initializes an empty dictionary called `output_features`. It then calls the `build_single_output` method of the `cls` class, passing in `output_feature_config` and `output_features` as arguments. The returned output feature is assigned to `output_feature`. 
 
-Finally, the `output_feature` is added to the `output_features` dictionary with the key `output_feature_config.name`. The `output_features` dictionary is then returned.
+Finally, the `output_feature` is added to the `output_features` dictionary with the key as `output_feature_config.name`. The `output_features` dictionary is then returned.
 
 ### Method **`forward`** Overview
 The `forward` method is a method of a class. It takes in inputs, which can be a dictionary of input names to input tensors or a tuple of (inputs, targets) where inputs is a dictionary of input names to input tensors and targets is a dictionary of target names to target tensors. It also takes an optional mask parameter. 
 
 The method first unpacks the inputs into `input_ids` and `target_ids`. It then generates merged input_id and target_id pairs for the model, along with attention masks. 
 
-Next, it wraps the model with a flash attention backend for faster generation. It performs a forward pass using the model for fine-tuning and retrieves the model outputs.
+Next, it performs a forward pass using the model, passing in the merged input_ids and attention masks. The output of the model is stored in `model_outputs`. 
 
-If the output feature type is not TEXT, it passes the generated tokens through a decoder after averaging the token probabilities. This step is required for the classification head for the classifier decoder.
+Depending on the `output_feature_type`, the method may pass the `model_outputs` through a decoder. 
 
-If the output feature type is TEXT, the decoder outputs are set to be the same as the model outputs. Otherwise, the decoder outputs are obtained from the output feature decoder.
+The method then sets the output feature tensor to the decoder outputs (logits) and stores it in the `outputs` dictionary. 
 
-The method sets the output feature tensor to be the decoder outputs (logits) in the outputs dictionary.
-
-It then retrieves predictions, probabilities, and logits tensor from the output feature's predictions function and updates the outputs dictionary accordingly.
-
-Finally, it casts the prediction tensors to float32 for metric computation if necessary and returns the outputs dictionary.
+Finally, the method retrieves predictions, probabilities, and logits tensor from the output feature's predictions function and stores them in the `outputs` dictionary. The `outputs` dictionary is then returned.
 
 #### **Method Details**
 The given code defines a `forward` method for a model. This method takes inputs and produces logits tensor for fine-tuning the model.
@@ -442,26 +440,30 @@ Here is a breakdown of the code:
 9. It returns the outputs.
 
 ### Method **`generate`** Overview
-The `generate` method is a function that generates tokens using a given model. It takes in inputs, which can be either a dictionary of tensors, a dictionary of numpy arrays, or a tuple of dictionaries of tensors. It also takes an optional `mask` parameter. 
+The `generate` method is a function that generates tokens using a given model. It takes in inputs, which can be either a dictionary of tensors or a tuple of dictionaries of tensors. It also takes an optional `mask` parameter. 
 
-Inside the method, the input IDs are unpacked from the inputs. Then, for each input sample, the left padding is removed and the length of the input is checked. If the length exceeds the maximum input length, it is truncated. 
+Inside the method, the input IDs are unpacked from the inputs. Then, a loop is performed over each input ID sample. If the length of the input ID sample is greater than the maximum input length specified, it is truncated. The input length is recorded for each sample.
 
 Next, the method wraps the generation process with a flash attention backend for faster generation, if CUDA is available and the model is on a CUDA device. The model's `generate` method is called with the input IDs, attention mask, generation configuration, and other parameters. The generated sequences are stored in a list.
 
-After generating the sequences for all input samples, the method extracts the predictions, probabilities, and logits from the model outputs using the forward pass of the output feature decoder.
+After generating the sequences, the method extracts predictions, probabilities, and logits from the model outputs using the forward pass of the output feature decoder. The sequences list and input lengths are passed to the decoder's `forward` method.
 
-Finally, the method returns the outputs, which is a dictionary of tensors containing the extracted information from the model outputs.
+Finally, the outputs from the decoder are returned as a dictionary of tensors.
 
 #### **Method Details**
 The given code defines a `generate` method within a class. This method takes in inputs, which can be a dictionary of tensors or arrays, or a tuple of dictionaries of tensors. It also takes an optional `mask` parameter. The method returns a dictionary of tensors.
 
-Inside the method, the input IDs are unpacked using the `_unpack_inputs` method. Then, a loop is performed over each input sample. The left padding is removed from the input IDs using the `remove_left_padding` function and the tokenizer. If the length of the input IDs after removing padding is greater than the maximum input length, it is truncated.
+Inside the method, the `input_ids` and `_` (underscore) variables are unpacked from the inputs using the `_unpack_inputs` method. 
 
-Next, the input lengths are stored in a list. The sequences generated by the model are stored in another list. The model is used to generate text using the `generate` method. The generated sequences are appended to the sequences list.
+Then, a loop iterates over each `input_ids_sample` in `input_ids`. It removes left padding from `input_ids_sample` using the `remove_left_padding` function and the tokenizer. If the resulting shape of `input_ids_sample_no_padding` is greater than `max_input_length`, a warning message is logged and the tensor is truncated to the last `max_input_length` columns.
 
-Finally, the `forward` method of the `output_feature_decoder.decoder_obj` is called to extract predictions, probabilities, and logits from the model outputs. The sequences list and input lengths are passed as arguments to this method.
+The length of `input_ids_sample_no_padding` is appended to the `input_lengths` list.
 
-The extracted outputs are returned as a dictionary.
+Inside a context manager, the model generates text using the `generate` method. The `input_ids_sample_no_padding`, `mask`, `generation_config`, and `return_dict_in_generate` arguments are passed to the `generate` method. The generated sequences are stored in the `sequences_list`.
+
+After the loop, the `sequences_list` and `input_lengths` are passed to the `forward` method of the `output_feature_decoder.decoder_obj`. The output of this method is stored in the `outputs` variable.
+
+Finally, the `outputs` dictionary is returned.
 
 ### Method **`_unpack_inputs`** Overview
 The method `_unpack_inputs` takes in an `inputs` argument, which can be a dictionary of input tensors, a dictionary of numpy arrays, or a tuple of two dictionaries. 
@@ -495,9 +497,9 @@ The method accesses the input dictionary using the key specified by `self.config
 The method then returns this tensor.
 
 #### **Method Details**
-The given code defines a method called `get_input_ids` that takes in an `inputs` parameter. The `inputs` parameter can be either a dictionary with string keys and values of type `torch.Tensor` or `np.ndarray`, or a tuple of two dictionaries with string keys and values of type `torch.Tensor`.
+The given code defines a method called `get_input_ids` that takes in an `inputs` parameter. The `inputs` parameter can be either a dictionary or a tuple of dictionaries. The method returns the input ids for the text feature input.
 
-The method returns the input ids for the text feature input. It retrieves the input ids from the `inputs` dictionary using the name of the first input feature specified in the `config_obj` attribute of the class. The retrieved input ids are then cast to `torch.int32` type and returned.
+The input ids are obtained by accessing the value of the first key in the `inputs` dictionary, which is obtained using `self.config_obj.input_features[0].name`. The value is then converted to a `torch.Tensor` of type `torch.int32` and returned.
 
 ### Method **`get_target_ids`** Overview
 The method `get_target_ids` takes in a dictionary `outputs` as input and returns a tensor containing the output ids for the text feature output. 
@@ -545,7 +547,7 @@ The `train_loss` method is used to compute the training loss for a model. It tak
 
 The method first initializes the `train_loss` variable to 0 and creates an empty dictionary `of_train_losses` to store the loss for every output feature.
 
-Then, it iterates over each output feature in the model's `output_features` dictionary. For text output features, it performs some additional preprocessing steps to align the target length with the predictions length and remove left padding from target tensors.
+Then, it iterates over each output feature in the model's `output_features` dictionary. For text output features, it performs some preprocessing steps to align the target length with the predictions length and remove left padding from target tensors.
 
 Next, it aligns the target tensors without padding to have equal length before aligning them with the prediction tensors. This is done by padding the target tensors with -100, which masks the input ids during the softmax cross entropy loss computation, ensuring that the loss is computed only for the target token IDs.
 
@@ -629,11 +631,13 @@ The method initializes an empty dictionary called `predictions`. Then, for each 
 Finally, it returns the `predictions` dictionary containing the model's predictions for each output feature.
 
 ### Method **`save`** Overview
-The `save` method is a function defined within a class. It takes two parameters: `self` (which refers to the instance of the class) and `save_path` (which is the path where the model will be saved).
+The `save` method is a function defined within a class. It takes two parameters: `self` (which refers to the instance of the class) and `save_path` (the path where the model will be saved).
 
-The purpose of the `save` method is to save the model to the specified path. It first checks if the trainer type in the configuration object is not "none". If it is not "none", it creates a file path by joining the `save_path` with the constant `MODEL_WEIGHTS_FILE_NAME`. Then, it calls the `save_pretrained` method of the model, passing the weights save path as an argument, to save the model's weights.
+The purpose of this method is to save the model to the specified path. It first checks if the trainer type in the configuration object is not "none". If it is not "none", it creates a file path by joining the `save_path` with the constant `MODEL_WEIGHTS_FILE_NAME`. Then, it calls the `save_pretrained` method of the model, passing the weights save path as an argument, to save the model's weights.
 
 If the trainer type is "none", it logs a message indicating that the saving of the model without weight adjustments was skipped.
+
+In summary, the `save` method saves the model to the given path, but only if the trainer type is not "none".
 
 #### **Method Details**
 The given code defines a `save` method within a class. This method is used to save the model to a specified path.
@@ -649,38 +653,36 @@ The `load` method is a method defined in a class. It takes a `save_path` paramet
 
 The method first constructs the path to the model weights file by joining the `save_path` with the constant `MODEL_WEIGHTS_FILE_NAME`. 
 
-If the `adapter` attribute of the `config_obj` is not None, it imports the `PeftConfig` and `PeftModel` classes from the `peft` module. It then creates a new `PeftConfig` object by loading the configuration from the `weights_save_path`. It sets the `inference_mode` attribute of the config object to False. 
+If the class has an `adapter` attribute, it imports the `PeftConfig` and `PeftModel` classes from a module called `peft`. It then creates a `PeftConfig` object by loading the configuration from the `weights_save_path`. It sets the `inference_mode` attribute of the config object to `False`. 
 
-Next, it creates a new `AutoModelForCausalLM` object by loading the base model from the `config.base_model_name_or_path`. It then creates a new `PeftModel` object by loading the weights from the `weights_save_path` and passing the previously created `AutoModelForCausalLM` object as an argument. 
+Next, it creates an instance of `AutoModelForCausalLM` by loading the base model from the `config.base_model_name_or_path`. It then creates an instance of `PeftModel` by loading the weights from the `weights_save_path` and passing the previously created `AutoModelForCausalLM` instance as an argument. 
 
-If the `trainer.type` attribute of the `config_obj` is not "none", it creates a new `AutoModelForCausalLM` object by loading the weights from the `weights_save_path`. 
+If the class's `trainer.type` attribute is not equal to "none", it creates an instance of `AutoModelForCausalLM` by loading the weights from the `weights_save_path`. 
 
-If both the `adapter` and `trainer.type` attributes are None, it logs a message indicating that loading the LLM (Language Model) without weight adjustments is skipped.
+If none of the above conditions are met, it logs a message saying that loading the LLM (Language Model) without weight adjustments is skipped.
 
 #### **Method Details**
 This code defines a `load` method for a class. The method is used to load a model from a given path.
 
 The method first constructs the path to the model weights file by joining the `save_path` with a constant `MODEL_WEIGHTS_FILE_NAME`.
 
-If the `adapter` attribute of the `config_obj` is `True`, it imports the `PeftConfig` and `PeftModel` classes from the `peft` module. It then creates a `PeftConfig` object by loading the configuration from the `weights_save_path`. It sets the `inference_mode` attribute of the config object to `False`. 
+If the `adapter` attribute of the `config_obj` is `True`, it imports the `PeftConfig` and `PeftModel` classes from the `peft` module. It then creates a `PeftConfig` object by loading the configuration from the `weights_save_path`. It sets the `inference_mode` attribute of the config object to `False`. It then creates an `AutoModelForCausalLM` object from the base model name or path specified in the config object. Finally, it creates a `PeftModel` object by loading the weights from the `weights_save_path` and assigns it to the `model` attribute.
 
-Next, it creates an `AutoModelForCausalLM` object by loading the base model from the `config.base_model_name_or_path`. Finally, it creates a `PeftModel` object by loading the weights from the `weights_save_path` and assigns it to the `self.model`.
-
-If the `trainer.type` attribute of the `config_obj` is not equal to "none", it creates an `AutoModelForCausalLM` object by loading the weights from the `weights_save_path` and assigns it to the `self.model`.
+If the `trainer.type` attribute of the `config_obj` is not equal to "none", it creates an `AutoModelForCausalLM` object from the `weights_save_path` and assigns it to the `model` attribute.
 
 If neither of the above conditions are met, it logs a message indicating that loading the LLM (Language Model) without weight adjustments is skipped.
 
 Note: The code assumes that the necessary imports and variable definitions are present in the surrounding code.
 
 ### Method **`get_args`** Overview
-The method `get_args` is a method defined within a class. It returns a tuple containing the initialization arguments required to construct an instance of the model. 
+The method `get_args` is a method defined within a class. It returns a tuple containing the initialization arguments required to construct an instance of the model.
 
-In this specific implementation, the `get_args` method returns a tuple containing three elements: 
-1. `self.config_obj.input_features.to_list()`: This is a list of input features required by the model, obtained from the `input_features` attribute of the `config_obj` object.
-2. `self.config_obj.output_features.to_list()`: This is a list of output features required by the model, obtained from the `output_features` attribute of the `config_obj` object.
-3. `self._random_seed`: This is the random seed value used by the model.
+The method returns three values:
+1. `self.config_obj.input_features.to_list()`: This is a list of input features required by the model. It is obtained by converting the `input_features` attribute of the `config_obj` object to a list.
+2. `self.config_obj.output_features.to_list()`: This is a list of output features produced by the model. It is obtained by converting the `output_features` attribute of the `config_obj` object to a list.
+3. `self._random_seed`: This is the random seed used by the model.
 
-By calling the `get_args` method, you can obtain the necessary arguments to initialize and construct an instance of the model.
+By calling the `get_args` method, you can retrieve the necessary arguments to initialize and construct an instance of the model.
 
 #### **Method Details**
 The given code is a method definition in a class. The method is named `get_args` and it takes one parameter `self`, which refers to the instance of the class.
@@ -696,30 +698,28 @@ The purpose of this method is to return the initialization arguments for constru
 Overall, the `get_args` method returns a tuple of the input features, output features, and random seed used for constructing the model.
 
 ### Method **`_generate_merged_ids`** Overview
-The method `_generate_merged_ids` takes in two tensors, `input_ids` and `target_ids`, and merges them together to create a unified tensor. This method is used for PEFT (Positional Encoding Fine-Tuning) based fine-tuning. 
+The method `_generate_merged_ids` takes in two tensors, `input_ids` and `target_ids`, and merges them together to create a unified tensor. This method is used for PEFT (Pre-training Encoder-Decoder Fine-Tuning) based fine-tuning. 
 
 If `target_ids` is None, indicating that the method is being called during evaluation of the validation/test sets in the training loop, the method creates attention masks for the `input_ids` and returns the `input_ids` tensor along with the stacked attention masks.
 
-If `target_ids` is not None, the method iterates over each sample in `input_ids` and `target_ids`. It removes the left padding from both `input_ids` and `target_ids` and concatenates them together. The resulting tensor is added to a list called `merged_input_and_targets`, and the length of the merged tensor is stored in the `lengths` list.
+If `target_ids` is not None, the method iterates over each sample in `input_ids` and `target_ids`. It removes the left padding from both `input_ids` and `target_ids`, concatenates them together, and appends the merged tensor to a list called `merged_input_and_targets`. It also keeps track of the lengths of the merged tensors in a list called `lengths`.
 
-Since the merged `input_ids` and `target_ids` may have different lengths due to the removal of left padding, the method finds the maximum length among all the merged tensors. It then adds left padding to align all the merged tensors to the same length and generates attention masks for the non-padding part of the input. The padded merged tensors and attention masks are stored in the `merged_input_and_targets` and `attention_masks` lists, respectively.
+Since the merged input and target tensors may have different lengths after removing the left padding, the method finds the maximum length among all the merged tensors. It then adds left padding to align all the merged tensors to the same length using the `_add_left_padding` method. Additionally, it generates attention masks for each merged tensor using the `_create_attention_mask` method and appends them to a list called `attention_masks`.
 
 Finally, the method returns the stacked tensor of merged input and target tensors (`merged_input_and_targets`) and the stacked tensor of attention masks (`attention_masks`).
 
 #### **Method Details**
 This code defines a method `_generate_merged_ids` within a class. The purpose of this method is to merge `input_ids` and `target_ids` together to create a unified tensor that can be passed into a model. It also generates attention masks for the merged tensors.
 
-The method first checks if `target_ids` is None. If it is not a tensor, it means that it is None during evaluation of the validation/test sets in the training loop. In this case, attention masks are created for each `input_id` and returned along with the `input_ids`.
+The method first checks if `target_ids` is None. If it is not a tensor, it means that it is None during evaluation of the validation/test sets in the training loop. In this case, it creates attention masks for each `input_id` and returns `input_ids` along with a stacked tensor of attention masks.
 
-If `target_ids` is a tensor, the method proceeds to merge `input_ids` and `target_ids` by concatenating them together. Before concatenation, the left padding is removed from both `input_ids` and `target_ids`. The left padding is determined by the `remove_left_padding` function, which is not shown in the provided code.
+If `target_ids` is a tensor, the method proceeds to merge `input_ids` and `target_ids` by concatenating them together. Before concatenation, it removes the left padding from both `input_ids` and `target_ids`. The left padding is removed using the `remove_left_padding` function, which is not shown in the provided code.
 
 After merging, the method appends the merged sample ids to a list `merged_input_and_targets` and keeps track of their lengths in the `lengths` list.
 
-Since the merged `input_ids` and `target_ids` may have different lengths due to the removal of left padding from `target_ids`, the method aligns them to the same length by adding left padding. The maximum length among all the merged samples is determined as `max_length`.
+Next, the method determines the maximum length among all the merged sample ids. It then adds left padding to align all the merged sample ids to the same length. The left padding is added using the `_add_left_padding` function, which is not shown in the provided code.
 
-For each merged sample, the method adds left padding using the `_add_left_padding` function (not shown in the provided code) and generates an attention mask for the non-padding part of the input using the `_create_attention_mask` function.
-
-Finally, the method returns the merged input and target tensors as well as the attention masks as a tuple.
+Finally, the method generates attention masks for each merged sample id and appends them to the `attention_masks` list. It returns a stacked tensor of the merged input and target ids, along with a stacked tensor of the attention masks.
 
 ### Method **`_add_left_padding`** Overview
 The method `_add_left_padding` takes three parameters: `input_ids`, `max_length`, and `pad_value`. It adds left padding to the `input_ids` tensor.
@@ -752,7 +752,7 @@ Finally, the method returns the attention mask tensor.
 ### Method **`get_augmentation_pipelines`** Overview
 The method "get_augmentation_pipelines" is a function defined within a class. It returns an object of type "AugmentationPipelines". This method does not take any arguments.
 
-The purpose of this method is to provide the augmentation pipeline for a specific model. However, in this implementation, it returns an empty dictionary as the augmentation pipeline. It is likely that the actual implementation of this method would involve creating and configuring a pipeline of data augmentation techniques specific to the model.
+The purpose of this method is to provide the augmentation pipeline for a specific model. However, in this implementation, it returns an empty dictionary as the augmentation pipeline. It is likely that the actual implementation of this method would involve creating and configuring an instance of the "AugmentationPipelines" class, populating it with various augmentation techniques or transformations, and then returning that configured object.
 
 #### **Method Details**
 The given code is a method definition in a class. The method is named `get_augmentation_pipelines` and it takes no arguments. 
@@ -772,7 +772,7 @@ If the target tensor is longer than the prediction tensor, the function pads the
 
 If the prediction tensor is longer than the target tensor, the function pads the target tensor with the padding value. The padding is applied to the `of_name` key of the `targets` dictionary.
 
-After the realignment and padding, the function converts the tensors to the float32 data type, as text metric computation typically requires float32 tensors.
+After the realignment, the function converts the tensors to float32 data type, as some operations require float32 tensors for metric computation.
 
 Finally, the function returns the realigned `targets` and `predictions` dictionaries.
 

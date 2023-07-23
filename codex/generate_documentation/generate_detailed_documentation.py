@@ -7,13 +7,11 @@ import os
 
 import openai
 
+# Prompt constants
+PROMPT_DESCRIPTION_PREFIX = "produce a general description of the"
+PROMPT_DESCRIPTION_SUFFIX = "and describe what it does"
+PROMPT_DETAILS = ""
 
-# Retrieve API from json file
-with open('/openai/.openai/api_key.json') as f:
-    api = json.load(f)
-
-# set API key
-openai.api_key = api['key']
 
 # Function to generate documentation for a source module
 def generate_documentation(prompt, source_code, model="gpt-3.5-turbo-16k"):
@@ -53,7 +51,17 @@ def generate_documentation(prompt, source_code, model="gpt-3.5-turbo-16k"):
 
 # main function
 def main():
+    # initialize variables
+    total_api_calls = 0
     start_time = datetime.now()
+
+    # Retrieve API from json file
+    with open('/openai/.openai/api_key.json') as f:
+        api = json.load(f)
+
+    # set API key
+    openai.api_key = api['key']
+
     # retrieve source file name from first parameter in command line
     parser = argparse.ArgumentParser()
     parser.add_argument("source_file", help="Source file to document")
@@ -77,16 +85,17 @@ def main():
     module_name = os.path.basename(args.source_file)
     try:
         module_description = generate_documentation(
-            "produce a general description of the code and describe what it does",
+            f"{PROMPT_DESCRIPTION_PREFIX} code {PROMPT_DESCRIPTION_SUFFIX}",
             source_code
         )
+        total_api_calls += 1
 
         # initialize list of documentation text with module documentation
         documentation_text_list.append(
             f"# Module:`{module_name}` Overview\n\n{module_description}\n\n"
         )
     except openai.error.InvalidRequestError as e:
-        print(f"Error generating module level documentation: {e}")
+        print(f"Error generating module level documentation: {e}, bypassing this documentation section")
         documentation_text_list.append(
             f"# Module:`{module_name}` Overview\n\n"
             f"## **Error in generating module level documentation**\n\n"
@@ -105,24 +114,25 @@ def main():
 
             try:
                 # generate overview of function
-                prompt = f"produce a general description of the function {function_name} and describe what it does"
+                prompt = f"{PROMPT_DESCRIPTION_PREFIX} function {function_name} {PROMPT_DESCRIPTION_SUFFIX}"
                 documentation_text = generate_documentation(prompt, function_source)
+                total_api_calls += 1
                 documentation_text_list.append(f"## Function **`{function_name}`** Overview\n{documentation_text}\n\n")
             except openai.error.InvalidRequestError as e:
-                print(f"Error generating function overview documentation: {e}")
+                print(f"Error generating function overview documentation: {e}, bypassing this documentation section")
                 documentation_text_list.append(
                     f"## Function **`{function_name}`** Overview\n"
                     f"### **Error in generating function overview documentation**\n\n"
                 )
 
-
                 # generate detailed description of function
             try:
-                prompt = ""
+                prompt = PROMPT_DETAILS
                 documentation_text = generate_documentation(prompt, function_source)
+                total_api_calls += 1
                 documentation_text_list.append(f"### **Function Details**\n{documentation_text}\n\n")
             except openai.error.InvalidRequestError as e:
-                print(f"Error generating function detail documentation: {e}")
+                print(f"Error generating function detail documentation: {e}, bypassing this documentation section")
                 documentation_text_list.append(
                     f"### **Error in generating function detail documentation**\n\n"
                 )
@@ -136,11 +146,12 @@ def main():
 
             # generate overview of class
             try:
-                prompt = f"produce a general description of the class {class_name} and describe what it does"
+                prompt = f"{PROMPT_DESCRIPTION_PREFIX} class {class_name} {PROMPT_DESCRIPTION_SUFFIX}"
                 documentation_text = generate_documentation(prompt, class_source)
+                total_api_calls += 1
                 documentation_text_list.append(f"## Class **`{class_name}`** Overview\n{documentation_text}\n\n")
             except openai.error.InvalidRequestError as e:
-                print(f"Error generating class level documentation: {e}")
+                print(f"Error generating class level documentation: {e}, bypassing this documentation section")
                 documentation_text_list.append(
                     f"# Class **`{class_name}`** Overview\n\n"
                     f"## **Error in generating class level documentation**\n\n"
@@ -149,18 +160,19 @@ def main():
             # generate documentation for class methods
             for class_node in node.body:
                 if isinstance(class_node, ast.FunctionDef):
-                    # extract relevant function information
+                    # extract relevant method information
                     method_name = class_node.name
                     print(f"generating doc for method {node.name}.{method_name}()")
                     method_source = ast.get_source_segment(source_code, class_node)
 
                     # generate overview of function
                     try:
-                        prompt = f"produce a general description of the method {method_name} and describe what it does"
+                        prompt = f"{PROMPT_DESCRIPTION_PREFIX} method {method_name} {PROMPT_DESCRIPTION_SUFFIX}"
                         documentation_text = generate_documentation(prompt, method_source)
+                        total_api_calls += 1
                         documentation_text_list.append(f"### Method **`{method_name}`** Overview\n{documentation_text}\n\n")
                     except openai.error.InvalidRequestError as e:
-                        print(f"Error generating method overview documentation: {e}")
+                        print(f"Error generating method overview documentation: {e}, bypassing this documentation section")
                         documentation_text_list.append(
                             f"## Function **`{method_name}`** Overview\n"
                             f"### **Error in generating method overview documentation**\n\n"
@@ -168,15 +180,15 @@ def main():
 
                     # generate detailed description of function
                     try:
-                        prompt = ""
+                        prompt = PROMPT_DETAILS
                         documentation_text = generate_documentation(prompt, method_source)
+                        total_api_calls += 1
                         documentation_text_list.append(f"#### **Method Details**\n{documentation_text}\n\n")
                     except openai.error.InvalidRequestError as e:
-                        print(f"Error generating method detail documentation: {e}")
+                        print(f"Error generating method detail documentation: {e}, bypassing this documentation section")
                         documentation_text_list.append(
                             f"### **Error in generating method detail documentation**\n\n"
                         )
-
 
     # consolidate all the generated documentation text into single markdown file
     documentation_text = "".join(documentation_text_list)
@@ -189,7 +201,8 @@ def main():
 
     print(
         f"finished documenting {args.source_file}...created {documentation_file} "
-        f"elapsed time {elapsed_time.total_seconds():01.0f} seconds"
+        f"elapsed time {elapsed_time.total_seconds():01.0f} seconds "
+        f"total LLM api calls {total_api_calls}"
     )
 
 

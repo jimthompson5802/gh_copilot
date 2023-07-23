@@ -1,6 +1,6 @@
 # Module:`visualize.py` Overview
 
-## **Error generating module level documentation**
+## **Error in generating module level documentation**
 
 ## Function **`_convert_ground_truth`** Overview
 The function `_convert_ground_truth` takes in four parameters: `ground_truth`, `feature_metadata`, `ground_truth_apply_idx`, and `positive_label`. 
@@ -24,9 +24,9 @@ The function takes four parameters:
 
 The function first checks if the feature metadata contains a key "str2idx". If it does, it means that the output feature is categorical and needs to be converted to a binary representation. The `_vectorize_ground_truth` function is called to convert the ground truth values using the mapping provided in the feature metadata. Then, the ground truth values are compared with the positive label to create a binary representation.
 
-If the feature metadata does not contain the key "str2idx", it means that the output feature is binary. The function checks if the feature metadata contains the key "str2bool". If it does, it means that the boolean representation of the output feature is non-standard and needs to be converted using the `_vectorize_ground_truth` function. Otherwise, the ground truth values are assumed to be in the standard boolean representation and are converted to a numpy array using the `values` attribute.
+If the feature metadata does not contain the key "str2idx", it means that the output feature is binary. The function checks if the feature metadata contains a key "str2bool". If it does, it means that the boolean representation of the output feature is non-standard and needs to be converted using the mapping provided in the feature metadata. Otherwise, the ground truth values are assumed to be in the standard boolean representation.
 
-Finally, the function ensures that the positive label is set to 1 for binary features and converts the ground truth values to a numpy array of integers (0/1 representation). The converted ground truth values and the positive label are returned.
+Finally, the ground truth values are converted to 0/1 representation by casting them to integers, and the positive label is set to 1. The converted ground truth values and the positive label are returned.
 
 ## Function **`_vectorize_ground_truth`** Overview
 The function `_vectorize_ground_truth` takes three parameters: `ground_truth`, `str2idx`, and `ground_truth_apply_idx`. It returns a numpy array.
@@ -55,14 +55,14 @@ If either the probabilities or threshold output feature names arrays do not have
 
 The function uses a dictionary `validation_mapping` to map the input parameters to their respective names. It then iterates over the items in the dictionary and checks the length of each value. If the length is not equal to 2, an error message is logged and a `RuntimeError` is raised.
 
-Overall, the function ensures that the input probabilities and threshold output feature names arrays have the correct number of members, and raises an error if they do not meet the requirements.
+Overall, the function ensures that the input probabilities and threshold output feature names are valid and have the correct number of members.
 
 ### **Function Details**
-The code provided is a function named `validate_conf_thresholds_and_probabilities_2d_3d` that takes two parameters: `probabilities` and `threshold_output_feature_names`. 
+The code defines a function called `validate_conf_thresholds_and_probabilities_2d_3d` that takes two parameters: `probabilities` and `threshold_output_feature_names`. 
 
-The function ensures that both `probabilities` and `threshold_output_feature_names` are lists with exactly two elements. If either of them has a different length, a `RuntimeError` is raised with an error message indicating the expected length.
+The function checks if both `probabilities` and `threshold_output_feature_names` have exactly two elements. If either of them has a different length, a `RuntimeError` is raised with an error message indicating the expected length.
 
-The function uses a dictionary named `validation_mapping` to map the parameter names to their respective values. It then iterates over the items in the dictionary and checks the length of each value. If the length is not 2, an error message is logged using a logger named `logger` and a `RuntimeError` is raised with the error message.
+The function uses a dictionary called `validation_mapping` to map the parameter names to their corresponding values. It then iterates over the items in the dictionary and checks the length of each value. If the length is not equal to 2, an error message is logged using a logger and a `RuntimeError` is raised with the error message.
 
 Note: The code snippet provided is incomplete as it references a logger object that is not defined in the code.
 
@@ -91,11 +91,11 @@ The function returns a list of training statistics loaded as JSON objects.
 
 The function first defines a dictionary called `supported_load_types` that maps the supported load types to their corresponding loader functions. The loader functions are `load_json` and `load_from_file`, which are not defined in the given code.
 
-The function then selects the appropriate loader function based on the `load_type` parameter and assigns it to the `loader` variable.
+The function then selects the appropriate loader function based on the `load_type` parameter.
 
-Next, the function tries to load the training statistics from the JSON file(s) using the `loader` function. It iterates over the `model_file_statistics` list and calls the `loader` function for each file. The loaded statistics are stored in the `stats_per_model` list.
+Next, the function tries to load the training statistics from the JSON file(s) using the selected loader function. It iterates over the `model_file_statistics` list and calls the loader function for each file. The loaded statistics are stored in a list called `stats_per_model`.
 
-If an exception occurs during the loading process, the function logs an error message and raises the exception.
+If there is an exception during the loading process, the function logs an error message and raises the exception.
 
 Finally, the function returns the `stats_per_model` list.
 
@@ -124,9 +124,9 @@ The function first calls another function called `load_data_for_viz` to load the
 Overall, this function is used to load and process training statistics for visualization purposes.
 
 ## Function **`convert_to_list`** Overview
-The function `convert_to_list` takes an input `item` and checks if it is an instance of the list class or if it is None. If `item` is already a list or None, it returns the original `item`. Otherwise, it puts `item` inside a list and returns that list. 
+The function `convert_to_list` takes an input `item` and checks if it is an instance of the list class or if it is None. If `item` is already a list or None, it returns the original `item`. Otherwise, it creates a new list containing `item` and returns that list. 
 
-In other words, the function ensures that the input `item` is always returned as a list, even if it is initially not a list or None.
+In summary, the function `convert_to_list` ensures that the input `item` is always returned as a list, either by wrapping it in a list if it is not already a list or by returning the original list if it is already a list or None.
 
 ### **Function Details**
 The given code defines a function called `convert_to_list` that takes an argument called `item`. The purpose of this function is to check if `item` is an instance of the `list` class or `None`. If it is not, the function will put `item` inside a list and return it. If `item` is already a list or `None`, the function will return `item` as it is.
@@ -149,30 +149,36 @@ In the first example, `5` is not a list, so the function puts it inside a list a
 ## Function **`_validate_output_feature_name_from_train_stats`** Overview
 The function `_validate_output_feature_name_from_train_stats` takes two parameters: `output_feature_name` and `train_stats_per_model`. 
 
-It is used to validate the `output_feature_name` by checking if it exists in the `train_stats_per_model` and return it as a list. 
+It validates the `output_feature_name` by checking if it exists in the `train_stats_per_model` and returns it as a list. 
 
-The function first creates an empty set called `output_feature_names_set`. It then iterates over each `train_stats` in the `train_stats_per_model` list. For each `train_stats`, it iterates over the keys of the `training`, `validation`, and `test` dictionaries and adds them to the `output_feature_names_set`.
+First, it creates an empty set called `output_feature_names_set`. Then, it iterates over each `train_stats` in the `train_stats_per_model`. For each `train_stats`, it iterates over the keys of the `training`, `validation`, and `test` dictionaries and adds them to the `output_feature_names_set`.
 
-After that, it tries to check if the `output_feature_name` exists in the `output_feature_names_set`. If it does, it returns a list containing the `output_feature_name`. If it doesn't, it returns the `output_feature_names_set` as is.
+Next, it tries to check if the `output_feature_name` exists in the `output_feature_names_set`. If it does, it returns a list containing the `output_feature_name`. If it doesn't, it returns the `output_feature_names_set` as is.
 
 If the `output_feature_name` is an empty iterable (e.g. `[]` in a set), a `TypeError` is raised. In this case, the function also returns the `output_feature_names_set`.
-
-Overall, the function validates the `output_feature_name` by checking if it exists in the `train_stats_per_model` and returns it as a list.
 
 ### **Function Details**
 This code defines a function called `_validate_output_feature_name_from_train_stats`. 
 
-The function takes two parameters: `output_feature_name` (a string) and `train_stats_per_model` (a list of train stats). 
+The function takes two parameters: `output_feature_name` and `train_stats_per_model`. 
 
-The purpose of the function is to validate the `output_feature_name` by checking if it exists in the train stats. If it does, the function returns a list containing the `output_feature_name`. If it doesn't, the function returns a set of all the output feature names found in the train stats.
+The purpose of the function is to validate the `output_feature_name` by checking if it exists in the `train_stats_per_model` and return it as a list. 
 
-The function first creates an empty set called `output_feature_names_set`. It then iterates over each train stats object in the `train_stats_per_model` list. For each train stats object, it iterates over the keys in the `training`, `validation`, and `test` dictionaries and adds them to the `output_feature_names_set`.
+The function first creates an empty set called `output_feature_names_set`. 
 
-After iterating over all the train stats objects, the function checks if the `output_feature_name` exists in the `output_feature_names_set`. If it does, the function returns a list containing the `output_feature_name`. If it doesn't, the function returns the `output_feature_names_set`.
+Then, it iterates over each `train_stats` in the `train_stats_per_model` list. 
 
-The function also includes a try-except block to handle the case where the `output_feature_name` is an empty iterable (e.g. `[]` in a set). In this case, the function simply returns the `output_feature_names_set`.
+For each `train_stats`, it iterates over the keys of the `training`, `validation`, and `test` dictionaries. 
 
-Overall, this function is used to validate an output feature name by checking if it exists in the train stats and returning it as a list.
+It adds each key to the `output_feature_names_set`. 
+
+After iterating over all the `train_stats`, the function checks if the `output_feature_name` exists in the `output_feature_names_set`. 
+
+If it does, it returns a list containing the `output_feature_name`. 
+
+If it doesn't, it returns the `output_feature_names_set` as is. 
+
+If the `output_feature_name` is an empty iterable (e.g. `[]` in a set), a `TypeError` is raised and the function returns the `output_feature_names_set`.
 
 ## Function **`_validate_output_feature_name_from_test_stats`** Overview
 The function `_validate_output_feature_name_from_test_stats` takes two parameters: `output_feature_name` and `test_stats_per_model`. 
@@ -181,18 +187,18 @@ It first creates an empty set called `output_feature_names_set`. Then, it iterat
 
 Next, it tries to check if the `output_feature_name` is present in the `output_feature_names_set`. If it is, it returns a list containing only the `output_feature_name`. Otherwise, it returns the entire `output_feature_names_set`.
 
-If the `output_feature_name` is an empty iterable (e.g. `[]` in a set), a `TypeError` is raised. In this case, the function also returns the `output_feature_names_set`.
+If the `output_feature_name` is an empty iterable (e.g. an empty list), a `TypeError` is raised. In this case, the function also returns the entire `output_feature_names_set`.
 
-In summary, the function validates the `output_feature_name` by checking if it is present in the `test_stats_per_model` and returns it as a list. If it is not present, it returns all the output feature names found in the `test_stats_per_model`.
+In summary, the function validates the `output_feature_name` by checking if it is present in the `test_stats_per_model` and returns it as a list. If the `output_feature_name` is not present or is an empty iterable, it returns all the output feature names found in the `test_stats_per_model`.
 
 ### **Function Details**
-The code is a function that validates a prediction output feature name from model test statistics. It takes two parameters: `output_feature_name`, which is the output feature name containing the ground truth, and `test_stats_per_model`, which is a list of per model test statistics.
+The code is a function that validates a prediction output feature name from model test statistics. It takes two parameters: `output_feature_name` (the output feature name containing the ground truth) and `test_stats_per_model` (a list of per model test statistics).
 
 The function first creates an empty set called `output_feature_names_set`. It then iterates over each element `ls` in `test_stats_per_model` and for each key in `ls`, it adds the key to the `output_feature_names_set`.
 
-Next, the function tries to check if `output_feature_name` is in `output_feature_names_set`. If it is, it returns a list containing `output_feature_name`. Otherwise, it returns the `output_feature_names_set`.
+Next, the function checks if the `output_feature_name` is in the `output_feature_names_set`. If it is, it returns a list containing the `output_feature_name`. Otherwise, it returns the `output_feature_names_set`.
 
-If an exception of type `TypeError` is raised, it means that `output_feature_name` is an empty iterable (e.g. `[]` in a set). In this case, the function also returns the `output_feature_names_set`.
+If the `output_feature_name` is an empty iterable (e.g. `[]` in a set), a `TypeError` is raised. In this case, the function also returns the `output_feature_names_set`.
 
 Overall, the function ensures that the `output_feature_name` is valid by checking if it exists in the `test_stats_per_model` and returns it as a list. If it doesn't exist, it returns all the output feature names found in the `test_stats_per_model`.
 
@@ -217,7 +223,7 @@ Next, the function retrieves the appropriate reader for the data format by calli
 
 If the data format is either "csv" or "tsv", the function calls the reader with the `ground_truth` parameter, `dtype=None`, and `df_lib=pd` to allow type inference. Otherwise, the function calls the reader with just the `ground_truth` parameter and `df_lib=pd`.
 
-The function then returns the result of the reader function call, which is a DataFrame.
+In summary, the function `_get_ground_truth_df` determines the data format of the ground truth data, checks if it is supported, retrieves the appropriate reader, and then uses the reader to read the ground truth data into a DataFrame.
 
 ### **Function Details**
 The code defines a function `_get_ground_truth_df` that takes a string parameter `ground_truth` and returns a DataFrame. 
@@ -249,38 +255,38 @@ Finally, if neither the "SPLIT" column nor the `split_file` argument is availabl
 The function returns a pandas Series object containing the extracted ground truth values.
 
 ### **Function Details**
-The given code is a function named `_extract_ground_truth_values` that is used to extract ground truth values from a source dataset. Here is a breakdown of the code:
+The given code is a function named `_extract_ground_truth_values` that is used to extract ground truth values from a source data set. Here is a breakdown of the code:
 
 1. The function takes the following parameters:
    - `ground_truth`: Either a string representing the path to the source data containing ground truth or a DataFrame containing the ground truth data.
    - `output_feature_name`: A string representing the output feature name for the ground truth values.
-   - `ground_truth_split`: An integer representing the dataset split to use for ground truth. It defaults to 2.
-   - `split_file`: An optional parameter that can be a string representing the file path to split values or None.
+   - `ground_truth_split`: An integer representing the dataset split to use for the ground truth. It defaults to 2.
+   - `split_file`: An optional string representing the file path to the split values. It defaults to None.
 
 2. The function first checks if the `ground_truth` parameter is a string or a DataFrame. If it is a string, it calls a helper function `_get_ground_truth_df` to load the ground truth DataFrame from the specified path. If it is already a DataFrame, it assigns it to the variable `ground_truth_df`.
 
-3. The function then checks if the ground truth DataFrame contains a column named "SPLIT". If it does, it retrieves the split values from the DataFrame and filters the ground truth values based on the specified `ground_truth_split` value.
+3. The function then checks if the ground truth DataFrame contains a column named "SPLIT". If it does, it extracts the ground truth values for the specified `ground_truth_split` by filtering the DataFrame using the condition `split == ground_truth_split`.
 
-4. If the ground truth DataFrame does not contain a "SPLIT" column, the function checks if a `split_file` is provided. If it is, the function reads the split values from the file. If the file is in CSV format, a warning is issued (as this format is deprecated) and the split values are loaded using the `load_array` function. If the file is in Parquet format, it is read using `pd.read_parquet`.
+4. If the ground truth DataFrame does not contain a column named "SPLIT", the function checks if a `split_file` is provided. If it is, the function reads the split values from the file. If the file is in CSV format, it raises a DeprecationWarning and loads the split values using the `load_array` function. If the file is in Parquet format, it reads the split values using `pd.read_parquet`.
 
-5. After obtaining the split values, the function creates a boolean mask (`mask`) to filter the ground truth values based on the `ground_truth_split` value. The mask is created by comparing the split values with the `ground_truth_split` value and reindexing it to match the index of the ground truth DataFrame.
+5. After obtaining the split values, the function creates a boolean mask `mask` by comparing the split values with the `ground_truth_split` value. The mask is then aligned with the index of the ground truth DataFrame to account for any dropped rows during preprocessing.
 
-6. Finally, the function returns the ground truth values (`gt`) based on the filtering performed using the mask. If no filtering is required, all the ground truth values are returned.
+6. Finally, the function returns the ground truth values by indexing the `output_feature_name` column of the ground truth DataFrame using the mask.
 
-Note: The code assumes the presence of additional helper functions (`_get_ground_truth_df` and `load_array`) that are not provided in the given code snippet.
+Note: The code assumes the existence of a helper function `_get_ground_truth_df`, which is not provided in the given code snippet.
 
 ## Function **`_get_cols_from_predictions`** Overview
 The function `_get_cols_from_predictions` takes three parameters: `predictions_paths`, `cols`, and `metadata`. 
 
-It iterates over each `predictions_path` in the `predictions_paths` list. It reads a parquet file at the given `predictions_path` and assigns it to the `pred_df` variable.
+It iterates over each `predictions_path` in the `predictions_paths` list. It reads a parquet file at the given `predictions_path` and assigns it to the variable `pred_df`. 
 
 It then checks if a file with the extension "shapes.json" exists by replacing the file extension of `predictions_path` with "shapes.json" using the `replace_file_extension` function. If the file exists, it loads the JSON data from the file into the `column_shapes` variable. It then calls the `unflatten_df` function to unflatten the `pred_df` DataFrame using the `column_shapes` and a specified backend engine.
 
-Next, it iterates over each `col` in the `cols` list. If the `col` ends with the `_PREDICTIONS_SUFFIX` (a constant value), it extracts the feature name by removing the `_PREDICTIONS_SUFFIX` from the end of the `col` string. It retrieves the corresponding feature metadata from the `metadata` dictionary using the feature name. If the feature metadata contains a key "str2idx", it maps the values in the `pred_df[col]` column using a lambda function that looks up the value in the "str2idx" dictionary of the feature metadata.
+Next, it iterates over each `col` in the `cols` list. If the `col` ends with the `_PREDICTIONS_SUFFIX` string, it extracts the `feature_name` by removing the `_PREDICTIONS_SUFFIX` from the end of the `col` string. It retrieves the corresponding `feature_metadata` from the `metadata` dictionary using the `feature_name`. If the `feature_metadata` contains a key "str2idx", it maps the values in the `col` column of `pred_df` to their corresponding indices using a lambda function.
 
-After processing the categorical features, it converts the `pred_df` DataFrame into a numpy dataset using the `to_numpy_dataset` function and the `LOCAL_BACKEND` backend.
+After converting the `pred_df` DataFrame to a numpy dataset using the `to_numpy_dataset` function and the `LOCAL_BACKEND`, it appends the selected columns (`col`) from the `pred_df` to the `results_per_model` list.
 
-Finally, it appends the selected columns (`col`) from the `pred_df` DataFrame to the `results_per_model` list. After iterating over all `predictions_paths`, it returns the `results_per_model` list.
+Finally, it returns the `results_per_model` list, which contains the selected columns from each `pred_df` DataFrame for each `predictions_path` in the `predictions_paths` list.
 
 ### **Function Details**
 This code defines a function called `_get_cols_from_predictions` that takes three arguments: `predictions_paths`, `cols`, and `metadata`. 
@@ -289,7 +295,7 @@ The function reads parquet files specified by `predictions_paths` and stores the
 
 Next, the function iterates over each column specified in `cols`. If the column name ends with `_PREDICTIONS_SUFFIX`, it extracts the feature name by removing `_PREDICTIONS_SUFFIX` from the end of the column name. It then retrieves the corresponding feature metadata from `metadata` and checks if it contains a "str2idx" key. If it does, it maps the values in the `col` column of `pred_df` to their corresponding indices using a lambda function.
 
-After converting `pred_df` to a numpy dataset using the `to_numpy_dataset` function, the function appends the specified columns (`cols`) from `pred_df` to the `results_per_model` list.
+After converting `pred_df` to a numpy dataset using the `to_numpy_dataset` function, the function appends the specified columns to the `results_per_model` list.
 
 Finally, the function returns the `results_per_model` list, which contains the specified columns from all the prediction dataframes.
 
@@ -327,7 +333,7 @@ The `test_statistics` parameter can be either a string or a list of strings repr
 
 The `kwargs` parameter is a dictionary that contains parameters for the requested visualizations.
 
-Inside the function, the `load_data_for_viz` function is called to load the data from the test statistics file(s) using the "load_json" method. The loaded data is then passed to the `compare_performance` function along with the `kwargs` parameters.
+Inside the function, the `load_data_for_viz` function is called to load the model data from the test statistics file(s) using the "load_json" method. The loaded data is then passed to the `compare_performance` function along with the `kwargs` parameters.
 
 The function does not return anything (`None` is returned).
 
@@ -358,27 +364,21 @@ The function does not return anything (`None`).
 Note: The `Union` and `List` types are imported from the `typing` module.
 
 ## Function **`compare_classifiers_performance_from_prob_cli`** Overview
-The function `compare_classifiers_performance_from_prob_cli` is a command-line interface (CLI) function that compares the performance of different classifiers based on their prediction probabilities.
+The function `compare_classifiers_performance_from_prob_cli` is a command-line interface (CLI) function that compares the performance of different classifiers based on their prediction probabilities. 
 
-The function takes the following inputs:
+The function takes several input parameters:
 - `probabilities`: A list of file names containing prediction results. These files are used to extract the probabilities.
 - `ground_truth`: The path to the ground truth file.
-- `ground_truth_split`: The type of ground truth split, which can be `0` for the training split, `1` for the validation split, or `2` for the test split.
-- `split_file`: The file path to a CSV file containing split values. This parameter is optional and can be set to `None`.
-- `ground_truth_metadata`: The file path to a JSON file containing feature metadata that was created during training.
+- `ground_truth_split`: An integer indicating the type of ground truth split. 0 represents the training split, 1 represents the validation split, and 2 represents the test split.
+- `split_file`: The path to a CSV file containing split values. This parameter is optional and can be set to `None`.
+- `ground_truth_metadata`: The path to a JSON file containing feature metadata that was created during training.
 - `output_feature_name`: The name of the output feature to visualize.
-- `output_directory`: The name of the output directory that contains the training results.
+- `output_directory`: The name of the output directory where the training results will be stored.
 - `kwargs`: Additional parameters for the requested visualizations.
 
-The function first loads the feature metadata from the `ground_truth_metadata` file using the `load_json` function.
+The function first loads the feature metadata from the `ground_truth_metadata` file. It then extracts the ground truth values based on the provided parameters. Next, it retrieves the prediction probabilities for each model from the `probabilities` files and converts them to encoded values using the feature metadata.
 
-Then, it retrieves the ground truth values from the source dataset using the `_extract_ground_truth_values` function, passing the `ground_truth`, `output_feature_name`, `ground_truth_split`, and `split_file` as parameters.
-
-Next, it extracts the prediction probabilities for each model from the `probabilities` files using the `_get_cols_from_predictions` function, passing the `probabilities`, `[col]` (where `col` is the output feature name with a suffix), and the metadata as parameters.
-
-Finally, it calls the `compare_classifiers_performance_from_prob` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and any additional parameters specified in `kwargs`.
-
-The function does not return any value (`None`).
+Finally, the function calls the `compare_classifiers_performance_from_prob` function with the extracted probabilities, ground truth values, metadata, output feature name, output directory, and any additional parameters.
 
 ### **Function Details**
 The given code defines a function called `compare_classifiers_performance_from_prob_cli`. This function takes several input parameters including `probabilities`, `ground_truth`, `ground_truth_split`, `split_file`, `ground_truth_metadata`, `output_feature_name`, `output_directory`, and `kwargs`. 
@@ -496,7 +496,7 @@ The function first loads the feature metadata from the `ground_truth_metadata` f
 
 Next, the function retrieves the probabilities per model using the `_get_cols_from_predictions` function, passing the `probabilities`, `[col]` (where `col` is the output feature name with a suffix), and `metadata` parameters.
 
-Finally, the function calls the `compare_classifiers_performance_changing_k` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and `kwargs` parameters.
+Finally, the function calls the `compare_classifiers_performance_changing_k` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and `kwargs` parameters. This function is responsible for actually comparing the performance of the classifiers and generating the visualizations.
 
 The function does not return any value (`None`).
 
@@ -522,12 +522,16 @@ Note: The code snippet provided is incomplete and contains some duplicate lines 
 ## Function **`compare_classifiers_multiclass_multimetric_cli`** Overview
 The function `compare_classifiers_multiclass_multimetric_cli` is a command-line interface (CLI) function that loads model data from files and calls the `compare_classifiers_multiclass_multimetric` function to perform a comparison of multiple classifiers using multiple metrics.
 
-The function takes the following inputs:
+The function takes three parameters:
 - `test_statistics`: A path to the experiment test statistics file. It can be a string or a list of strings.
 - `ground_truth_metadata`: A path to the ground truth metadata file.
 - `kwargs`: Additional parameters for the requested visualizations.
 
-The function does not return any value (`None`). Instead, it loads the model data from the files using the `load_data_for_viz` and `load_json` functions, and then calls the `compare_classifiers_multiclass_multimetric` function with the loaded data and the provided parameters.
+The function first loads the test statistics data using the `load_data_for_viz` function, passing the "load_json" method as an argument. It then loads the ground truth metadata using the `load_json` function.
+
+Finally, the function calls the `compare_classifiers_multiclass_multimetric` function, passing the loaded test statistics data, the metadata, and any additional parameters specified in `kwargs`.
+
+The function does not return any value (`None`).
 
 ### **Function Details**
 The given code defines a function called `compare_classifiers_multiclass_multimetric_cli`. This function takes three parameters: `test_statistics`, `ground_truth_metadata`, and `kwargs`. 
@@ -540,7 +544,7 @@ The `kwargs` parameter is a dictionary that contains additional parameters for t
 
 Inside the function, the `load_data_for_viz` function is called to load the test statistics data from the file(s) specified by `test_statistics`. The `load_json` function is also called to load the ground truth metadata from the file specified by `ground_truth_metadata`.
 
-Finally, the `compare_classifiers_multiclass_multimetric` function is called with the loaded test statistics data (`test_stats_per_model`), the loaded metadata (`metadata`), and the additional parameters (`kwargs`) to perform the desired visualizations.
+Finally, the `compare_classifiers_multiclass_multimetric` function is called with the loaded test statistics data (`test_stats_per_model`), the loaded metadata (`metadata`), and the additional parameters (`kwargs`) passed as arguments.
 
 The function does not return any value (`None`).
 
@@ -643,7 +647,7 @@ The function first loads the feature metadata from the `ground_truth_metadata` f
 
 Next, the function retrieves the probabilities for each model from the prediction files using the `_get_cols_from_predictions` function. The probabilities are retrieved for the specified `output_feature_name` and stored in the `probabilities_per_model` variable.
 
-Finally, the function calls the `confidence_thresholding` function with the retrieved probabilities, ground truth, metadata, output feature name, output directory, and any additional parameters specified in `kwargs`. The `confidence_thresholding` function performs the confidence thresholding and generates the visualizations.
+Finally, the function calls the `confidence_thresholding` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and any additional parameters specified in `kwargs`. The `confidence_thresholding` function performs the confidence thresholding on the predictions and generates the visualizations.
 
 The function does not return any value (`None`).
 
@@ -723,9 +727,9 @@ The function first loads the feature metadata from the `ground_truth_metadata` f
 
 Then, it extracts the ground truth values from the source dataset using the `_extract_ground_truth_values` function, passing the `ground_truth`, `output_feature_name`, `ground_truth_split`, and `split_file` as arguments.
 
-Next, it retrieves the probabilities per model by calling the `_get_cols_from_predictions` function, passing the `probabilities`, `[col]` (where `col` is the output feature name appended with the `_PROBABILITIES_SUFFIX`), and `metadata` as arguments.
+Next, it retrieves the probabilities per model using the `_get_cols_from_predictions` function, passing the `probabilities`, `[col]` (where `col` is the output feature name appended with the `_PROBABILITIES_SUFFIX`), and `metadata` as arguments.
 
-Finally, it calls the `confidence_thresholding_data_vs_acc_subset` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and any additional parameters specified in `kwargs`.
+Finally, it calls the `confidence_thresholding_data_vs_acc_subset` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and `kwargs` as arguments for visualization.
 
 The function does not return any value.
 
@@ -772,7 +776,7 @@ The function is used to load model data from files and visualize the results usi
 
 Here is a breakdown of the function's parameters:
 
-- `probabilities`: A string or list of strings representing the file names of prediction results to extract probabilities from.
+- `probabilities`: A string or a list of strings representing the file names of prediction results to extract probabilities from.
 - `ground_truth`: A string representing the path to the ground truth file.
 - `ground_truth_metadata`: A string representing the path to the ground truth metadata file.
 - `ground_truth_split`: An integer representing the type of ground truth split. It can be `0` for the training split, `1` for the validation split, or `2` for the test split.
@@ -788,7 +792,7 @@ Next, it retrieves the probabilities per model by calling the `_get_cols_from_pr
 Finally, it calls the `confidence_thresholding_data_vs_acc_subset_per_class` function with the extracted probabilities, ground truth, metadata, output feature name, output directory, and any additional keyword arguments.
 
 ## Function **`confidence_thresholding_2thresholds_2d_cli`** Overview
-The function `confidence_thresholding_2thresholds_2d_cli` is a command-line interface (CLI) function that loads model data from files and calls the `confidence_thresholding_2thresholds_2d` function to perform a 2D confidence thresholding visualization.
+The function `confidence_thresholding_2thresholds_2d_cli` is a command-line interface function that loads model data from files and performs a visualization using the `confidence_thresholding_2thresholds_2d` function.
 
 The function takes the following inputs:
 - `probabilities`: A list of prediction results file names or a single file name as a string.
@@ -796,13 +800,13 @@ The function takes the following inputs:
 - `ground_truth_split`: An integer representing the type of ground truth split (0 for training split, 1 for validation split, or 2 for test split).
 - `split_file`: The file path to a CSV file containing split values.
 - `ground_truth_metadata`: The file path to a feature metadata JSON file created during training.
-- `threshold_output_feature_names`: A list of output feature names to visualize.
+- `threshold_output_feature_names`: A list of names of the output features to visualize.
 - `output_directory`: The name of the output directory containing training results.
 - `kwargs`: Additional parameters for the requested visualizations.
 
 The function first loads the feature metadata from the `ground_truth_metadata` file. Then, it extracts the ground truth values for the two output features specified in `threshold_output_feature_names` using the `_extract_ground_truth_values` function. Next, it retrieves the probabilities for each model from the `probabilities` files using the `_get_cols_from_predictions` function.
 
-Finally, the function calls the `confidence_thresholding_2thresholds_2d` function with the probabilities, ground truth values, metadata, output feature names, and other parameters. This function performs the actual 2D confidence thresholding visualization.
+Finally, the function calls the `confidence_thresholding_2thresholds_2d` function with the retrieved data and parameters, and saves the visualization results in the specified `output_directory`.
 
 The function does not return any value (`None`).
 
@@ -844,9 +848,9 @@ The function takes the following inputs:
 - `output_directory`: The name of the output directory containing training results.
 - `kwargs`: Additional parameters for the requested visualizations.
 
-The function first loads the feature metadata from the `ground_truth_metadata` file. Then, it extracts the ground truth values for the two specified output features using the `_extract_ground_truth_values` function. Next, it retrieves the probabilities for each model using the `_get_cols_from_predictions` function. Finally, it calls the `confidence_thresholding_2thresholds_3d` function to perform the visualization using the loaded data and specified parameters.
+The function first loads the feature metadata from the `ground_truth_metadata` file. Then, it extracts the ground truth values for the two specified output features using the `_extract_ground_truth_values` function. Next, it retrieves the probabilities per model using the `_get_cols_from_predictions` function, passing the probabilities, column names, and metadata as arguments. Finally, it calls the `confidence_thresholding_2thresholds_3d` function, passing the probabilities per model, ground truth values, metadata, output feature names, output directory, and additional parameters.
 
-The function does not return any value.
+The function does not return any value (`None`).
 
 ### **Function Details**
 The given code defines a function `confidence_thresholding_2thresholds_3d_cli` that loads model data from files and performs a visualization task using the loaded data.
@@ -898,7 +902,7 @@ The given code defines a function `binary_threshold_vs_metric_cli` that loads mo
 The function takes the following parameters:
 - `probabilities`: A string or a list of strings representing the file names of prediction results to extract probabilities from.
 - `ground_truth`: A string representing the path to the ground truth file.
-- `ground_truth_split`: A string representing the type of ground truth split. It can be `'0'` for training split, `'1'` for validation split, or `'2'` for test split.
+- `ground_truth_split`: A string representing the type of ground truth split. It can be `'0'` for the training split, `'1'` for the validation split, or `'2'` for the test split.
 - `split_file`: A string representing the file path to a CSV file containing split values.
 - `ground_truth_metadata`: A string representing the file path to a feature metadata JSON file created during training.
 - `output_feature_name`: A string representing the name of the output feature to visualize.
@@ -909,7 +913,7 @@ The function first loads the feature metadata from the `ground_truth_metadata` f
 
 Finally, it calls the `binary_threshold_vs_metric` function with the retrieved probabilities, ground truth, metadata, output feature name, output directory, and any additional keyword arguments.
 
-The function does not return any value.
+The function does not return any value (`None`).
 
 ## Function **`precision_recall_curves_cli`** Overview
 The function `precision_recall_curves_cli` is a command-line interface function that loads model data from files and generates precision-recall curves for evaluation.
@@ -948,7 +952,7 @@ Finally, it calls the `precision_recall_curves` function with the probabilities 
 The function does not return any value (`None`).
 
 ## Function **`roc_curves_cli`** Overview
-The function `roc_curves_cli` is a command-line interface function that loads model data from files and generates ROC curves for visualization.
+The function `roc_curves_cli` is a command-line interface function that is used to load model data from files and generate ROC curves for visualization.
 
 The function takes the following inputs:
 - `probabilities`: A list of prediction results file names or a single file name as a string.
@@ -964,7 +968,7 @@ The function first loads the feature metadata from the `ground_truth_metadata` f
 
 Next, the function retrieves the probabilities per model using the `_get_cols_from_predictions` function, passing the `probabilities`, `[col]` (where `col` is the output feature name appended with `_PROBABILITIES_SUFFIX`), and `metadata` as arguments.
 
-Finally, the function calls the `roc_curves` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and any additional parameters specified in `kwargs`.
+Finally, the function calls the `roc_curves` function, passing the `probabilities_per_model`, `ground_truth`, `metadata`, `output_feature_name`, `output_directory`, and any additional `kwargs` as arguments to generate the ROC curves for visualization.
 
 The function does not return any value (`None`).
 
@@ -1017,44 +1021,32 @@ The function takes two parameters:
 The function returns `None` and does not have any side effects.
 
 ### **Function Details**
-The given code defines a function `precision_recall_curves_from_test_statistics_cli` that takes in a parameter `test_statistics` which can be either a string or a list of strings. It also accepts additional keyword arguments `kwargs`.
+The given code defines a function `precision_recall_curves_from_test_statistics_cli` that takes in a parameter `test_statistics` (which can be either a string or a list of strings) and additional keyword arguments `kwargs`. 
 
-The function first calls the `load_data_for_viz` function to load the test statistics data from the file(s) specified by `test_statistics`. The loaded data is stored in the `test_stats_per_model` variable.
+The function first calls the `load_data_for_viz` function to load the test statistics data from the specified file(s) using the "load_json" method. The loaded data is then stored in the `test_stats_per_model` variable.
 
-Then, the function calls another function `precision_recall_curves_from_test_statistics` and passes the `test_stats_per_model` variable along with the additional keyword arguments.
+Finally, the function calls the `precision_recall_curves_from_test_statistics` function, passing in the `test_stats_per_model` variable and the additional keyword arguments.
 
-The function does not return any value, it simply executes the desired visualizations based on the provided test statistics data.
+The function does not return any value, as indicated by the `None` return type.
 
 ## Function **`calibration_1_vs_all_cli`** Overview
 The function `calibration_1_vs_all_cli` is used to load model data from files and visualize the calibration of a binary classification model using the 1-vs-all approach. 
 
-Here is a breakdown of what the function does:
+Here is a general description of what the function does:
 
-1. It takes several input parameters:
-   - `probabilities`: A list of file names or a single file name containing the prediction probabilities.
-   - `ground_truth`: The path to the ground truth file.
-   - `ground_truth_split`: The type of ground truth split (0 for training split, 1 for validation split, or 2 for test split).
-   - `split_file`: The file path to a CSV file containing split values.
-   - `ground_truth_metadata`: The file path to a JSON file containing feature metadata created during training.
-   - `output_feature_name`: The name of the output feature to visualize.
-   - `output_directory`: The name of the output directory containing training results.
-   - `output_feature_proc_name`: The name of the output feature column in the ground truth. If the ground truth is a preprocessed parquet or hdf5 file, the column name will be `<output_feature>_<hash>`.
-   - `ground_truth_apply_idx`: A boolean indicating whether to use metadata['str2idx'] in np.vectorize.
-   - `kwargs`: Additional parameters for the requested visualizations.
+1. It takes several input parameters including the file names of prediction results, the path to the ground truth file, the type of ground truth split, the file path to a csv file containing split values, the file path to feature metadata json file, the name of the output feature to visualize, the name of the output directory containing training results, and optional parameters for visualization.
 
 2. It loads the feature metadata from the ground truth metadata file.
 
-3. It extracts the ground truth values from the source dataset using the `_extract_ground_truth_values` function.
+3. It extracts the ground truth values based on the specified split type and split file.
 
-4. It vectorizes the ground truth values using the `_vectorize_ground_truth` function.
+4. It vectorizes the ground truth values using the feature metadata.
 
-5. It retrieves the probabilities per model using the `_get_cols_from_predictions` function.
+5. It retrieves the probabilities per model from the prediction results files.
 
-6. It calls the `calibration_1_vs_all` function to visualize the calibration using the probabilities, ground truth, metadata, output feature name, output directory, and any additional parameters specified in `kwargs`.
+6. It calls the `calibration_1_vs_all` function to visualize the calibration using the probabilities per model, ground truth values, metadata, output feature name, and output directory.
 
-7. The function does not return any value (`None`).
-
-Overall, the `calibration_1_vs_all_cli` function provides a command-line interface for loading model data and visualizing the calibration of a binary classification model using the 1-vs-all approach.
+7. The function does not return any value.
 
 ### **Function Details**
 The given code defines a function called `calibration_1_vs_all_cli` which is used to load model data from files and visualize the calibration of a binary classification model.
@@ -1071,9 +1063,9 @@ The function takes the following parameters:
 - `ground_truth_apply_idx`: A boolean indicating whether to use metadata['str2idx'] in np.vectorize.
 - `**kwargs`: Additional parameters for the requested visualizations.
 
-The function first loads the feature metadata from the ground truth metadata file. Then, it extracts the ground truth values based on the specified split and feature name. The ground truth values are vectorized using the metadata['str2idx'] mapping.
+The function first loads the feature metadata from the ground truth metadata file. Then, it extracts the ground truth values based on the specified split and feature name. The ground truth values are vectorized using the metadata['str2idx'] mapping. 
 
-Next, the function retrieves the probabilities per model from the prediction files and applies the `_get_cols_from_predictions` function to extract the probabilities column. Finally, it calls the `calibration_1_vs_all` function to visualize the calibration using the probabilities, ground truth, metadata, output feature name, and output directory.
+Next, it retrieves the probabilities per model from the prediction files using the specified column name and metadata. Finally, it calls the `calibration_1_vs_all` function to visualize the calibration using the probabilities, ground truth, metadata, output feature name, and output directory.
 
 The function does not return any value.
 
@@ -1127,7 +1119,7 @@ The function `confusion_matrix_cli` is a command-line interface (CLI) function t
 The function takes three parameters:
 - `test_statistics`: A path to the experiment test statistics file. It can be either a string representing a single file path or a list of strings representing multiple file paths.
 - `ground_truth_metadata`: A path to the ground truth metadata file.
-- `kwargs`: Additional parameters for the requested visualizations. These parameters are passed as a dictionary.
+- `kwargs`: Additional parameters for the requested visualizations. These parameters are passed as keyword arguments.
 
 The function first loads the model data from the test statistics file(s) using the `load_data_for_viz` function with the "load_json" method. It then loads the ground truth metadata using the `load_json` function.
 
@@ -1158,11 +1150,11 @@ The function `frequency_vs_f1_cli` is a command-line interface (CLI) function th
 The function takes three parameters:
 - `test_statistics`: A path to the experiment test statistics file. It can be either a string representing a single file path or a list of strings representing multiple file paths.
 - `ground_truth_metadata`: A path to the ground truth metadata file.
-- `kwargs`: Additional parameters for the requested visualizations. These parameters are passed to the `frequency_vs_f1` function.
+- `kwargs`: Additional parameters for the requested visualizations. These parameters are passed as keyword arguments.
 
 The function first loads the data from the test statistics file(s) using the `load_data_for_viz` function with the "load_json" method. It then loads the ground truth metadata using the `load_json` function.
 
-Finally, the function calls the `frequency_vs_f1` function, passing the loaded test statistics data, metadata, and any additional parameters. The `frequency_vs_f1` function is responsible for generating the visualizations based on the provided data.
+Finally, the function calls the `frequency_vs_f1` function, passing the loaded test statistics data, metadata, and any additional parameters specified in `kwargs`. The `frequency_vs_f1` function is responsible for generating the visualizations based on the provided data.
 
 The function does not return any value (`None`).
 
@@ -1226,11 +1218,9 @@ The function first checks for any metrics to compare. It then creates a dictiona
 
 The function then iterates over the `test_stats_per_model` list and adds the metric values to the `metrics_dict` dictionary.
 
-If there are metrics to compare, the function determines the minimum and maximum values among the metric values. It then generates a filename for the plot based on the `output_feature_name` and `file_format` parameters.
+If there are metrics to compare, the function determines the minimum and maximum values among the metric values. It then generates a filename for the plot based on the `output_feature_name` and saves the plot using the `visualization_utils.compare_classifiers_plot` function.
 
-Finally, the function calls the `compare_classifiers_plot` function from the `visualization_utils` module to create the bar plot. The `metrics`, `metrics_names`, and `model_names_list` are passed as arguments to the `compare_classifiers_plot` function. The `adaptive` parameter is set based on whether the minimum value is less than 0 or the maximum value is greater than 1. The title of the plot is set to "Performance comparison on {output_feature_name}" and the filename is specified if `output_directory` is provided.
-
-The function does not return any value (`None`).
+The function does not return any value.
 
 ### **Function Details**
 The code defines a function `compare_performance` that takes in several parameters and produces a bar plot visualization for model comparison based on evaluation performance statistics.
@@ -1279,7 +1269,7 @@ The given code defines a function called `compare_classifiers_performance_from_p
 The function takes the following inputs:
 - `probabilities_per_model`: A list of numpy arrays containing the probabilities predicted by each model.
 - `ground_truth`: The ground truth values.
-- `metadata`: A dictionary containing metadata about the features.
+- `metadata`: A dictionary containing feature metadata.
 - `output_feature_name`: The name of the output feature.
 - `top_n_classes`: A list or integer specifying the number of classes to plot.
 - `labels_limit`: An integer specifying the upper limit on the numeric encoded label value.
@@ -1290,32 +1280,22 @@ The function takes the following inputs:
 
 The function produces a bar plot visualization for each model, with bars representing different overall metrics computed from the probabilities. The metrics include accuracy, hits at k, and mean reciprocal rank (MRR).
 
-The function first checks if the ground truth is a numpy array. If not, it assumes that the ground truth values need to be translated to encoded values using the metadata. 
+The function returns None.
 
-Next, it converts the `top_n_classes` and `model_names` inputs to lists if they are not already lists.
-
-If `labels_limit` is greater than 0, it limits the encoded numeric label values in the ground truth to be less than or equal to `labels_limit`.
-
-The function then calculates the accuracies, hits at k, and MRRs for each model based on the probabilities. It uses numpy operations to sort the probabilities, calculate the top k predictions, and compute the metrics.
-
-Finally, it calls a function called `compare_classifiers_plot` from a module called `visualization_utils` to generate the bar plot visualization. The metrics, model names, and output filename are passed as arguments to this function.
-
-The function does not return any value.
+Note: The code references a function `visualization_utils.compare_classifiers_plot`, which is not provided in the given code.
 
 ## Function **`compare_classifiers_performance_from_pred`** Overview
-The function `compare_classifiers_performance_from_pred` takes in predictions from multiple classifiers, the ground truth values, metadata, and other parameters, and produces a bar plot visualization comparing the performance of the classifiers.
+The function `compare_classifiers_performance_from_pred` takes in predictions from multiple classifiers, the ground truth values, and other parameters, and produces a bar plot visualization comparing the performance of the classifiers based on various metrics.
 
-The function first checks if the ground truth values are not a numpy array, in which case it assumes that the values need to be translated to encoded values using the metadata. It then flattens the predictions for each model and stores them in `predictions_per_model`.
+The function first checks if the ground truth values are not a numpy array, in which case it assumes that the values need to be translated to encoded values based on the feature metadata. It then flattens and converts the predictions from each model to numpy arrays.
 
-If the `labels_limit` parameter is greater than 0, it sets any ground truth values higher than `labels_limit` to `labels_limit`.
+If a limit on the numeric encoded label value is specified, any ground truth values higher than the limit are set to the limit.
 
-Next, it maps the predictions to their corresponding encoded labels using the metadata. If the predictions are coming from an npy file, this step is skipped.
+The function then calculates the accuracy, precision, recall, and F1 score for each model's predictions using the sklearn.metrics module.
 
-The function then calculates the accuracy, precision, recall, and F1 score for each model's predictions using the ground truth values. These metrics are stored in the `accuracies`, `precisions`, `recalls`, and `f1s` lists, respectively.
+If an output directory is specified, the function creates the directory if it doesn't exist and saves the visualization as a file in the specified format. Otherwise, the visualization is displayed in a window.
 
-If an `output_directory` is specified, the function creates the directory if it doesn't exist and sets the `filename` variable to the path of the output file.
-
-Finally, the function calls the `compare_classifiers_plot` function from the `visualization_utils` module, passing in the performance metrics, metric names, model names, and the `filename` if specified. This function generates a bar plot comparing the performance of the classifiers based on the metrics, and either saves it to the specified file or displays it in a window.
+The resulting bar plot visualization compares the accuracies, precisions, recalls, and F1 scores of the models, with the model names as labels on the x-axis.
 
 ### **Function Details**
 The given code defines a function `compare_classifiers_performance_from_pred` that compares the performance of different classifiers based on their predictions. 
@@ -1346,13 +1326,13 @@ The function produces a bar plot visualization that compares the performance of 
 
 The function first checks if the ground truth values are not a numpy array and if so, it translates the raw values to encoded values using the metadata. It then converts the `top_n_classes` and `model_names` inputs into lists and applies a label limit if specified.
 
-Next, it determines the subset indices based on the subset type. If the subset type is "ground_truth", it selects the subset of ground truth values that are less than `k` (the first element of `top_n_classes`). If the subset type is "predictions", it selects the subset of ground truth values where the model's predicted class is less than `k`. It also updates the model names to include the percentage of data in the subset.
+Next, it determines the subset indices based on the subset type. If the subset type is "ground_truth", it selects the subset where the ground truth values are less than `k`. If the subset type is "predictions", it selects the subset where the argmax of the probabilities is less than `k`. It also updates the model names to include the percentage of the subset.
 
-The function then processes the probabilities for each model. If a label limit is specified and the number of classes in the probabilities is greater than the label limit, it limits the probabilities to the label limit and sums the probabilities for the remaining classes. It then calculates the top-1 and top-3 predictions for the subset.
+The function then processes the probabilities for each model. If a label limit is specified and the number of classes in the probabilities is greater than the label limit, it limits the probabilities to the label limit and sums the remaining probabilities into the last class. It then calculates the top-1 and top-3 predictions for the subset.
 
-The function computes the accuracies and hits-at-k metrics for each model based on the subset predictions. It creates a title for the plot based on the subset type and the number of classes. If an output directory is specified, it creates the directory if it doesn't exist and sets the filename for the plot.
+The function computes the accuracies and hits@k metrics for each model based on the subset. It then generates a title for the plot based on the subset type and creates a filename if an output directory is specified.
 
-Finally, the function calls a visualization utility function to create the bar plot comparing the model performances. The plot includes the accuracies and hits-at-k metrics for each model, the model names, and the title. The plot can be saved to a file if an output directory is specified.
+Finally, it calls the `compare_classifiers_plot` function from the `visualization_utils` module to generate the bar plot visualization, using the accuracies, hits@k, model names, title, and filename as inputs.
 
 ### **Function Details**
 The code defines a function called `compare_classifiers_performance_subset` that takes several input parameters and produces a model comparison barplot visualization. 
@@ -1406,13 +1386,13 @@ The function takes the following input parameters:
 
 The function first checks if the ground truth values are not a numpy array and if so, it translates the raw values to encoded values using the feature metadata.
 
-Next, it sets the value of `k` to `top_k` and applies a label limit if specified.
+Next, it sets the value of `k` to `top_k` and applies a limit to the ground truth values if `labels_limit` is greater than 0.
 
 Then, it calculates the hits@k metric for each model by sorting the probabilities and counting the number of correct predictions among the top k predictions.
 
 Finally, it calls a visualization utility function to create the line plot comparing the hits@k metric for each model.
 
-The resulting plot can be saved to a file or displayed in a window, depending on the value of `output_directory`.
+The resulting plot can be saved to a file if `output_directory` is specified, otherwise it will be displayed in a window.
 
 The function does not return any value.
 
@@ -1426,23 +1406,22 @@ The function iterates over the test statistics for each model and output feature
 The plots are either displayed in a window or saved in the specified output directory in the specified file format. The function also logs information about the model, the top and worst classes based on F1 score, and the number of classes with F1 score greater than 0 and equal to 0.
 
 ### **Function Details**
-The given code defines a function `compare_classifiers_multiclass_multimetric` that compares the precision, recall, and F1 scores of multiple classifiers for a specified output feature. The function takes the following inputs:
+This is a function named `compare_classifiers_multiclass_multimetric` that compares the performance of multiple classifiers on a multiclass classification task. 
 
+The function takes the following inputs:
 - `test_stats_per_model`: A list of dictionaries containing evaluation performance statistics for each model.
 - `metadata`: A dictionary containing intermediate preprocess structure created during training, which includes mappings of the input dataset.
 - `output_feature_name`: The name of the output feature to use for the visualization.
 - `top_n_classes`: A list of integers specifying the number of classes to plot.
-- `model_names`: A string or a list of strings representing the model names to use as labels (optional).
+- `model_names`: A string or a list of strings representing the names of the models to use as labels (optional).
 - `output_directory`: The directory where to save the plots (optional).
 - `file_format`: The file format of the output plots, either "pdf" or "png" (optional).
 
-The function generates four plots for each model, showing the precision, recall, and F1 scores for the specified output feature. The plots include the top `k` classes with the highest F1 scores, the `k` classes with the lowest F1 scores, all classes sorted by F1 score, and the number of classes with F1 score greater than 0 and equal to 0.
+The function produces four plots for each model, showing the precision, recall, and F1 score of the model on several classes for the specified output feature. The plots are saved in the specified output directory or displayed in a window if no directory is specified.
 
-The function uses the `visualization_utils.compare_classifiers_multiclass_multimetric_plot` function to create the plots and saves them in the specified output directory if provided. If the output directory is not specified, the plots are displayed in a window.
+The function returns `None`.
 
-The function also logs the model name, the best and worst classes based on F1 score, and the number of classes with F1 score greater than 0 and equal to 0.
-
-Note: The code snippet provided is incomplete and requires additional code for the missing functions and imports.
+Note: The code provided is incomplete and requires additional functions and imports to run properly.
 
 ## Function **`compare_classifiers_predictions`** Overview
 The function `compare_classifiers_predictions` compares the predictions of two models for a specified output feature. It takes in the following inputs:
@@ -1460,7 +1439,7 @@ The function first checks if the ground truth values need to be translated to en
 
 The function then calculates various metrics by comparing the ground truth and predictions. These metrics include the number and percentage of datapoints where both models are right, one model is right, both models are wrong, and the predictions are the same or different.
 
-The function logs the calculated metrics and saves a donut plot visualizing the comparison between the models. The plot shows the number of datapoints where both models are right, one model is right, and both models are wrong. It also shows the breakdown of both wrong predictions into cases where the predictions are the same or different.
+The function logs the calculated metrics and saves a donut plot visualizing the comparison between the models' predictions. The plot shows the number of datapoints where both models are right, one model is right, and both models are wrong. It also shows the breakdown of both wrong predictions into cases where the predictions are the same or different.
 
 If an output directory is specified, the plot is saved in that directory with a filename based on the names of the models.
 
@@ -1480,28 +1459,28 @@ The function takes the following inputs:
 - `file_format`: The file format of the output plots (default is "pdf").
 - `ground_truth_apply_idx`: A boolean indicating whether to use the metadata's "str2idx" mapping in np.vectorize.
 
-The function compares the predictions of the two models and calculates various metrics such as the number of datapoints where both models are right, one model is right, both models are wrong, etc. It also logs these metrics using the logger.
-
-The function then generates a donut plot to visualize the comparison results. The plot shows the number of datapoints where both models are right, one model is right, and both models are wrong. It also shows the breakdown of the both-wrong category into cases where both models made the same prediction and cases where they made different predictions.
-
-If an output directory is specified, the plot is saved to a file in that directory. Otherwise, the plot is displayed in a window.
+The function compares the predictions of the two models and calculates various metrics such as the number of datapoints where both models are right, one model is right, both models are wrong, etc. It also logs these metrics and generates a donut plot to visualize the comparison.
 
 The function returns None.
+
+Note: The code references some external functions and libraries such as `convert_to_list`, `logger`, `os`, and `visualization_utils`. These functions and libraries are not defined in the given code snippet and may be part of a larger codebase.
 
 ## Function **`compare_classifiers_predictions_distribution`** Overview
 The function `compare_classifiers_predictions_distribution` takes in several inputs including a list of model predictions, ground truth values, metadata, output feature name, labels limit, model names, output directory, file format, and other optional arguments. 
 
 The function produces a radar plot that compares the distributions of predictions from different models for the first 10 classes of the specified output feature. 
 
-The function first checks if the ground truth values are not a numpy array and if so, it translates the raw values to encoded values using the metadata. 
+The function first checks if the ground truth values are a numpy array, and if not, it assumes that the raw values need to be translated to encoded values using the metadata. 
 
-Then, it converts the model names to a list and applies a limit to the labels if specified. 
+Next, the function converts the model names to a list and applies a label limit to the ground truth and predictions if specified. 
 
-Next, it calculates the maximum ground truth value and maximum prediction value among all the models. 
+The function then calculates the maximum ground truth value and maximum prediction value among all models. 
 
-It then calculates the counts and probabilities of the ground truth values and predictions for each model. 
+Using the ground truth and predictions, the function calculates the counts and probabilities for each class. 
 
-Finally, it creates a radar chart using the probabilities and model names, and saves it to a file if an output directory is specified.
+If an output directory is specified, the function creates the directory if it doesn't exist and saves the radar plot in the specified file format. 
+
+Finally, the function calls a visualization utility function to create the radar chart using the calculated probabilities, model names, and the optional filename.
 
 ### **Function Details**
 This is a function that compares the distribution of predictions from multiple classifiers for a specified output feature. It produces a radar plot to visualize the distributions.
@@ -1555,27 +1534,15 @@ Here is a breakdown of the input parameters:
 - `file_format` (str, default: `'pdf'`): The file format of the output plots (either `'pdf'` or `'png'`).
 - `ground_truth_apply_idx` (bool, default: `True`): Whether to use the metadata's `'str2idx'` mapping in `np.vectorize`.
 
-The function first checks if the `ground_truth` is not a numpy array and if so, it assumes that the raw values need to be translated to encoded values using the metadata's `'str2idx'` mapping. 
+The function first checks if the `ground_truth` is not a numpy array and if so, it assumes that the raw values need to be translated to encoded values using the metadata's `'str2idx'` mapping.
 
-Next, it applies the `labels_limit` by setting any label higher than the limit to the limit value. 
+Next, the function sets up some variables and lists to store the accuracies and dataset coverage for each model and threshold.
 
-Then, it initializes some variables and creates a list of thresholds ranging from 0 to 1 with a step size of 0.05. 
+Then, for each model, it calculates the maximum probability and predicted labels based on the probabilities. It then iterates over the thresholds and filters the predictions based on the threshold. It calculates the accuracy and dataset coverage for each threshold and stores them in the respective lists.
 
-The function then iterates over each model's probabilities and performs the following steps:
+Finally, the function calls a visualization utility function called `confidence_filtering_plot` to plot the accuracies and dataset coverage for each model and threshold. The plot is either displayed in a window or saved to a file in the specified output directory.
 
-1. If the `labels_limit` is greater than 0 and the number of columns in the probabilities array is greater than `labels_limit + 1`, it limits the probabilities to the first `labels_limit + 1` columns and sums the remaining columns to create a new column.
-2. It calculates the maximum probability for each instance and the corresponding predicted label.
-3. It initializes empty lists for storing accuracies and dataset coverage values.
-4. It iterates over the thresholds and performs the following steps for each threshold:
-   - Filters the instances based on the maximum probability being greater than or equal to the threshold.
-   - Retrieves the filtered ground truth and predictions.
-   - Calculates the accuracy as the ratio of correctly predicted instances to the total number of filtered instances.
-   - Appends the accuracy and dataset coverage values to the respective lists.
-5. Appends the lists of accuracies and dataset coverage values to the respective overall lists.
-6. If an `output_directory` is specified, it creates the directory if it doesn't exist and sets the `filename` variable to the path of the output file.
-7. It calls a visualization utility function called `confidence_filtering_plot` with the thresholds, accuracies, dataset coverage values, model names, title, and filename as arguments to generate the plot.
-
-Overall, the function calculates and visualizes the accuracy and data coverage of multiple models while increasing a threshold on the probabilities of predictions for a specified output feature. The resulting plot can be saved to a file or displayed in a window.
+Overall, the function provides a way to analyze and compare the accuracy and data coverage of multiple models based on different confidence thresholds.
 
 ## Function **`confidence_thresholding_data_vs_acc`** Overview
 The function `confidence_thresholding_data_vs_acc` takes in several inputs including a list of model probabilities, ground truth values, metadata, output feature name, labels limit, model names, output directory, file format, and other optional arguments. 
@@ -1586,7 +1553,7 @@ The function first checks if the ground truth values are not a numpy array and c
 
 Next, the function calculates the maximum probability and predictions for each model. It iterates over a range of thresholds and filters the predictions based on the threshold. It calculates the accuracy and data coverage for each threshold and stores them in separate lists. 
 
-Finally, the function generates a plot using the `confidence_filtering_data_vs_acc_plot` function from the `visualization_utils` module. The plot compares the accuracy and data coverage for each model at different thresholds. The plot can be saved to a file if an output directory is specified.
+Finally, the function generates a plot using the `confidence_filtering_data_vs_acc_plot` function from the `visualization_utils` module. The plot compares the accuracy and data coverage for each model and saves it to a file if an output directory is specified.
 
 ### **Function Details**
 The code defines a function `confidence_thresholding_data_vs_acc` that compares the accuracy of different models based on the confidence threshold of their predictions. 
@@ -1602,15 +1569,13 @@ The function takes the following inputs:
 - `file_format`: the file format of the output plots.
 - `ground_truth_apply_idx`: a boolean indicating whether to use metadata['str2idx'] in np.vectorize.
 
-The function first checks if the ground truth values are a numpy array, and if not, it converts them to the encoded values using the metadata. It then applies the labels limit if specified.
+The function first checks if the ground truth values are a numpy array, and if not, it assumes that the raw values need to be translated to encoded values using the metadata. If `labels_limit` is greater than 0, it limits the encoded label values to be less than or equal to `labels_limit`.
 
-Next, the function calculates the maximum probability and predicted labels for each model. It then iterates over a range of thresholds and filters the predictions based on the threshold. It calculates the accuracy and the percentage of data kept for each threshold.
+Next, it calculates the maximum probability and predicted labels for each model. It then iterates over a range of thresholds and filters the predictions based on the threshold. It calculates the accuracy of the filtered predictions and the percentage of data kept after filtering.
 
-The accuracies and dataset kept values are stored in lists for each model.
+The accuracies and dataset coverage for each model and threshold are stored in lists. The function then calls a visualization function to plot the accuracies vs dataset coverage for each model.
 
-Finally, the function calls a visualization function to plot the accuracies and dataset kept values for each model.
-
-The resulting plot is saved to a file if the output directory is specified, otherwise it is displayed in a window.
+If an `output_directory` is specified, the plots are saved in that directory with the specified `file_format`. Otherwise, the plots are displayed in a window.
 
 The function does not return any value.
 
@@ -1649,12 +1614,12 @@ The code defines a function `confidence_thresholding_data_vs_acc_subset` that co
 
 The function first checks if the ground truth values are a numpy array and if not, it converts the raw values to encoded values using the metadata. It then converts the `top_n_classes` to a list and assigns the first element to `k`. If `labels_limit` is greater than 0, it sets all ground truth values higher than `labels_limit` to `labels_limit`. 
 
-The function then initializes empty lists for `accuracies` and `dataset_kept`. It creates a boolean array `subset_indices` based on the `subset` parameter and the ground truth values. If `subset` is "ground_truth", it selects only the datapoints where the ground truth class is within the top `k` most frequent ones. If `subset` is "predictions", it selects only the datapoints where the model predicts a class that is within the top `k` most frequent ones. It also initializes `gt_subset` as the subset of ground truth values based on `subset_indices`.
+The function then initializes empty lists for `accuracies` and `dataset_kept`. It creates a boolean array `subset_indices` based on the `subset` parameter and the ground truth values. If `subset` is "ground_truth", it selects only the datapoints where the ground truth class is within the top `k` most frequent ones. If `subset` is "predictions", it selects only the datapoints where the model predicts a class within the top `k` most frequent ones. It also updates the `gt_subset` variable accordingly.
 
-The function then iterates over the probabilities for each model and performs the following steps:
-- If `labels_limit` is greater than 0 and the number of classes in the probabilities is greater than `labels_limit + 1`, it limits the probabilities to `labels_limit + 1` classes and sums the probabilities of the remaining classes into the last class.
-- If `subset` is "predictions", it updates `subset_indices` and `gt_subset` based on the argmax of the probabilities.
-- It selects the subset of probabilities based on `subset_indices`.
+Next, the function iterates over the probabilities for each model and performs the following steps:
+- If `labels_limit` is greater than 0 and the number of classes in the probabilities is higher than `labels_limit + 1`, it limits the probabilities to `labels_limit + 1` classes and sums the probabilities of the remaining classes into the last class.
+- If `subset` is "predictions", it updates the `subset_indices` and `gt_subset` variables based on the argmax of the probabilities.
+- It selects the subset of probabilities based on the `subset_indices`.
 - It calculates the maximum probability and the predicted class for each datapoint in the subset.
 - It initializes empty lists for `accuracies_alg` and `dataset_kept_alg`.
 - It iterates over the thresholds and performs the following steps:
@@ -1664,7 +1629,7 @@ The function then iterates over the probabilities for each model and performs th
   - It appends the accuracy and the percentage of datapoints kept to `accuracies_alg` and `dataset_kept_alg`, respectively.
 - It appends `accuracies_alg` and `dataset_kept_alg` to `accuracies` and `dataset_kept`, respectively.
 
-Finally, the function creates a filename based on the `output_directory` and `file_format` parameters. It creates the output directory if it doesn't exist. It then calls the `confidence_filtering_data_vs_acc_plot` function from the `visualization_utils` module to plot the accuracies and dataset coverage against the confidence thresholds. The plot is saved to the specified filename or displayed in a window if `output_directory` is not specified.
+Finally, the function creates a filename based on the `output_directory` and `file_format` parameters. It creates the output directory if it doesn't exist. It then calls the `confidence_filtering_data_vs_acc_plot` function from the `visualization_utils` module to plot the accuracies and dataset coverage for each model. The plot is saved to the specified filename or displayed in a window if `output_directory` is not specified.
 
 ## Function **`confidence_thresholding_data_vs_acc_subset_per_class`** Overview
 The function `confidence_thresholding_data_vs_acc_subset_per_class` compares the accuracy of different models based on their confidence threshold on a subset of data per class. 
@@ -1684,11 +1649,7 @@ The function takes the following inputs:
 
 The function produces a line plot for each class within the top_n_classes. The x-axis represents the data coverage (percentage of datapoints kept from the original set), and the y-axis represents the accuracy of the models. The plot shows how the accuracy changes as the confidence threshold on the probabilities of predictions increases.
 
-The function first preprocesses the ground truth values if they are not already in the form of a numpy array. It then generates a filename template for saving the plots and converts the top_n_classes and model_names inputs into lists if they are not already.
-
-Next, the function defines a list of thresholds ranging from 0 to 1 with a step size of 0.05. For each class within the top_n_classes, the function calculates the accuracies and dataset coverage for each model and threshold. The subset of data used for calculations depends on the subset parameter. If subset is "ground_truth", only datapoints where the ground truth class is within the top n most frequent ones are considered. If subset is "predictions", only datapoints where the model predicts a class within the top n most frequent ones are considered.
-
-Finally, the function calls a visualization utility function to plot the accuracies and dataset coverage for each model and class. The plot is saved to a file if the output_directory is specified.
+The function first processes the inputs and prepares the necessary variables and filenames. It then iterates over each class within the top_n_classes and calculates the accuracies and dataset coverage for each model at different confidence thresholds. Finally, it calls a visualization function to plot the results.
 
 The function does not return any value.
 
@@ -1710,7 +1671,7 @@ The function takes the following parameters:
 
 The function produces a line plot for each class within the top_n_classes, showing the accuracy of the model and the data coverage while increasing a threshold on the probabilities of predictions for the specified output_feature_name. The subset of data used for the analysis depends on the value of the `subset` parameter. If `subset` is "ground_truth", only datapoints where the ground truth class is within the top n most frequent ones will be considered as the test set. If `subset` is "predictions", only datapoints where the model predicts a class that is within the top n most frequent ones will be considered as the test set.
 
-The resulting plots can be saved in the specified output directory or displayed in a window if no output directory is specified. The file format of the plots can be either "pdf" or "png".
+The resulting plots can be saved in the specified output_directory or displayed in a window if no output_directory is specified. The file format of the plots can be either "pdf" or "png".
 
 The function returns None.
 
@@ -1732,13 +1693,13 @@ The function is used to visualize the relationship between confidence thresholds
 
 The function first validates the input probabilities and thresholds. Then, it processes the ground truth data and applies a label limit if specified. It calculates the maximum probabilities and predictions for each model. 
 
-Next, the function iterates over a range of thresholds for both output feature names. For each combination of thresholds, it filters the data based on the maximum probabilities and predictions. It calculates the coverage and accuracy for the filtered data and stores them in lists.
+Next, it iterates over a range of thresholds for both output feature names and calculates the coverage and accuracy for each combination of thresholds. It stores these values in lists.
 
-The function then generates three different plots using the `visualization_utils` module. The first plot is a multiline plot showing the relationship between coverage and accuracy for different thresholds. The second plot is a line plot showing the maximum accuracy for each coverage threshold. The third plot is a line plot showing the maximum accuracy along with the corresponding thresholds.
+The function then generates three different plots using the `visualization_utils` module. The first plot is a multiline plot that shows the coverage vs accuracy for each combination of thresholds. The second plot is a max line plot that shows the maximum accuracy achieved for each coverage level. The third plot is a max line plot with thresholds, which shows the maximum accuracy achieved for each coverage level along with the corresponding thresholds.
 
-Finally, the function logs a CSV table of the coverage, accuracy, and thresholds, and saves the plots to the specified output directory if provided.
+Finally, the function saves the plots to the specified output directory if provided, or displays them in a window if no output directory is specified.
 
-Note: The code provided is incomplete and requires additional code from the `visualization_utils` module to run properly.
+The function returns `None`.
 
 ## Function **`confidence_thresholding_2thresholds_3d`** Overview
 The function `confidence_thresholding_2thresholds_3d` takes in several inputs including a list of model probabilities, ground truth data, feature metadata, output feature names, a limit on label values, an output directory, and a file format. 
@@ -1751,34 +1712,36 @@ The function then applies a label limit to the ground truth data if the limit is
 
 The function defines a list of thresholds ranging from 0 to 1 with a step size of 0.05.
 
-Next, the function calculates the maximum probabilities and predictions for each model. It also handles cases where the number of label values exceeds the label limit by summing the probabilities of the "rare" labels.
+Next, the function calculates the maximum probabilities and predictions for each model. It also handles the case where the number of label values exceeds the label limit by summing the probabilities of the "rare" labels.
 
-The function then iterates over the thresholds to calculate accuracies and dataset coverage percentages for different combinations of the two thresholds. It filters the ground truth data and predictions based on the thresholds and calculates the accuracy as the ratio of correctly predicted samples to the total number of filtered samples.
+The function then iterates over the thresholds to calculate accuracies and dataset coverage percentages for different combinations of the two thresholds. It filters the ground truth data and predictions based on the two thresholds and calculates the accuracy as the ratio of correctly predicted samples to the total number of filtered samples.
 
 The accuracies and dataset coverage percentages are stored in lists.
 
 Finally, the function creates an output file path if an output directory is specified, and calls the `confidence_filtering_3d_plot` function from the `visualization_utils` module to generate a 3D plot of the accuracies and dataset coverage percentages. The plot is saved to the output file path if specified, or displayed in a window if not.
+
+The function does not return any value.
 
 ### **Function Details**
 The code defines a function `confidence_thresholding_2thresholds_3d` that takes in several input parameters and plots a 3D surface plot. Here is a breakdown of the code:
 
 1. The function signature specifies the input and output types of the function.
 2. The function documentation provides a description of the function and its parameters.
-3. The function tries to validate the input probabilities and threshold output feature names using the `validate_conf_thresholds_and_probabilities_2d_3d` function. If an error occurs, the function returns.
+3. The function tries to validate the input probabilities and threshold output feature names using a helper function `validate_conf_thresholds_and_probabilities_2d_3d`. If an error occurs, the function returns without further execution.
 4. The probabilities are assigned to the `probs` variable.
-5. If the ground truths are not numpy arrays, they are assumed to be raw values that need to be encoded. The function uses the metadata dictionary to encode the ground truths.
+5. If the ground truths are not numpy arrays, they are assumed to be raw values and are encoded using a helper function `_encode_categorical_feature`.
 6. If a labels limit is specified, any label values higher than the limit are considered "rare" labels and are replaced with the limit value.
-7. The thresholds are generated as a list of values from 0 to 1 with a step size of 0.05.
-8. Empty lists are created to store the accuracies and dataset coverage percentages.
-9. If the labels limit is greater than 0 and the number of classes in the probabilities is greater than the limit + 1, the probabilities are adjusted to include a "rare" label that sums up the probabilities of all labels higher than the limit.
-10. The maximum probabilities and predicted labels are computed for each set of probabilities.
-11. The function iterates over the thresholds to compute the accuracy and dataset coverage for each combination of thresholds.
-12. The accuracy and dataset coverage values are appended to the respective lists.
+7. Thresholds are generated as a list of values ranging from 0 to 1 with a step size of 0.05.
+8. Empty lists `accuracies` and `dataset_kept` are initialized.
+9. If the labels limit is greater than 0 and the number of classes in the probabilities exceeds the limit, the probabilities are adjusted to include a "rare" label.
+10. The maximum probabilities and corresponding predictions are computed for each set of probabilities.
+11. Two nested loops iterate over the thresholds to calculate the accuracy and dataset coverage for each combination of thresholds.
+12. The accuracy and dataset coverage values are appended to the `accuracies` and `dataset_kept` lists, respectively.
 13. If an output directory is specified, the function creates the directory if it doesn't exist and generates a filename for the plot.
-14. The `confidence_filtering_3d_plot` function is called to generate the 3D surface plot using the thresholds, accuracies, dataset coverage, and other parameters.
+14. The `confidence_filtering_3d_plot` function from the `visualization_utils` module is called to generate the 3D plot using the threshold values, accuracies, dataset coverage, and other parameters.
 15. The plot is saved to the specified output directory if provided, otherwise it is displayed in a window.
 
-Overall, the function takes in probabilities, ground truths, and other parameters, computes the accuracy and dataset coverage for different combinations of thresholds, and generates a 3D surface plot to visualize the results.
+Overall, the function takes in probabilities, ground truths, and other parameters, calculates accuracies and dataset coverage for different combinations of thresholds, and generates a 3D plot to visualize the relationship between the thresholds and the accuracy/dataset coverage.
 
 ## Function **`binary_threshold_vs_metric`** Overview
 The function `binary_threshold_vs_metric` takes in several inputs including a list of model probabilities, ground truth values, metadata, output feature name, metrics to display, positive label, model names, output directory, file format, and a boolean flag. 
@@ -1811,7 +1774,7 @@ Next, the function defines a filename template for saving the plots and generate
 
 The function then checks if the specified metrics are supported (f1, precision, recall, accuracy) and proceeds to calculate the scores for each model and threshold. The scores are stored in a nested list.
 
-Finally, the function calls a visualization utility function called `threshold_vs_metric_plot` to plot the threshold vs metric for each model. The resulting plots are either displayed in a window or saved to the specified output directory.
+Finally, the function calls a visualization utility function called `threshold_vs_metric_plot` to plot the threshold vs metric for each model. The plot is either displayed in a window or saved to a file in the specified output directory.
 
 The function does not return any value.
 
@@ -1847,7 +1810,9 @@ The function takes the following inputs:
 - `file_format`: The file format of the output plots (default: "pdf").
 - `ground_truth_apply_idx`: A boolean indicating whether to use metadata['str2idx'] in np.vectorize (default: True).
 
-The function first checks if the ground truth values are not a numpy array and converts them to encoded values if necessary. Then, it calculates precision and recall values for each model using the `sklearn.metrics.precision_recall_curve` function. The precision and recall values are stored in a list of dictionaries. Finally, the `visualization_utils.precision_recall_curves_plot` function is called to plot the precision-recall curves.
+The function calculates precision and recall values for each model using the `sklearn.metrics.precision_recall_curve` function and stores them in a list of dictionaries. It then calls the `precision_recall_curves_plot` function from the `visualization_utils` module to plot the precision-recall curves.
+
+If `output_directory` is specified, the plots are saved in the specified directory with the given `file_format`. Otherwise, the plots are displayed in a window.
 
 The function does not return any value.
 
@@ -1886,22 +1851,24 @@ The function `roc_curves` is used to plot ROC curves for output features in spec
 
 The function takes the following inputs:
 - `probabilities_per_model`: A list of numpy arrays representing the model probabilities.
-- `ground_truth`: The ground truth values.
+- `ground_truth`: The ground truth values, which can be either a pandas Series or a numpy array.
 - `metadata`: A dictionary containing feature metadata.
-- `output_feature_name`: The name of the output feature.
+- `output_feature_name`: The name of the output feature for which ROC curves will be plotted.
 - `positive_label`: The numeric encoded value for the positive class (default is 1).
-- `model_names`: The name or list of names of the models to use as labels (default is None).
-- `output_directory`: The directory where the plots will be saved (default is None).
-- `file_format`: The file format of the output plots (default is "pdf").
+- `model_names`: The name or list of names of the models to be used as labels (default is None).
+- `output_directory`: The directory where the plots will be saved (default is None, which means the plots will be displayed in a window).
+- `file_format`: The file format of the output plots, either 'pdf' or 'png' (default is 'pdf').
 - `ground_truth_apply_idx`: A boolean indicating whether to use metadata['str2idx'] in np.vectorize (default is True).
 
-The function first checks if the ground truth values are not a numpy array, in which case it assumes that the raw values need to be translated to encoded values. It then calls the `_convert_ground_truth` function to perform the conversion.
+The function first checks if the ground truth values are not a numpy array, in which case it assumes that the raw values need to be translated to encoded values. It then calls the `_convert_ground_truth` function to perform this translation.
 
-Next, the function iterates over the probabilities for each model and calculates the false positive rate (fpr) and true positive rate (tpr) using the `sklearn.metrics.roc_curve` function. The fpr and tpr values are stored in a list.
+Next, the function iterates over the probabilities for each model and calculates the false positive rate (fpr), true positive rate (tpr), and thresholds using the `sklearn.metrics.roc_curve` function. These values are stored in a list of tuples.
 
-If an output directory is specified, the function creates the directory if it doesn't exist and sets the filename for the plot.
+If an output directory is specified, the function creates the directory if it doesn't exist and sets the filename for the output plot.
 
-Finally, the function calls the `visualization_utils.roc_curves` function to plot the ROC curves using the fpr and tpr values, model names, and the specified title and filename.
+Finally, the function calls the `visualization_utils.roc_curves` function to plot the ROC curves using the fpr, tpr, and model names. The title of the plot is set to "ROC curves" and the filename is passed if it was specified.
+
+The function does not return any value.
 
 ### **Function Details**
 The given code defines a function `roc_curves` that plots ROC curves for output features in specified models. The function takes the following inputs:
@@ -1918,16 +1885,22 @@ The given code defines a function `roc_curves` that plots ROC curves for output 
 
 The function first checks if the ground truth values are not a numpy array and converts them to encoded values if necessary. Then, it iterates over the probabilities for each model, calculates the false positive rate (fpr) and true positive rate (tpr) using sklearn.metrics.roc_curve, and appends them to a list. Finally, it calls a visualization utility function to plot the ROC curves.
 
-The function does not return any value, it either displays the plots in a window or saves them to a file if `output_directory` is specified.
+If `output_directory` is specified, the plots are saved in the specified directory with the given `file_format`. Otherwise, the plots are displayed in a window.
+
+The function does not return any value.
 
 ## Function **`roc_curves_from_test_statistics`** Overview
 The function `roc_curves_from_test_statistics` takes in several parameters including `test_stats_per_model`, `output_feature_name`, `model_names`, `output_directory`, and `file_format`. 
 
 It is used to visualize the ROC (Receiver Operating Characteristic) curves for the specified models based on the evaluation performance statistics provided in `test_stats_per_model`. The ROC curves are plotted for the binary output feature specified by `output_feature_name`.
 
-The function converts the `model_names` parameter to a list and generates a filename template for saving the plots. It then iterates over the `test_stats_per_model` and extracts the false positive rate (fpr) and true positive rate (tpr) from the evaluation statistics for the specified output feature. These fpr and tpr values are stored in a list.
+The function first converts the `model_names` parameter to a list if it is not already a list. It then generates a filename template based on the `file_format` parameter and the output directory specified in `output_directory`.
 
-Finally, the function calls the `roc_curves` function from the `visualization_utils` module, passing in the fpr and tpr values, the model names list, a title for the plot, and the filename template path. The ROC curves are either displayed in a window or saved in the specified output directory in the specified file format.
+Next, the function iterates over each set of test statistics in `test_stats_per_model` and extracts the false positive rate (FPR) and true positive rate (TPR) values from the ROC curve for the specified `output_feature_name`. These FPR and TPR values are stored in a list `fpr_tprs`.
+
+Finally, the function calls the `roc_curves` function from the `visualization_utils` module, passing in the `fpr_tprs`, `model_names_list`, and other parameters such as the title and filename for the plot. The `roc_curves` function is responsible for actually plotting the ROC curves.
+
+The function does not return any value, as indicated by the `-> None` in the function signature.
 
 ### **Function Details**
 The given code defines a function `roc_curves_from_test_statistics` that visualizes ROC curves for binary classification models. 
@@ -1971,7 +1944,7 @@ The code provided is a function called `calibration_1_vs_all` that takes in seve
    - `output_feature_name`: The name of the output feature.
    - `top_n_classes`: A list containing the number of classes to plot.
    - `labels_limit`: An upper limit on the numeric encoded label value.
-   - `model_names`: A list of names for the models.
+   - `model_names`: A list of strings representing the names of the models.
    - `output_directory`: The directory where the plots will be saved.
    - `file_format`: The file format of the output plots.
    - `ground_truth_apply_idx`: A boolean indicating whether to use metadata['str2idx'] in np.vectorize.
@@ -1984,27 +1957,25 @@ The code provided is a function called `calibration_1_vs_all` that takes in seve
 
 5. If `labels_limit` is greater than 0, it limits the ground truth values to the specified limit.
 
-6. It then iterates over the probabilities for each model and limits the number of classes if necessary.
+6. It then iterates over the probabilities for each model and limits the probabilities to the specified labels limit if necessary.
 
-7. It calculates the Brier scores for each class and stores them in a list.
+7. It calculates the number of classes and initializes an empty list for storing Brier scores.
 
-8. For each class, it calculates the fraction of positives and mean predicted values for each model.
+8. It determines the number of classes to plot based on the `top_n_classes` parameter.
 
-9. It checks if an output directory is specified and creates the filename for the calibration plot.
+9. It retrieves the class names from the feature metadata.
 
-10. It calls the `calibration_plot` function from the `visualization_utils` module to generate the calibration plot for the current class.
+10. It iterates over each class and performs the following steps:
+    - Initializes empty lists for storing calibration curve values, mean predicted values, probabilities, and Brier scores for each model.
+    - For each model, it calculates the calibration curve and mean predicted values using the `calibration_curve` function.
+    - If the length of the calibration curve or mean predicted values is less than 2, it appends a zero value to the beginning of the arrays.
+    - It appends the calculated values to the respective lists.
+    - It calculates the Brier score using the `brier_score_loss` function and appends it to the Brier scores list.
+    - It saves the calibration plot and prediction distribution plot for the current class if an output directory is specified.
+    
+11. After iterating over all classes, it saves the Brier scores plot if an output directory is specified.
 
-11. It checks if an output directory is specified and creates the filename for the predictions distribution plot.
-
-12. It calls the `predictions_distribution_plot` function from the `visualization_utils` module to generate the predictions distribution plot for the current class.
-
-13. Finally, it checks if an output directory is specified and creates the filename for the Brier plot.
-
-14. It calls the `brier_plot` function from the `visualization_utils` module to generate the Brier plot for all classes.
-
-15. The function does not return any value.
-
-Note: The code provided is incomplete and requires the `visualization_utils` module and the `_vectorize_ground_truth` function to be defined elsewhere in the code.
+Overall, the function performs calibration analysis for binary classification models and generates calibration plots, prediction distribution plots, and Brier scores plots for each class. The plots can be saved to an output directory or displayed in a window.
 
 ## Function **`calibration_multiclass`** Overview
 The function `calibration_multiclass` takes in several inputs including a list of model probabilities, ground truth values, feature metadata, output feature name, labels limit, model names, output directory, file format, and other optional arguments. 
@@ -2039,28 +2010,31 @@ Note: Some helper functions and modules used in the code, such as `_vectorize_gr
 ## Function **`confusion_matrix`** Overview
 The `confusion_matrix` function takes in several parameters including `test_stats_per_model`, `metadata`, `output_feature_name`, `top_n_classes`, `normalize`, `model_names`, `output_directory`, and `file_format`. 
 
-This function is used to display the confusion matrix in the predictions of each model for each output feature. It generates a heatmap of the confusion matrix for each output feature that has a confusion matrix in the `test_stats_per_model` dictionary. The `top_n_classes` parameter limits the heatmap to the n most frequent classes.
+This function is used to display the confusion matrix in the models' predictions for each `output_feature_name`. It iterates through the `test_stats_per_model` list and checks if a confusion matrix exists for each output feature. If a confusion matrix is found, it creates a heatmap of the confusion matrix and saves it as a plot. It also calculates the entropy of each row in the confusion matrix and creates a bar plot of the classes ranked by entropy.
 
-The function iterates over the `test_stats_per_model` list and checks if a confusion matrix exists for each output feature. If a confusion matrix is found, it retrieves the confusion matrix from the `test_statistics` dictionary and performs optional normalization on the matrix if the `normalize` flag is set to `True`. It then generates a filename for the plot and saves the confusion matrix plot using the `visualization_utils.confusion_matrix_plot` function.
-
-Additionally, the function calculates the entropy of each row in the confusion matrix and generates a bar plot of the classes ranked by entropy. This is done using the `visualization_utils.bar_plot` function.
-
-If no confusion matrix is found in the evaluation data, an error is logged and a `FileNotFoundError` is raised.
+The function returns `None` and raises an error if no confusion matrix is found in the evaluation data.
 
 ### **Function Details**
-The code defines a function called `confusion_matrix` that takes several input parameters and returns nothing (`None`). 
+The code provided is a function called `confusion_matrix` that takes several input parameters and returns `None`. 
 
-The function is used to visualize the confusion matrix in the predictions of multiple models for each output feature. It uses the `test_stats_per_model` parameter, which is a list of dictionaries containing evaluation performance statistics for each model. The `metadata` parameter is an intermediate preprocess structure created during training that contains mappings of the input dataset. 
+The function is used to generate confusion matrix visualizations for the predictions of multiple models. It takes the following parameters:
 
-The `output_feature_name` parameter specifies the name of the output feature to use for the visualization. If set to `None`, the function will use all output features. The `top_n_classes` parameter limits the heatmap to the n most frequent classes. 
+- `test_stats_per_model`: A list of dictionaries containing evaluation performance statistics for each model.
+- `metadata`: A dictionary containing intermediate preprocess structures created during training.
+- `output_feature_name`: The name of the output feature to use for the visualization. If `None`, all output features are used.
+- `top_n_classes`: A list of integers specifying the number of top classes to plot in the confusion matrix.
+- `normalize`: A boolean flag indicating whether to normalize the rows in the confusion matrix.
+- `model_names`: The name or list of names of the models to use as labels.
+- `output_directory`: The directory where the plots will be saved. If not specified, the plots will be displayed in a window.
+- `file_format`: The file format of the output plots (either "pdf" or "png").
 
-The `normalize` parameter is a flag that determines whether to normalize the rows in the confusion matrix. The `model_names` parameter is an optional model name or a list of model names to use as labels. 
+The function first converts the `model_names` parameter to a list and defines a filename template for the output plots. It then checks if the confusion matrix is present in the evaluation data for each model and output feature. If a confusion matrix is found, it extracts the matrix, model name, and labels from the metadata. It then generates the confusion matrix plot and saves it to a file if `output_directory` is specified. 
 
-The `output_directory` parameter specifies the directory where the plots will be saved. If not specified, the plots will be displayed in a window. The `file_format` parameter determines the file format of the output plots, which can be either `'pdf'` or `'png'`. 
-
-The function iterates over the `test_stats_per_model` list and checks if a confusion matrix is present for each output feature. If a confusion matrix is found, it extracts the matrix and performs additional operations such as normalization and entropy calculation. It then calls two visualization functions (`confusion_matrix_plot` and `bar_plot`) to generate the heatmap and bar plot for each output feature. 
+After generating the confusion matrix plot, the function calculates the entropy of each row in the confusion matrix and generates a bar plot of the classes ranked by entropy. This plot is also saved to a file if `output_directory` is specified.
 
 If no confusion matrix is found in the evaluation data, an error is logged and a `FileNotFoundError` is raised.
+
+Overall, the function is used to visualize and analyze the confusion matrices of multiple models for different output features.
 
 ## Function **`frequency_vs_f1`** Overview
 The function `frequency_vs_f1` takes in several parameters including `test_stats_per_model`, `metadata`, `output_feature_name`, `top_n_classes`, `model_names`, `output_directory`, `file_format`, and `**kwargs`. 
@@ -2069,32 +2043,26 @@ The function generates two plots for each model in the `test_stats_per_model` li
 
 The second plot has the same structure as the first one, but the axes are flipped, and the classes on the x-axis are sorted by frequency. 
 
-The function uses the provided `test_stats_per_model` and `model_names` to iterate over each model and output feature. It retrieves the necessary statistics and metadata from the `test_stats_per_model` and `metadata` dictionaries. It then sorts the classes based on F1 score and frequency and creates the line plots using the `visualization_utils.double_axis_line_plot` function. 
-
-The resulting plots can be saved to the specified `output_directory` in the specified `file_format`, or displayed in a window if no `output_directory` is provided.
+The function uses the provided `test_stats_per_model` and `model_names` to iterate over each model and output feature. It retrieves the necessary statistics and metadata from the `test_stats_per_model` and `metadata` dictionaries. It then sorts the classes based on F1 score and frequency, and creates the line plots using the `visualization_utils.double_axis_line_plot` function. The plots can be saved to a specified `output_directory` or displayed in a window. The file format of the output plots can be specified using the `file_format` parameter.
 
 ### **Function Details**
 The code provided is a function called `frequency_vs_f1` that takes in several parameters and produces two plots for each model in the `test_stats_per_model` list.
 
 The function takes the following parameters:
 - `test_stats_per_model`: A list of dictionaries containing evaluation performance statistics for each model.
-- `metadata`: A dictionary containing intermediate preprocess structure created during training, which includes mappings of the input dataset.
-- `output_feature_name`: The name of the output feature to use for the visualization. If set to `None`, all output features will be used.
+- `metadata`: A dictionary containing intermediate preprocess structure created during training, including mappings of the input dataset.
+- `output_feature_name`: The name of the output feature to use for the visualization. If `None`, all output features are used.
 - `top_n_classes`: A list of integers representing the number of top classes or a list containing the number of top classes to plot.
-- `model_names`: The name of the model or a list of model names to use as labels. If not provided, the labels will be empty strings.
-- `output_directory`: The directory where the plots will be saved. If not specified, the plots will be displayed in a window.
-- `file_format`: The file format of the output plots, either `'pdf'` or `'png'`. The default is `'pdf'`.
-- `**kwargs`: Additional keyword arguments that can be passed to the function.
+- `model_names`: The name of the model or a list of model names to use as labels. Default is `None`.
+- `output_directory`: The directory where to save the plots. If not specified, the plots will be displayed in a window. Default is `None`.
+- `file_format`: The file format of the output plots, either `'pdf'` or `'png'`. Default is `'pdf'`.
+- `**kwargs`: Additional keyword arguments.
 
-The function first converts the `model_names` parameter to a list if it is not already a list. It then generates a filename template based on the `output_directory` and `file_format` parameters.
+The function produces two plots for each model and output feature combination. The first plot is a line plot with one x-axis representing the different classes. The plot has two vertical axes colored in orange and blue. The orange axis represents the frequency of the class, and an orange line is plotted to show the trend. The blue axis represents the F1 score for that class, and a blue line is plotted to show the trend. The classes on the x-axis are sorted by F1 score.
 
-Next, it validates the `output_feature_name` parameter by calling the `_validate_output_feature_name_from_test_stats` function, which checks if the specified output feature name is present in the `test_stats_per_model` list. If `output_feature_name` is set to `None`, it uses all output features.
+The second plot has the same structure as the first one, but the axes are flipped, and the classes on the x-axis are sorted by frequency.
 
-The function then iterates over each model in the `test_stats_per_model` list and each output feature name. It retrieves the necessary data from the `test_stats_per_model` and `metadata` dictionaries.
-
-It calculates the frequencies and F1 scores for each class and sorts them either by F1 score or frequency, depending on the plot. It then calls the `visualization_utils.double_axis_line_plot` function to create the plots, passing in the sorted data and other parameters.
-
-Overall, the function generates two plots for each model and output feature combination, showing the relationship between frequency and F1 score for the specified output feature. The plots are either saved to the specified `output_directory` or displayed in a window.
+The function returns `None`.
 
 ## Function **`hyperopt_report_cli`** Overview
 The function `hyperopt_report_cli` is a command-line interface (CLI) function that generates a report about hyperparameter optimization. It takes in the path to a JSON file containing the hyperopt results, as well as optional parameters for the output directory and file format. 
@@ -2180,13 +2148,13 @@ The function checks if the `space` parameter is present in two lists `visualizat
 Note: The code assumes that the lists `visualization_utils.RAY_TUNE_FLOAT_SPACES` and `visualization_utils.RAY_TUNE_INT_SPACES` are defined elsewhere in the code.
 
 ## Function **`hyperopt_results_to_dataframe`** Overview
-The function `hyperopt_results_to_dataframe` takes three parameters: `hyperopt_results`, `hyperopt_parameters`, and `metric`. 
+The function `hyperopt_results_to_dataframe` takes in three parameters: `hyperopt_results`, `hyperopt_parameters`, and `metric`. 
 
-It converts the results of a hyperparameter optimization process, stored in `hyperopt_results`, into a pandas DataFrame. Each row in the DataFrame represents a set of hyperparameters and their corresponding metric score.
+It converts the results from a hyperparameter optimization process, stored in `hyperopt_results`, into a pandas DataFrame. Each row in the DataFrame represents a set of hyperparameters and their corresponding metric score.
 
 The function iterates over each result in `hyperopt_results` and creates a dictionary with the metric score and the hyperparameters. It then creates a DataFrame using this list of dictionaries.
 
-The hyperparameters are obtained from the `hyperopt_parameters` dictionary, which maps each hyperparameter name to its corresponding space (e.g., continuous, categorical). The function uses the `_convert_space_to_dtype` function to determine the appropriate data type for each hyperparameter and converts the DataFrame columns accordingly.
+Next, the function converts the data types of the hyperparameters in the DataFrame based on the information provided in `hyperopt_parameters`. It uses the `_convert_space_to_dtype` function to determine the appropriate data type for each hyperparameter.
 
 Finally, the function returns the resulting DataFrame.
 
@@ -2202,7 +2170,7 @@ Finally, the function returns the resulting DataFrame `df`.
 Note: The code assumes that the `pd` module from the pandas library is imported and that the `_convert_space_to_dtype` function is defined elsewhere.
 
 ## Function **`get_visualizations_registry`** Overview
-The function `get_visualizations_registry` returns a dictionary that maps string keys to callable functions. Each key represents a specific visualization, and the corresponding value is the function that generates that visualization. The purpose of this function is to provide a centralized registry of visualizations that can be easily accessed and used throughout the codebase.
+The function `get_visualizations_registry` returns a dictionary that maps string keys to callable functions. Each key represents a specific visualization, and the corresponding value is the function that generates that visualization. The function can be used to retrieve the appropriate visualization function based on a given key.
 
 ### **Function Details**
 This code defines a function `get_visualizations_registry()` that returns a dictionary. The keys of the dictionary are strings representing different visualization names, and the values are callable functions that correspond to each visualization.
@@ -2230,13 +2198,11 @@ After parsing the command-line arguments, the function sets the logging level an
 Finally, the function calls the visualization function with the parsed arguments using the `vis_func(**vars(args))` syntax.
 
 ### **Function Details**
-The given code defines a command-line interface (CLI) function called `cli` that takes in a list of command-line arguments (`sys_argv`). 
+The given code defines a command-line interface (CLI) function called `cli` that takes in a list of command-line arguments (`sys_argv`). The function uses the `argparse` module to define and parse the command-line arguments.
 
-The function uses the `argparse` module to define and parse command-line arguments. It sets up various arguments for different options such as ground truth file, output directory, file format, visualization type, etc. 
+The `argparse.ArgumentParser` is created with a description, program name, and usage information. Then, various command-line arguments are added using the `add_argument` method. Each argument has a short and long option, a help message, and optional default values and choices.
 
-After parsing the arguments, the function calls a visualization function based on the specified visualization type. The visualization function is retrieved from a registry of visualization functions. The function passes the parsed arguments as keyword arguments to the visualization function.
+After parsing the command-line arguments, the function performs some additional processing and logging based on the parsed arguments. Finally, it calls a visualization function based on the value of the `visualization` argument.
 
-The code also includes some additional functionality related to logging and callbacks, but without the implementation of the `add_contrib_callback_args` and `get_contrib_callback_registry` functions, it is not possible to determine their exact purpose.
-
-Overall, this code provides a CLI for running a script that analyzes results and generates visualizations based on the specified options and arguments.
+Note: The code references some functions and variables (`get_visualizations_registry`, `add_contrib_callback_args`, `get_logging_level_registry`, etc.) that are not defined in the given code snippet. These functions and variables are likely defined elsewhere in the codebase.
 

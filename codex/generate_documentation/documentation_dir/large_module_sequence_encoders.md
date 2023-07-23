@@ -1,6 +1,6 @@
 # Module:`sequence_encoders.py` Overview
 
-## **Error generating module level documentation**
+## **Error in generating module level documentation**
 
 ## Class **`SequenceEncoder`** Overview
 The class SequenceEncoder is a subclass of the Encoder class. It does not have any additional methods or attributes defined in its own body. Therefore, it inherits all the methods and attributes from the Encoder class.
@@ -19,7 +19,7 @@ The constructor of `SequencePassthroughEncoder` takes several parameters:
 - `encoder_config`: Additional configuration for the encoder.
 - `**kwargs`: Additional keyword arguments.
 
-The `forward` method of `SequencePassthroughEncoder` takes an input sequence and an optional mask as input. It converts the input sequence to `torch.float32` type and ensures that the sequence has a rank of 3 by adding an extra dimension if necessary. Then, it passes the input sequence through a `SequenceReducer` object, which reduces the sequence length dimension based on the specified reduction mode. The reduced output is returned as a dictionary with the key "encoder_output".
+The `forward` method of `SequencePassthroughEncoder` takes an input sequence and an optional mask as input. It converts the input sequence to `torch.float32` type and ensures that the sequence has a rank of 3 by adding an extra dimension if necessary. Then, it passes the input sequence through a `SequenceReducer` object, which performs the reduction operation based on the `reduce_output` parameter. The resulting hidden state is returned as a dictionary with the key "encoder_output".
 
 The `get_schema_cls` method returns the configuration class for `SequencePassthroughEncoder`.
 
@@ -50,36 +50,30 @@ Overall, the `__init__` method initializes the object's attributes, sets up a `S
 The given code is a constructor (`__init__` method) of a class. It initializes the attributes of the class object.
 
 The constructor takes several parameters:
-- `reduce_output` (optional): It defines how to reduce the output tensor along the sequence length dimension if the rank of the tensor is greater than 2. It has default value `None`.
-- `max_sequence_length`: It specifies the maximum sequence length.
-- `encoding_size` (optional): It represents the size of the encoding vector. If the sequence elements are scalars, it is set to `None`.
-- `encoder_config` (optional): It is a configuration object for the encoder. It has default value `None`.
-- `**kwargs`: It is used to accept any additional keyword arguments.
+- `reduce_output` (str): Defines how to reduce the output tensor along the sequence length dimension if the rank of the tensor is greater than 2. It has default value `None`.
+- `max_sequence_length` (int): The maximum sequence length. It has default value `256`.
+- `encoding_size` (int): The size of the encoding vector. It has default value `None` if sequence elements are scalars.
+- `encoder_config` (None or any): Additional configuration for the encoder. It has default value `None`.
+- `**kwargs` (any): Additional keyword arguments.
 
-Inside the constructor, the attributes are initialized as follows:
-- `self.config`: It is assigned the value of `encoder_config`.
-- `self.max_sequence_length`: It is assigned the value of `max_sequence_length`.
-- `self.reduce_output`: It is assigned the value of `reduce_output`.
-- `self.reduce_sequence`: It is initialized as a `SequenceReducer` object with the specified parameters.
+Inside the constructor, the attributes are assigned values:
+- `self.config`: Assigns the value of `encoder_config` to `self.config`.
+- `self.max_sequence_length`: Assigns the value of `max_sequence_length` to `self.max_sequence_length`.
+- `self.reduce_output`: Assigns the value of `reduce_output` to `self.reduce_output`.
+- `self.reduce_sequence`: Initializes a `SequenceReducer` object with the given parameters.
 
-Additionally, the constructor sets the `supports_masking` attribute to `True` if `reduce_output` is `None`, indicating that the class supports masking.
-
-The `logger.debug` statement is used to log a debug message, including the name of the class.
-
-Overall, this constructor initializes the attributes of the class object based on the provided parameters.
+Lastly, the constructor sets the `supports_masking` attribute to `True` if `reduce_output` is `None`, indicating that the class supports masking.
 
 ### Method **`forward`** Overview
 The method "forward" is a function defined within a class. It takes two parameters: "input_sequence" and "mask". 
 
-The "input_sequence" parameter represents the input sequence fed into the encoder. It can be either a tensor of shape [batch x sequence length] with data type torch.int32 or a tensor of shape [batch x sequence length x encoding size] with data type torch.float32. If the input_sequence has data type torch.int32, it is converted to torch.float32.
+The "input_sequence" parameter represents the input sequence fed into the encoder. It can be either a tensor of shape [batch x sequence length] with data type torch.int32 or a tensor of shape [batch x sequence length x encoding size] with data type torch.float32. If the input_sequence has data type torch.int32, it is converted to torch.float32. If the input_sequence has less than 3 dimensions, it is unsqueezed along the last dimension until it has 3 dimensions.
 
 The "mask" parameter represents a sequence mask, but it is not yet implemented in this method.
 
-The method first converts the input_sequence to torch.float32 if it is of type torch.int32. Then, it checks the number of dimensions of the input_sequence tensor. If the number of dimensions is less than 3, it adds an additional dimension at the end using the unsqueeze() function.
+The method then calls another function called "reduce_sequence" with the input_sequence as an argument. The output of this function is stored in a variable called "hidden".
 
-Next, the method calls another function called "reduce_sequence" with the modified input_sequence as the argument. The "reduce_sequence" function is not shown in the provided code snippet.
-
-Finally, the method returns a dictionary with a single key-value pair. The key is "encoder_output" and the value is the result of the "reduce_sequence" function, which is stored in the "hidden" variable.
+Finally, the method returns a dictionary with a single key-value pair. The key is "encoder_output" and the value is the "hidden" variable.
 
 #### **Method Details**
 The given code is a method called `forward` inside a class. It takes two parameters: `input_sequence` and `mask`. 
@@ -108,7 +102,9 @@ In this specific implementation, the `input_shape` method returns a torch.Size o
 Overall, the `input_shape` method is used to determine the shape or dimensions of the input tensor for a specific model or operation in PyTorch.
 
 #### **Method Details**
-The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
+The given code is a method definition for the `input_shape` method of a class. This method returns a `torch.Size` object representing the shape of the input data.
+
+The shape returned is a single-dimensional tensor with a size equal to `self.max_sequence_length`.
 
 ### Method **`output_shape`** Overview
 The method `output_shape` returns the shape of the output of a neural network layer. It is a member function of a class and is expected to be called on an instance of that class. The method returns the shape of the input to the layer, which is stored in the `input_shape` attribute of the instance. The shape is returned as a `torch.Size` object, which is a tuple-like object that represents the dimensions of a tensor.
@@ -147,13 +143,15 @@ The method takes several parameters, including `vocab`, `max_sequence_length`, `
 
 Inside the method, the `super().__init__()` line calls the constructor of the parent class. Then, the method sets the `config` attribute of the object to the value of `encoder_config`.
 
-The method also sets other attributes of the object, such as `embedding_size` and `max_sequence_length`, based on the provided parameters.
+Next, the method initializes the `embedding_size` and `max_sequence_length` attributes of the object based on the provided parameters.
 
-Furthermore, the method initializes and sets the `embed_sequence` attribute of the object by creating an instance of the `EmbedSequence` class. This instance is created with the provided parameters and assigned to the `embed_sequence` attribute.
+The method also sets the `reduce_output` attribute of the object to the value of `reduce_output`. If `reduce_output` is `None`, it sets the `supports_masking` attribute of the object to `True`.
 
-Finally, the method initializes and sets the `reduce_sequence` attribute of the object by creating an instance of the `SequenceReducer` class. This instance is created with the `reduce_mode`, `max_sequence_length`, and `encoding_size` parameters.
+The method then creates an instance of the `EmbedSequence` class, passing the relevant parameters. This instance is assigned to the `embed_sequence` attribute of the object.
 
-Overall, the `__init__` method initializes the object of the class and sets its attributes based on the provided parameters, creating instances of other classes as necessary.
+Finally, the method creates an instance of the `SequenceReducer` class, passing the relevant parameters. This instance is assigned to the `reduce_sequence` attribute of the object.
+
+Overall, the `__init__` method initializes the object of the class by setting its attributes based on the provided parameters. It creates instances of other classes and assigns them to attributes of the object.
 
 #### **Method Details**
 This code defines a class called `__init__` which is the constructor for the class. The constructor takes in several parameters including `vocab`, `max_sequence_length`, `representation`, `embedding_size`, `embeddings_trainable`, `pretrained_embeddings`, `embeddings_on_cpu`, `weights_initializer`, `dropout`, `reduce_output`, and `encoder_config`. 
@@ -164,14 +162,14 @@ Here is a breakdown of what each parameter does:
 
 - `vocab`: A list representing the vocabulary of the input feature to encode.
 - `max_sequence_length`: An integer representing the maximum sequence length.
-- `representation`: A string representing the type of representation for the embeddings. It can be either "dense" or "sparse".
+- `representation`: A string indicating the type of representation for the embeddings. It can be either "dense" or "sparse".
 - `embedding_size`: An integer representing the maximum embedding size. The actual size will be the minimum of `vocabulary_size` and `embedding_size` for dense representations, and exactly `vocabulary_size` for sparse encoding.
 - `embeddings_trainable`: A boolean indicating whether the embeddings should be trainable during the training process.
 - `pretrained_embeddings`: A string representing the path to a file containing embeddings in the GloVe format. If provided, only the embeddings with labels present in the vocabulary are kept.
-- `embeddings_on_cpu`: A boolean indicating whether the embeddings should be stored on the CPU instead of GPU memory.
+- `embeddings_on_cpu`: A boolean indicating whether the embeddings should be stored on CPU memory instead of GPU memory.
 - `weights_initializer`: A string or dictionary specifying the initializer to use for the weights.
 - `dropout`: A float representing the dropout probability.
-- `reduce_output`: A string specifying how to reduce the output tensor along the sequence length dimension if the rank of the tensor is greater than 2.
+- `reduce_output`: A string indicating how to reduce the output tensor along the sequence length dimension if the rank of the tensor is greater than 2.
 - `encoder_config`: A dictionary containing additional configuration options for the encoder.
 
 The constructor initializes the attributes `config`, `embedding_size`, `max_sequence_length`, and `reduce_output`. It also creates an instance of the `EmbedSequence` class and an instance of the `SequenceReducer` class, passing in the appropriate parameters.
@@ -209,9 +207,7 @@ In this specific implementation, the `input_shape` method returns a torch.Size o
 Overall, the `input_shape` method is used to determine the shape or dimensions of the input tensor for a specific model or operation in PyTorch.
 
 #### **Method Details**
-The given code is a method definition for the `input_shape` method of a class. This method returns a `torch.Size` object representing the shape of the input data.
-
-The shape returned is a single-dimensional tensor with a size equal to `self.max_sequence_length`.
+The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
 
 ### Method **`output_shape`** Overview
 The method `output_shape` returns the output shape of a sequence reduction operation. It is defined within a class and returns an object of type `torch.Size`. The method retrieves the output shape from the `reduce_sequence` attribute and returns it.
@@ -224,35 +220,38 @@ Inside the method, it returns the `output_shape` attribute of the `reduce_sequen
 ## Class **`ParallelCNN`** Overview
 The class `ParallelCNN` is a subclass of `SequenceEncoder` and represents a parallel convolutional neural network (CNN) encoder. It is used for encoding input sequences, which can be embedded and processed through multiple parallel convolutional layers.
 
-The `ParallelCNN` class has several parameters that can be set during initialization. Some of the important parameters include:
-- `should_embed`: A boolean indicating whether the input sequence should be embedded using embeddings.
+The `ParallelCNN` class has various parameters that can be set during initialization to configure the behavior of the encoder. Some of the important parameters include:
+
+- `should_embed`: A boolean indicating whether the input sequence should be embedded using an embedding layer.
 - `vocab`: A list representing the vocabulary of the input feature to encode.
 - `representation`: A string indicating the type of representation for the embeddings, either "dense" or "sparse".
-- `embedding_size`: An integer representing the size of the embeddings.
-- `max_sequence_length`: An optional integer indicating the maximum length of the input sequence.
+- `embedding_size`: An integer specifying the size of the embeddings.
+- `max_sequence_length`: An optional integer specifying the maximum length of the input sequence.
 - `embeddings_trainable`: A boolean indicating whether the embeddings should be trainable during the training process.
 - `pretrained_embeddings`: A filepath to a file containing pre-trained embeddings in the GloVe format.
 - `embeddings_on_cpu`: A boolean indicating whether the embeddings should be stored in regular memory and processed on the CPU.
 - `conv_layers`: A list of dictionaries containing the parameters for each convolutional layer, such as `filter_size`, `num_filters`, `pool`, `norm`, and `activation`.
-- `num_conv_layers`: An integer indicating the number of parallel convolutional layers.
-- `filter_size`: An integer representing the width of the 1D convolutional filter.
-- `num_filters`: An integer representing the number of filters (output channels) for the 1D convolution.
-- `pool_function`: A string indicating the pooling function to be used after the convolution operation.
-- `pool_size`: An integer representing the size of the max pooling operation.
+- `num_conv_layers`: An integer specifying the number of parallel convolutional layers.
+- `filter_size`: An integer specifying the width of the 1D convolutional filter.
+- `num_filters`: An integer specifying the number of filters (output channels) for the convolutional layers.
+- `pool_function`: A string indicating the pooling function to use after the convolution operation.
+- `pool_size`: An integer specifying the size of the max pooling operation.
 - `fc_layers`: A list of dictionaries containing the parameters for each fully connected layer, such as `output_size`, `norm`, and `activation`.
-- `num_fc_layers`: An integer indicating the number of stacked fully connected layers.
-- `output_size`: An integer representing the size of the output of a fully connected layer.
+- `num_fc_layers`: An integer specifying the number of stacked fully connected layers.
+- `output_size`: An integer specifying the size of the output of a fully connected layer.
 - `use_bias`: A boolean indicating whether to use bias in the convolutional and fully connected layers.
 - `weights_initializer`: A string or dictionary specifying the initializer to use for the weights.
 - `bias_initializer`: A string or dictionary specifying the initializer to use for the biases.
-- `norm`: A string indicating the type of normalization to be applied.
-- `activation`: A string indicating the activation function to be used.
+- `norm`: A string specifying the normalization method to use.
+- `activation`: A string specifying the activation function to use.
 - `dropout`: A boolean indicating whether to apply dropout before returning the encoder output.
-- `reduce_output`: A string indicating how to reduce the output tensor of the convolutional layers along the sequence length dimension.
+- `reduce_output`: A string specifying how to reduce the output tensor of the convolutional layers along the sequence length dimension.
 
-The `ParallelCNN` class overrides the `forward` method to perform the forward pass of the encoder. It takes an input tensor and an optional mask tensor and returns the encoder output. The input tensor is first embedded if `should_embed` is True, and then passed through the parallel convolutional layers. The output of the convolutional layers is then reduced along the sequence length dimension if `reduce_output` is not None. Finally, the reduced output is passed through the fully connected layers if `reduce_output` is not None.
+The `ParallelCNN` class implements the `forward` method, which performs the forward pass of the encoder. It takes an input tensor and an optional mask tensor and returns the encoder output as a dictionary.
 
-The `ParallelCNN` class also provides methods for getting the schema class, accessing the input and output shapes of the encoder, and logging debug information.
+The class also provides methods for getting the schema class, accessing the input and output shapes of the encoder, and logging debug information.
+
+Overall, the `ParallelCNN` class provides a flexible and configurable implementation of a parallel CNN encoder for sequence encoding tasks.
 
 ### Method **`__init__`** Overview
 The `__init__` method is the constructor method of a class. It is called when an object of the class is created. In this specific code, the `__init__` method initializes the object of the class with various parameters and assigns default values to them if not provided.
@@ -286,7 +285,7 @@ Here is a breakdown of the parameters:
 - `output_size`: An integer representing the size of the output of a fully connected layer. This is the default value that will be used if an `output_size` is not specified in `fc_layers`.
 - `use_bias`: A boolean indicating whether to use bias in the convolutional and fully connected layers.
 - `weights_initializer`: The initializer to use for the weights of the convolutional and fully connected layers. It can be a string representing the name of the initializer or a dictionary with a `type` key that identifies the type of initializer and other keys for its parameters.
-- `bias_initializer`: The initializer to use for the biases of the convolutional and fully connected layers. It can be a string representing the name of the initializer or a dictionary with a `type` key that identifies the type of initializer and other keys for its parameters.
+- `bias_initializer`: The initializer to use for the bias of the convolutional and fully connected layers. It can be a string representing the name of the initializer or a dictionary with a `type` key that identifies the type of initializer and other keys for its parameters.
 - `norm`: A string representing the normalization method to use for the convolutional and fully connected layers.
 - `norm_params`: A dictionary containing the parameters for the normalization method.
 - `activation`: A string representing the activation function to use for the convolutional and fully connected layers.
@@ -313,33 +312,33 @@ The method returns a dictionary with the key "encoder_output" and the value of t
 #### **Method Details**
 This code defines a forward method for a neural network model. The forward method takes two inputs: "inputs" and "mask". "inputs" is a tensor representing the input sequence fed into the encoder, with shape [batch x sequence length] and type torch.int32. "mask" is an optional tensor representing an input mask, but it is currently unused and not yet implemented.
 
-The method starts by checking if the input sequence should be embedded. If embedding is required, the method calls the "embed_sequence" function to embed the input sequence. Otherwise, it assigns the input sequence to the "embedded_sequence" variable. If the "embedded_sequence" tensor has less than 3 dimensions, the method adds an extra dimension by unsqueezing it. The "embedded_sequence" tensor is then converted to dtype torch.float.
+The method starts by checking if the input sequence should be embedded. If embedding is required, the method calls the "embed_sequence" function to embed the input sequence. Otherwise, it assigns the input sequence to the "embedded_sequence" variable. If the "embedded_sequence" tensor has less than 3 dimensions, the method adds an extra dimension by unsqueezing it along the last axis. The "embedded_sequence" tensor is then converted to dtype torch.float.
 
-Next, the method applies convolutional layers to the "embedded_sequence" tensor using the "parallel_conv1d" function.
+Next, the method applies convolutional layers to the "embedded_sequence" tensor using the "parallel_conv1d" function. The resulting tensor is assigned to the "hidden" variable.
 
-After the convolutional layers, the method checks if there is a sequence reduction operation specified. If so, it applies the reduction operation to the "hidden" tensor.
+If a sequence reduction operation is specified (stored in the "reduce_output" attribute), the method applies the reduction operation to the "hidden" tensor using the "reduce_sequence" function.
 
-Finally, if there is a fully connected (FC) layer stack specified, the method applies the FC layers to the "hidden" tensor.
+Finally, if there are fully connected layers specified (stored in the "fc_stack" attribute), the method applies these layers to the "hidden" tensor using the "fc_stack" function.
 
 The method returns a dictionary with the key "encoder_output" and the value of the "hidden" tensor.
 
 ### Method **`get_schema_cls`** Overview
 The method `get_schema_cls` is a function that returns the class `ParallelCNNConfig`. 
 
-This method is used to retrieve the schema class, which is a class that defines the structure and properties of an object. In this case, the `ParallelCNNConfig` class represents the configuration settings for a parallel convolutional neural network (CNN).
+This method is used to retrieve the schema class, which is a blueprint or template for creating objects with specific attributes and methods. In this case, the `ParallelCNNConfig` class is the schema class that defines the structure and behavior of objects that will be created based on it.
 
-By calling `get_schema_cls()`, the code can obtain an instance of the `ParallelCNNConfig` class, which can then be used to access and modify the configuration settings for the parallel CNN.
+By calling `get_schema_cls()`, you can obtain the schema class `ParallelCNNConfig` and use it to create instances of objects that adhere to its defined attributes and methods.
 
 #### **Method Details**
 def get_schema_cls():
     return ParallelCNNConfig
 
 ### Method **`input_shape`** Overview
-The method `input_shape` is a function that belongs to a class and returns a torch.Size object. It is used to determine the shape or dimensions of the input data that will be fed into a neural network model.
+The method `input_shape` is a function that belongs to a class and returns a torch.Size object. The torch.Size object represents the shape or dimensions of a tensor in PyTorch. 
 
-In this specific code snippet, the `input_shape` method returns a torch.Size object with a single dimension, which is determined by the value of `self.max_sequence_length`. The `self.max_sequence_length` is a variable that represents the maximum length of a sequence in the input data.
+In this specific implementation, the `input_shape` method returns a torch.Size object with a single dimension, which is determined by the value of `self.max_sequence_length`. The `self.max_sequence_length` is a variable or attribute of the class that represents the maximum length of a sequence.
 
-By calling this method, you can obtain the shape of the input data, which is useful for configuring the input layer of a neural network model or for performing other operations that require knowledge of the input data dimensions.
+Overall, the `input_shape` method is used to determine the shape or dimensions of the input tensor for a specific model or operation in PyTorch.
 
 #### **Method Details**
 The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
@@ -404,40 +403,40 @@ The method also creates and initializes other objects, such as `EmbedSequence`, 
 Overall, the `__init__` method sets up the initial state of the encoder object and prepares it for further operations.
 
 #### **Method Details**
-The code defines a class called `__init__` which serves as the constructor for another class. The constructor takes in several parameters that specify the configuration of the encoder. Here is a breakdown of the parameters:
+This code defines an encoder class with various parameters for configuring the encoder architecture. The `__init__` method initializes the encoder with the specified parameters. Here is a breakdown of the parameters:
 
-- `should_embed`: A boolean indicating whether the input sequence should be embedded into dense vectors.
+- `should_embed`: A boolean indicating whether the input sequence should be embedded.
 - `vocab`: A list representing the vocabulary of the input feature to encode.
 - `representation`: A string indicating the type of representation for the embeddings. It can be either "dense" or "sparse".
-- `embedding_size`: An integer specifying the size of the embeddings.
-- `max_sequence_length`: An integer specifying the maximum length of the input sequence.
-- `embeddings_trainable`: A boolean indicating whether the embeddings should be trainable during the training process.
-- `pretrained_embeddings`: A string representing the path to a file containing pre-trained embeddings in the GloVe format.
-- `embeddings_on_cpu`: A boolean indicating whether the embeddings should be stored in regular memory and processed on the CPU.
+- `embedding_size`: An integer representing the maximum embedding size.
+- `max_sequence_length`: An integer representing the maximum sequence length.
+- `embeddings_trainable`: A boolean indicating whether the embeddings should be trainable.
+- `pretrained_embeddings`: A string representing the path to a file containing pretrained embeddings.
+- `embeddings_on_cpu`: A boolean indicating whether the embeddings should be stored on CPU memory.
 - `conv_layers`: A list of dictionaries containing the parameters for the convolutional layers.
-- `num_conv_layers`: An integer specifying the number of stacked convolutional layers.
-- `num_filters`: An integer specifying the number of filters (output channels) for the convolutional layers.
-- `filter_size`: An integer specifying the width of the 1D convolutional filter.
-- `strides`: An integer specifying the stride of the convolutional operation.
-- `padding`: A string specifying the padding mode for the convolutional operation.
-- `dilation_rate`: An integer specifying the dilation rate for the convolutional operation.
-- `pool_function`: A string specifying the pooling function to use after the convolutional operation.
-- `pool_size`: An integer specifying the size of the max pooling operation.
-- `pool_strides`: An integer specifying the stride of the max pooling operation.
-- `pool_padding`: A string specifying the padding mode for the max pooling operation.
+- `num_conv_layers`: An integer representing the number of stacked convolutional layers.
+- `num_filters`: An integer representing the number of filters for the convolutional layers.
+- `filter_size`: An integer representing the size of the convolutional filters.
+- `strides`: An integer representing the stride of the convolutional filters.
+- `padding`: A string indicating the padding mode for the convolutional layers.
+- `dilation_rate`: An integer representing the dilation rate for the convolutional layers.
+- `pool_function`: A string indicating the pooling function to use after the convolutional layers.
+- `pool_size`: An integer representing the size of the pooling window.
+- `pool_strides`: An integer representing the stride of the pooling window.
+- `pool_padding`: A string indicating the padding mode for the pooling operation.
 - `fc_layers`: A list of dictionaries containing the parameters for the fully connected layers.
-- `num_fc_layers`: An integer specifying the number of stacked fully connected layers.
-- `output_size`: An integer specifying the size of the output of a fully connected layer.
+- `num_fc_layers`: An integer representing the number of stacked fully connected layers.
+- `output_size`: An integer representing the size of the output of a fully connected layer.
 - `use_bias`: A boolean indicating whether to use bias in the convolutional and fully connected layers.
-- `weights_initializer`: A string specifying the initializer to use for the weights.
-- `bias_initializer`: A string specifying the initializer to use for the biases.
-- `norm`: A string specifying the normalization to apply to the output of the convolutional and fully connected layers.
-- `norm_params`: A dictionary specifying the parameters for the normalization.
-- `activation`: A string specifying the activation function to use.
-- `dropout`: A float specifying the dropout rate.
-- `reduce_output`: A string specifying how to reduce the output tensor of the convolutional layers along the sequence length dimension.
+- `weights_initializer`: A string or dictionary representing the initializer to use for the weights.
+- `bias_initializer`: A string or dictionary representing the initializer to use for the biases.
+- `norm`: A string indicating the normalization method to use.
+- `norm_params`: A dictionary containing the parameters for the normalization method.
+- `activation`: A string indicating the activation function to use.
+- `dropout`: A float representing the dropout rate.
+- `reduce_output`: A string indicating how to reduce the output tensor of the convolutional layers.
 
-The constructor initializes the encoder with the given parameters and creates the necessary layers for the encoder, such as the embedding layer, convolutional layers, and fully connected layers.
+The `__init__` method also initializes the various components of the encoder, such as the embedding layer, convolutional layer stack, sequence reducer, and fully connected layer stack.
 
 ### Method **`get_schema_cls`** Overview
 The method `get_schema_cls` is a function that returns the class `StackedCNNConfig`. 
@@ -460,7 +459,11 @@ Overall, the `input_shape` method is used to determine the shape or dimensions o
 The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
 
 ### Method **`output_shape`** Overview
-The method `output_shape` returns the output shape of a neural network layer or module. It is defined within a class and takes no arguments. The method first checks if the attribute `reduce_output` is `None`. If it is, it returns the output shape of a `conv1d_stack` attribute. Otherwise, it returns the output shape of an `fc_stack` attribute. The output shape is represented as a `torch.Size` object.
+The method `output_shape` returns the output shape of a neural network layer or module. It is defined within a class and takes no arguments. 
+
+The method first checks if the attribute `reduce_output` is `None`. If it is, it returns the output shape of the `conv1d_stack` attribute. Otherwise, it returns the output shape of the `fc_stack` attribute.
+
+The output shape is represented as a `torch.Size` object, which is a tuple of integers representing the dimensions of the output tensor.
 
 #### **Method Details**
 The given code is a method definition in a class. It defines a method called `output_shape` that takes no arguments and returns a value of type `torch.Size`.
@@ -495,11 +498,11 @@ The method starts by checking if the input sequence should be embedded. If embed
 
 Next, the method applies convolutional layers to the embedded sequence using the "conv1d_stack" function.
 
-If a sequence reduction operation is specified (i.e., "reduce_output" is not None), the method applies the reduction operation to the hidden sequence using the "reduce_sequence" function.
+If a sequence reduction operation is specified (i.e., if "reduce_output" is not None), the method applies the reduction operation to the hidden sequence using the "reduce_sequence" function.
 
-Finally, if there are fully connected layers specified (i.e., "fc_stack" is not None), the method applies these layers to the hidden sequence.
+Finally, if there are fully connected layers specified (i.e., if "fc_stack" is not None), the method applies these layers to the hidden sequence.
 
-The method returns a dictionary with the key "encoder_output" and the value of the hidden sequence.
+The method returns a dictionary with the key "encoder_output" and the value of the hidden sequence. The shape of the hidden sequence depends on whether a reduction operation was applied. If no reduction was applied, the shape is [batch_size, seq_size, num_filters]. If a reduction was applied, the shape is [batch_size, output_size].
 
 ## Class **`StackedParallelCNN`** Overview
 The `StackedParallelCNN` class is a subclass of `SequenceEncoder` and represents a stacked parallel convolutional neural network (CNN) encoder. It is used for encoding input sequences, which can be embedded and passed through multiple layers of parallel convolutional filters.
@@ -544,20 +547,20 @@ This code defines a class called `__init__` which serves as the constructor for 
 - `use_bias`: A boolean indicating whether to use bias in the convolutional and fully connected layers.
 - `weights_initializer`: A string or dictionary representing the initializer to use for the weights.
 - `bias_initializer`: A string or dictionary representing the initializer to use for the biases.
-- `norm`: A string representing the type of normalization to use.
+- `norm`: A string representing the type of normalization to apply to the output of the convolutional and fully connected layers.
 - `norm_params`: A dictionary representing the parameters for the normalization.
 - `activation`: A string representing the activation function to use.
 - `dropout`: A float representing the dropout rate.
 - `reduce_output`: A string indicating how to reduce the output tensor of the convolutional layers along the sequence length dimension.
 
-The constructor initializes the object by setting the values of its attributes based on the provided parameters. It also creates instances of other classes (`EmbedSequence`, `ParallelConv1DStack`, `SequenceReducer`, and `FCStack`) and assigns them to attributes of the object.
+The constructor initializes various attributes of the object based on the provided parameters. It also creates instances of other classes (`EmbedSequence`, `ParallelConv1DStack`, `SequenceReducer`, and `FCStack`) and assigns them to attributes of the object.
 
 ### Method **`get_schema_cls`** Overview
 The method `get_schema_cls` is a function that returns the class `StackedParallelCNNConfig`. 
 
-This method is used to retrieve the schema class, which is a blueprint or template for creating objects with specific attributes and behaviors. In this case, the `StackedParallelCNNConfig` class represents a configuration for a stacked parallel convolutional neural network (CNN).
+This method is used to retrieve the schema class, which is a blueprint or template for creating objects with specific attributes and behaviors. In this case, the `StackedParallelCNNConfig` class represents a configuration for a stacked parallel convolutional neural network.
 
-By calling `get_schema_cls`, you can obtain an instance of the `StackedParallelCNNConfig` class, which can then be used to create objects with the desired configuration for the stacked parallel CNN.
+By calling `get_schema_cls()`, you can obtain an instance of the `StackedParallelCNNConfig` class, which can then be used to create objects with the desired configuration for the stacked parallel CNN.
 
 #### **Method Details**
 The given code defines a function named `get_schema_cls` that returns the class `StackedParallelCNNConfig`.
@@ -570,9 +573,7 @@ In this specific implementation, the `input_shape` method returns a torch.Size o
 Overall, the `input_shape` method is used to determine the shape or dimensions of the input tensor for a specific model or operation in PyTorch.
 
 #### **Method Details**
-The given code is a method definition for the `input_shape` method of a class. This method returns a `torch.Size` object representing the shape of the input data.
-
-The shape returned is a single-dimensional tensor with a size equal to `self.max_sequence_length`.
+The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
 
 ### Method **`output_shape`** Overview
 The method `output_shape` returns the output shape of a neural network layer or module. It is defined as a method within a class and takes no arguments. 
@@ -591,26 +592,30 @@ The `forward` method is a method of a class that takes in inputs and an optional
 
 First, if the `should_embed` flag is True, the inputs are passed through an embedding layer using the `embed_sequence` method. Otherwise, the inputs are used as is.
 
-Next, the embedded sequence is passed through a stack of convolutional layers using the `parallel_conv1d_stack` method.
+Next, the embedded sequence is assigned to the `hidden` variable.
 
-If a reduction operation is specified (i.e., `reduce_output` is not None), the sequence is further reduced using the `reduce_sequence` method.
+Then, the `hidden` sequence is passed through a stack of convolutional layers using the `parallel_conv1d_stack` method.
 
-Finally, the reduced sequence is passed through a stack of fully connected layers using the `fc_stack` method.
+If the `reduce_output` flag is not None, the `hidden` sequence is further reduced using the `reduce_sequence` method.
 
-The output of the method is a dictionary containing the encoder output, which is the final hidden state of the sequence.
+Finally, if there are any fully connected layers specified in the `fc_stack`, the `hidden` sequence is passed through them.
+
+The method returns a dictionary with the key "encoder_output" and the value being the final `hidden` sequence.
+
+Note: The code provided is incomplete and lacks the implementation details of the methods `embed_sequence`, `parallel_conv1d_stack`, `reduce_sequence`, and `fc_stack`.
 
 #### **Method Details**
 This code defines a forward method for a neural network model. The forward method takes two inputs: "inputs" and "mask". "inputs" is a tensor representing the input sequence fed into the encoder, with shape [batch x sequence length]. "mask" is an optional tensor representing an input mask, but it is currently unused and not implemented.
 
-The method starts by checking if the input sequence should be embedded. If embedding is required, the method calls the "embed_sequence" function to embed the input sequence. Otherwise, it assigns the input sequence to the "embedded_sequence" variable. If the shape of the "embedded_sequence" tensor is not 3-dimensional, the method adds an extra dimension by unsqueezing it.
+The method starts by checking if the input sequence should be embedded. If it should be embedded, the method calls the "embed_sequence" function to embed the sequence. Otherwise, it sets the embedded_sequence variable to the inputs tensor. If the embedded_sequence tensor has less than 3 dimensions, the method adds an extra dimension by unsqueezing it.
 
-Next, the method applies a parallel convolutional stack to the embedded sequence using the "parallel_conv1d_stack" function.
+Next, the method applies a parallel convolutional stack to the hidden tensor. The parallel_conv1d_stack function is called with the hidden tensor and the mask.
 
-If a sequence reduction operation is specified (stored in the "reduce_output" variable), the method applies the reduction operation to the hidden sequence using the "reduce_sequence" function.
+After the convolutional layers, the method checks if there is a sequence reduction specified. If there is, it applies the reduce_sequence function to the hidden tensor.
 
-Finally, if there are fully connected layers specified (stored in the "fc_stack" variable), the method applies these layers to the hidden sequence.
+Finally, if there is a specified FC (fully connected) layer stack, the method applies it to the hidden tensor. The fc_stack function is called with the hidden tensor and the mask.
 
-The method returns a dictionary with the key "encoder_output" and the value being the hidden sequence.
+The method returns a dictionary with the encoder output, which is the hidden tensor.
 
 ## Class **`StackedRNN`** Overview
 The `StackedRNN` class is a subclass of `SequenceEncoder` and is used for encoding sequential data. It implements a stacked recurrent neural network (RNN) architecture.
@@ -624,13 +629,23 @@ During the forward pass, the input sequence is first embedded (if specified), th
 Overall, the `StackedRNN` class provides a flexible and customizable implementation of a stacked RNN encoder for sequential data.
 
 ### Method **`__init__`** Overview
-The `__init__` method is the constructor method of a class. It is called when an object of the class is created. In this specific code, the `__init__` method initializes the attributes of an object of the class.
+The `__init__` method is the constructor method of a class. It is called when an object of the class is created. 
 
-The method takes multiple parameters, each representing a specific attribute of the object. These parameters include `should_embed`, `vocab`, `representation`, `embedding_size`, `embeddings_trainable`, `pretrained_embeddings`, and many more.
+In this specific code, the `__init__` method initializes the attributes of an object of a class. It takes multiple parameters, each with a default value. These parameters define the configuration and settings of the object.
 
-The method sets the values of these attributes based on the provided parameters. It also creates and initializes other objects, such as `EmbedSequence`, `RecurrentStack`, and `SequenceReducer`, using the provided parameters.
+The method starts by setting the values of the parameters passed to it. It then initializes the `config` attribute with the value of `encoder_config`. 
 
-Overall, the `__init__` method sets up the initial state of the object and prepares it for further use.
+Next, it initializes the `max_sequence_length`, `hidden_size`, and `embedding_size` attributes with the corresponding parameter values.
+
+If the `should_embed` parameter is `True`, it initializes the `embed_sequence` attribute with an instance of the `EmbedSequence` class, passing the necessary parameters.
+
+After that, it initializes the `recurrent_stack` attribute with an instance of the `RecurrentStack` class, passing the necessary parameters.
+
+Then, it initializes the `reduce_output` attribute with the value of the `reduce_output` parameter.
+
+Finally, if the `reduce_output` is `None`, it sets the `supports_masking` attribute to `True`. Otherwise, it initializes the `fc_stack` attribute with an instance of the `FCStack` class, passing the necessary parameters.
+
+Overall, the `__init__` method sets up the initial state of the object by initializing its attributes based on the provided parameters.
 
 #### **Method Details**
 The code defines a class called `__init__` which serves as the constructor for the class it belongs to. The constructor takes in several parameters that are used to initialize the attributes of the class.
@@ -681,11 +696,11 @@ By calling `get_schema_cls()`, you can obtain an instance of the `StackedRNNConf
 The given code is a function named `get_schema_cls` that returns the class `StackedRNNConfig`.
 
 ### Method **`input_shape`** Overview
-The method `input_shape` is a function that belongs to a class and returns a torch.Size object. The torch.Size object represents the shape or dimensions of a tensor in PyTorch. 
+The method `input_shape` is a function that belongs to a class and returns a torch.Size object. It is used to determine the shape or dimensions of the input data that will be fed into a neural network model.
 
-In this specific implementation, the `input_shape` method returns a torch.Size object with a single dimension, which is determined by the value of `self.max_sequence_length`. The `self.max_sequence_length` is a variable or attribute of the class that represents the maximum length of a sequence.
+In this specific code snippet, the `input_shape` method returns a torch.Size object with a single dimension, which is determined by the value of `self.max_sequence_length`. The `self.max_sequence_length` is a variable that represents the maximum length of a sequence in the input data.
 
-Overall, the `input_shape` method is used to determine the shape or dimensions of the input tensor for a specific model or operation in PyTorch.
+By calling this method, you can obtain the shape of the input data, which is useful for configuring the input layer of a neural network model or for performing other operations that require knowledge of the input data dimensions.
 
 #### **Method Details**
 The given code is a method definition for the `input_shape` method in a class. This method returns a `torch.Size` object with a single dimension, `self.max_sequence_length`.
@@ -707,7 +722,7 @@ The method has a return type annotation `-> torch.Size`, indicating that the met
 Inside the method, there is an `if` statement that checks if the `reduce_output` attribute of the instance is not `None`. If it is not `None`, the method returns the `output_shape` attribute of the `fc_stack` object. Otherwise, it returns the `output_shape` attribute of the `recurrent_stack` object.
 
 ### Method **`input_dtype`** Overview
-The method `input_dtype` is a function that belongs to a class. It returns the data type of the input that is expected by the class. In this specific case, the method returns `torch.int32`, which indicates that the input should be of type 32-bit integer.
+The method `input_dtype` is a function that returns the data type of the input for a given object. In this case, it returns the data type `torch.int32`, which represents a 32-bit integer in the PyTorch library. This method is used to specify the expected data type of the input when using the object in a PyTorch model or operation.
 
 #### **Method Details**
 The given code is a method definition in a Python class. The method is named "input_dtype" and it takes one parameter, "self", which refers to the instance of the class.
@@ -734,19 +749,17 @@ Finally, if there are any fully connected layers specified in the `fc_stack` att
 The method returns a dictionary with two keys: "encoder_output" and "encoder_output_state". The value associated with the "encoder_output" key is the final hidden sequence, and the value associated with the "encoder_output_state" key is the final state of the recurrent layers.
 
 #### **Method Details**
-This code defines a forward method for a neural network encoder. The forward method takes two inputs: "inputs" and "mask". "inputs" is a tensor representing the input sequence fed into the encoder, with shape [batch x sequence length]. "mask" is an optional tensor representing an input mask, but it is currently unused and not yet implemented.
+This code defines a forward method for a class. The forward method takes two arguments: inputs and mask. The inputs argument is a torch.Tensor representing the input sequence fed into the encoder. The mask argument is an optional torch.Tensor representing an input mask (currently unused).
 
-The method starts by checking if the input sequence should be embedded. If embedding is required, the method calls the "embed_sequence" function to embed the input sequence. Otherwise, it assigns the input sequence to the "embedded_sequence" variable. If the shape of the "embedded_sequence" tensor is not 3-dimensional, the method adds an extra dimension by unsqueezing it.
+The method starts by checking if the should_embed attribute is True. If it is, the input sequence is passed through an embed_sequence method to obtain an embedded_sequence. Otherwise, the embedded_sequence is set to the inputs.
 
-Next, the method assigns the "embedded_sequence" tensor to the "hidden" variable.
+Next, the embedded_sequence is passed through a recurrent_stack method to obtain a hidden state and a final_state.
 
-Then, the method passes the "hidden" tensor to a recurrent stack, which applies recurrent layers to the input sequence. The "mask" parameter is also passed to the recurrent stack, but its purpose is not clear from the provided code.
+If the reduce_output attribute is not None, the hidden state is passed through a reduce_sequence method to reduce the sequence length.
 
-After the recurrent layers, the method checks if there is a sequence reduction operation specified. If so, it applies the reduction operation to the "hidden" tensor.
+Finally, if there is an fc_stack attribute, the hidden state is passed through it.
 
-Finally, if there is a fully connected (FC) layer stack specified, the method applies the FC layers to the "hidden" tensor.
-
-The method returns a dictionary containing two keys: "encoder_output" and "encoder_output_state". The "encoder_output" value is the final hidden tensor, and the "encoder_output_state" value is the final state of the recurrent layers.
+The method returns a dictionary with two keys: "encoder_output" and "encoder_output_state". The "encoder_output" value is the hidden state, and the "encoder_output_state" value is the final_state.
 
 ## Class **`StackedCNNRNN`** Overview
 The `StackedCNNRNN` class is a subclass of `SequenceEncoder` and represents a model architecture that combines stacked convolutional neural networks (CNNs) and recurrent neural networks (RNNs) for sequence encoding.
@@ -801,10 +814,10 @@ The `StackedCNNRNN` class implements the `forward` method, which takes an input 
 2. Applies the stacked convolutional layers to the embedded sequence.
 3. Applies the stacked recurrent layers to the output of the convolutional layers.
 4. Reduces the sequence length dimension of the output if `reduce_output` is not None.
-5. Applies the fully connected layers to the reduced sequence.
-6. Returns the encoder output and the final state of the RNNs.
+5. Applies the fully connected layers to the reduced sequence if `reduce_output` is not None.
+6. Returns the encoder output and the final state of the recurrent layers.
 
-Overall, the `StackedCNNRNN` class provides a flexible and configurable architecture for sequence encoding using a combination of CNNs and RNNs.
+Overall, the `StackedCNNRNN` class combines the power of CNNs for local feature extraction and RNNs for capturing sequential dependencies to encode input sequences.
 
 ### Method **`__init__`** Overview
 The `__init__` method is the constructor method of a class. It is called when an object of the class is created. 
@@ -820,7 +833,7 @@ Some of the important parameters include:
 - `embeddings_trainable`: A boolean value indicating whether the embeddings should be trainable or fixed.
 - `pretrained_embeddings`: A file path to a file containing pre-trained embeddings.
 - `conv_layers`: A list of dictionaries representing the configuration of the convolutional layers.
-- `num_conv_layers`: An integer representing the number of convolutional layers to use.
+- `num_conv_layers`: An integer representing the number of convolutional layers.
 - `num_filters`: An integer representing the number of filters in the convolutional layers.
 - `filter_size`: An integer representing the size of the filters in the convolutional layers.
 - `strides`: An integer representing the stride size in the convolutional layers.
@@ -838,22 +851,24 @@ Some of the important parameters include:
 - `bidirectional`: A boolean value indicating whether to use bidirectional recurrent layers.
 - `activation`: A string indicating the activation function to use in the recurrent layers.
 - `recurrent_activation`: A string indicating the recurrent activation function to use in the recurrent layers.
-- `unit_forget_bias`: A boolean value indicating whether to use a bias in the forget gate of the recurrent layers.
+- `unit_forget_bias`: A boolean value indicating whether to use a bias term in the forget gate of the recurrent layers.
 - `recurrent_initializer`: A string indicating the initializer to use for the recurrent layers.
 - `dropout`: A float representing the dropout rate in the recurrent layers.
 - `fc_layers`: A list of dictionaries representing the configuration of the fully connected layers.
-- `num_fc_layers`: An integer representing the number of fully connected layers to use.
+- `num_fc_layers`: An integer representing the number of fully connected layers.
 - `output_size`: An integer representing the size of the output of the fully connected layers.
-- `use_bias`: A boolean value indicating whether to use a bias in the fully connected layers.
+- `use_bias`: A boolean value indicating whether to use a bias term in the fully connected layers.
 - `weights_initializer`: A string indicating the initializer to use for the weights of the fully connected layers.
-- `bias_initializer`: A string indicating the initializer to use for the biases of the fully connected layers.
+- `bias_initializer`: A string indicating the initializer to use for the bias terms of the fully connected layers.
 - `norm`: A string indicating the normalization layer to use.
 - `norm_params`: A dictionary containing the parameters for the normalization layer.
 - `fc_activation`: A string indicating the activation function to use in the fully connected layers.
 - `fc_dropout`: A float representing the dropout rate in the fully connected layers.
 - `reduce_output`: A string indicating how to reduce the output tensor of the convolutional layers.
 
-The `__init__` method initializes the various components of the encoder based on the provided parameters. It creates instances of other classes, such as `EmbedSequence`, `Conv1DStack`, `RecurrentStack`, and `FCStack`, and sets their configurations based on the input parameters.
+The `__init__` method initializes the various components of the encoder based on the provided parameters. It creates instances of other classes, such as `EmbedSequence`, `Conv1DStack`, `RecurrentStack`, and `FCStack`, and sets them as attributes of the encoder object. It also sets the `config` attribute of the encoder object to the provided `encoder_config` parameter.
+
+Overall, the `__init__` method sets up the encoder object with the specified configuration and initializes its components.
 
 #### **Method Details**
 This code defines a class called `Encoder` with an `__init__` method that takes in a variety of parameters to configure the encoder. Here is a breakdown of the parameters:
@@ -941,15 +956,15 @@ The method has a return type annotation `-> torch.Size`, indicating that the met
 Inside the method, there is an `if` statement that checks if the `reduce_output` attribute of the instance is not `None`. If it is not `None`, the method returns the `output_shape` attribute of the `fc_stack` object. Otherwise, it returns the `output_shape` attribute of the `recurrent_stack` object.
 
 ### Method **`forward`** Overview
-The `forward` method is a method of a class that performs a sequence encoding task. It takes two parameters: `inputs`, which is a tensor representing the input sequence, and `mask`, which is an optional tensor representing a mask for the input sequence (currently unused). 
+The `forward` method is a method of a class that performs a sequence encoding task. It takes two parameters: `inputs`, which is a tensor representing the input sequence, and `mask`, which is an optional tensor representing a mask for the input sequence (currently unused).
 
-The method starts by checking if the input sequence needs to be embedded. If embedding is required, it calls the `embed_sequence` method to embed the input sequence. Otherwise, it assigns the input sequence to the `embedded_sequence` variable. If the `embedded_sequence` tensor has less than 3 dimensions, it adds an extra dimension to it.
+The method starts by checking if the input sequence needs to be embedded. If so, it calls the `embed_sequence` method to embed the sequence. Otherwise, it assigns the input sequence to the `embedded_sequence` variable. If the `embedded_sequence` tensor has less than 3 dimensions, it adds an extra dimension to it.
 
 Next, the method applies a stack of 1D convolutional layers to the `embedded_sequence` tensor. Then, it applies a stack of recurrent layers (such as RNN or GRU) to the output of the convolutional layers. The output of the recurrent layers is assigned to the `hidden` variable, and the final state of the recurrent layers is assigned to the `final_state` variable.
 
-If a sequence reduction operation is specified (such as max pooling or average pooling), the method applies the reduction operation to the `hidden` tensor. After that, it applies a stack of fully connected layers to the `hidden` tensor.
+If a sequence reduction operation is specified (such as max pooling or average pooling), the method applies it to the `hidden` tensor. Then, it applies a stack of fully connected layers to the output of the sequence reduction operation.
 
-Finally, the method returns a dictionary containing two keys: "encoder_output" and "encoder_output_state". The value associated with the "encoder_output" key is the `hidden` tensor, which represents the encoded sequence. The value associated with the "encoder_output_state" key is the `final_state` tensor, which represents the final state of the recurrent layers.
+Finally, the method returns a dictionary containing two keys: "encoder_output" and "encoder_output_state". The value associated with the "encoder_output" key is the `hidden` tensor, which represents the encoded sequence. The value associated with the "encoder_output_state" key is the `final_state` variable, which represents the final state of the recurrent layers.
 
 #### **Method Details**
 This code defines a forward method for a neural network encoder. The forward method takes two inputs: "inputs" and "mask". 
@@ -971,17 +986,18 @@ Finally, if there are fully connected layers specified (i.e., the "fc_stack" par
 The method returns a dictionary containing the encoder output and the encoder output state. The encoder output is the hidden sequence, and the encoder output state is the final state of the recurrent layer stack.
 
 ## Class **`StackedTransformer`** Overview
-The `StackedTransformer` class is a subclass of `SequenceEncoder` and represents a stacked transformer model for sequence encoding. It takes in various parameters to configure the model, such as the maximum sequence length, whether to use embeddings, the vocabulary, the representation type (dense or sparse), the size of the embeddings, whether the embeddings are trainable, pretrained embeddings, and more.
+The `StackedTransformer` class is a subclass of `SequenceEncoder` and represents a stacked transformer model. It is used for encoding input sequences, such as text, into a fixed-length representation. 
 
-The class initializes the model by setting the configuration parameters and creating the necessary layers and modules. It includes an embedding layer (`TokenAndPositionEmbedding`) to map the input sequence into embeddings, a projection layer (`nn.Linear`) to project the embeddings to the hidden size, a transformer stack (`TransformerStack`) to process the hidden sequence, a sequence reducer (`SequenceReducer`) to reduce the output sequence, and an optional fully connected stack (`FCStack`) for further processing.
+The class has various parameters that can be set during initialization, including the maximum sequence length, whether to use embeddings, the size of the embeddings, the number of transformer layers, the hidden size, the number of attention heads, the output size, and various other parameters related to the architecture and configuration of the model.
 
-The `forward` method of the class takes the input sequence and optional mask as input and performs the following steps:
-1. Embeds the input sequence if embeddings are enabled.
-2. Projects the embedded sequence to the hidden size if necessary.
-3. Passes the hidden sequence through the transformer stack.
-4. Reduces the output sequence if reduction is enabled.
-5. Passes the reduced sequence through the fully connected stack if applicable.
-6. Returns the final encoder output.
+The `StackedTransformer` class implements the `forward` method, which takes an input sequence tensor and an optional mask tensor as input. It performs the following steps:
+
+1. If embeddings are enabled, the input sequence is mapped to embeddings using the `embed_sequence` module.
+2. If necessary, the embeddings are projected to the hidden size using a linear layer.
+3. The projected embeddings are passed through the stacked transformer layers using the `transformer_stack` module.
+4. If specified, the output of the transformer layers is reduced along the sequence length dimension using the `reduce_sequence` module.
+5. If specified, the reduced output is passed through a stack of fully connected layers using the `fc_stack` module.
+6. The final output is returned as a dictionary with the key "encoder_output".
 
 Overall, the `StackedTransformer` class provides a flexible and configurable implementation of a stacked transformer model for sequence encoding.
 
@@ -995,7 +1011,7 @@ Inside the method, the parameters are assigned to the corresponding attributes o
 Overall, the `__init__` method sets up the initial state of the encoder object by assigning values to its attributes and creating necessary objects.
 
 #### **Method Details**
-This code defines an encoder class that is used for encoding input sequences. The encoder can be used with or without embedding the input sequence. If embedding is used, the input sequence is mapped into embeddings. The encoder supports different types of representations for the embeddings, such as dense or sparse. The size of the embeddings can be specified, and pretrained embeddings can also be used. The encoder can have multiple layers of transformers, and the output of the transformers can be reduced using different methods, such as sum, mean, max, concat, or last. The reduced output can then be passed through a stack of fully connected layers for further processing.
+This code defines an encoder class that is used for encoding input sequences. The encoder can be used with or without embedding the input sequence. If embedding is used, the input sequence is mapped into embeddings. The encoder supports different types of representations for the embeddings, such as dense or sparse. The size of the embeddings can be specified, and pretrained embeddings can also be used. The encoder uses a transformer stack to process the input sequence, followed by a sequence reducer to reduce the output sequence. Finally, a fully connected stack is used to further process the output sequence. The encoder has various parameters that can be customized, such as the number of layers, hidden size, dropout rate, and activation function.
 
 ### Method **`get_schema_cls`** Overview
 The method `get_schema_cls` returns the class `StackedTransformerConfig`. This method is used to retrieve the schema class for a stacked transformer configuration. The schema class is responsible for defining the structure and properties of the configuration for a stacked transformer. By returning the `StackedTransformerConfig` class, this method allows other parts of the code to access and manipulate the configuration schema for stacked transformers.
@@ -1030,9 +1046,9 @@ The `forward` method is a method of a class that performs a sequence of operatio
 
 The method takes two parameters: `inputs`, which is a tensor representing the input sequence, and `mask`, which is an optional tensor representing an input mask. 
 
-The method first checks if embedding is required (`should_embed` flag). If embedding is required, it calls the `embed_sequence` method to embed the input sequence. Otherwise, it assigns the input sequence to the `embedded_sequence` variable. If the `embedded_sequence` tensor has less than 3 dimensions, it adds an extra dimension to it.
+The method first checks if embedding is required (`should_embed` flag). If embedding is required, it calls the `embed_sequence` method to embed the input sequence. Otherwise, it assigns the input sequence to the `embedded_sequence` variable. If the `embedded_sequence` tensor has less than 3 dimensions, it adds an additional dimension at the end.
 
-Next, the method checks if projection is required (`should_project` flag). If projection is required, it calls the `project_to_hidden_size` method to project the embedded sequence to a hidden size. Otherwise, it assigns the embedded sequence to the `hidden` variable.
+Next, the method checks if projection is required (`should_project` flag). If projection is required, it calls the `project_to_hidden_size` method to project the embedded sequence to the hidden size. Otherwise, it assigns the embedded sequence to the `hidden` variable.
 
 Then, the method applies a transformer stack to the `hidden` tensor using the `transformer_stack` method.
 
