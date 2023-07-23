@@ -1,5 +1,7 @@
 .idea
 
+.ipynb_checkpoints
+
 # data files
 *.csv
 
