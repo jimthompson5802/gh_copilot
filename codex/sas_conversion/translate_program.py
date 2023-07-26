@@ -31,10 +31,10 @@ def translate_sas_to_python(prompt, sas_code):
 if __name__ == '__main__':
     # retrieve sas file name from first parameter in command line
     parser = argparse.ArgumentParser()
-    parser.add_argument("sas_file", help="SAS file to convert to Python")
+    parser.add_argument("source_file", help="Source file for conversion")
 
     # retrieve output directory from second parameter in command line
-    parser.add_argument("output_dir", help="Directory to write Python file to")
+    parser.add_argument("target_file", help="Target file of conversion")
 
     #retrieve prompt from third parameter in command line, with default value
     parser.add_argument(
@@ -45,24 +45,20 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # read in sas file
-    with open(args.sas_file, 'r') as f:
-        sas_code = f.read()
+    with open(args.source_file, 'r') as f:
+        source_code = f.read()
 
-    print(f"starting conversion for {args.sas_file}...with prompt '{args.prompt}'")
+    print(f"starting conversion for {args.source_file}...with prompt '{args.prompt}'")
     # translate sas code to python
     prompt = args.prompt
-    python_code = translate_sas_to_python(prompt, sas_code)
+    target_code = translate_sas_to_python(prompt, source_code)
 
-    # write python code to file
-    # get file name from sas file name
-    file_name = os.path.basename(args.sas_file)
+    # write target file
+    target_file = args.target_file
+    with open(target_file, 'w') as f:
+        f.write(target_code)
 
-    # create file name for python file
-    python_file = os.path.join(args.output_dir, file_name.replace('.sas', '.py'))
-    with open(python_file, 'w') as f:
-        f.write(python_code)
-
-    print(f"finished conversion for {args.sas_file}...created {python_file}")
+    print(f"finished conversion for {args.source_file}...created {target_file}")
 
 
 
