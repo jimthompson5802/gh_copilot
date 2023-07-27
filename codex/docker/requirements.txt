@@ -2,7 +2,7 @@
 openai
 
 # code-to-documentation generatio,
-#packages for generating LaTeX in Python
+# packages for generating LaTeX in Python
 latexify-py
 sympy
 
