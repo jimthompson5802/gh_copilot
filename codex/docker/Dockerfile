@@ -1,11 +1,9 @@
 FROM python:3.9-buster
 
+COPY  requirements.txt .
+
 # Install dependencies
-RUN pip install openai \
-    latexify-py sympy  \
-    pandas numpy matplotlib \
-    jupyter nbconvert ipywidgets \
-    gpt-engineer
+RUN pip install -r requirements.txt
 
 # set working dir for the project folder
 WORKDIR /opt/project
