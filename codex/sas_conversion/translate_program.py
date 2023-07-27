@@ -17,7 +17,7 @@ def translate_sas_to_python(prompt, sas_code):
     completion_prompt = f'{prompt}:\n\n{sas_code}\n\nPython code:'
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",   #'text-davinci-003',
+        model="gpt-3.5-turbo-16k",   #'text-davinci-003',
         messages=[{"role": "user", "content": completion_prompt}],
         max_tokens=2048,
         temperature=0.0,

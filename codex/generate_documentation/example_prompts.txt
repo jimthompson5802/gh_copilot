@@ -1,0 +1,6 @@
+Describe the Python function delimited by triple backticks, including the purpose of each parameter, and provide an overview of the numerical operations or procedures it performs.
+
+Describe the Python function delimited by triple backticks, including the purpose of each parameter, and document the mathematical operations or procedures it performs.  For the mathematical operations generate LaTex code that can be used to display the equations.
+
+
+Describe the Python class delimited by triple backticks, including the purpose of each parameter, and provide an overview of the numerical operations or procedures it performs.
