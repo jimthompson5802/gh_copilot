@@ -1,0 +1,20 @@
+# openai Python SDK
+openai
+
+# code-to-documentation generatio,
+#packages for generating LaTeX in Python
+latexify-py
+sympy
+
+# package for running Python code
+pandas
+numpy
+matplotlib
+
+# support jupyter notebook UI in the container
+jupyter
+nbconvert
+ipywidgets
+
+# testing for documentation-to-code generation
+gpt-engineer
