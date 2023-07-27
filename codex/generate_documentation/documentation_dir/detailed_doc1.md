@@ -57,6 +57,7 @@ $$
 $$
 
 2. Pillai's trace:
+
 $$
 \text{{Pillai's trace}} = \sum_{i=1}^{n_e} \text{{eigv2}}_i
 $$
