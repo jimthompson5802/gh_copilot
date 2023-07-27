@@ -56,6 +56,21 @@ def generate_documentation(prompt, source_code, model="gpt-3.5-turbo-16k"):
     documentation_text = response.choices[0].message.content.strip()
     return documentation_text
 
+def adjust_latex_equations(documentation_text):
+    """
+    Adjusts the LaTex equations in the documentation text to be compatible with markdown.
+    :param documentation_text: generated markdown text with LaTex equations
+
+    :return: documentation_text with LaTex equations adjusted to be compatible with markdown
+    """
+    # replace \[ with \n$$
+    documentation_text = documentation_text.replace("\\[", "\n$$")
+
+    # replace \] with $$
+    documentation_text = documentation_text.replace("\\]", "$$")
+
+    return documentation_text
+
 
 # main function
 def main():
@@ -125,6 +140,11 @@ def main():
                 prompt = f"{PROMPT_DESCRIPTION_PREFIX} function {function_name} {PROMPT_FUNCTION_DESCRIPTION_SUFFIX}"
                 documentation_text = generate_documentation(prompt, function_source)
                 total_api_calls += 1
+
+                # if generated documentation contains latex equations, need to adjust to be markdown compatible
+                documentation_text = adjust_latex_equations(documentation_text)
+
+                # collect generated documentation
                 documentation_text_list.append(f"## Function **`{function_name}`** Overview\n{documentation_text}\n\n")
             except openai.error.InvalidRequestError as e:
                 print(f"Error generating function overview documentation: {e}, bypassing this documentation section")
@@ -178,6 +198,11 @@ def main():
                         prompt = f"{PROMPT_DESCRIPTION_PREFIX} method {method_name} {PROMPT_FUNCTION_DESCRIPTION_SUFFIX}"
                         documentation_text = generate_documentation(prompt, method_source)
                         total_api_calls += 1
+
+                        # if generated documentation contains latex equations, need to adjust to be markdown compatible
+                        documentation_text = adjust_latex_equations(documentation_text)
+
+                        # collect generated documentation
                         documentation_text_list.append(f"### Method **`{method_name}`** Overview\n{documentation_text}\n\n")
                     except openai.error.InvalidRequestError as e:
                         print(f"Error generating method overview documentation: {e}, bypassing this documentation section")
