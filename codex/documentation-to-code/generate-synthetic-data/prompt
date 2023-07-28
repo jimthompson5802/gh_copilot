@@ -1,0 +1,11 @@
+write a python program to generate a synthetic regression dataset with 100 samples and 10 features.
+The data should be generated from a linear model with Gaussian noise.
+The first 5 features should be informative, the remaining 5 should be redundant.
+The target y should be a linear function of the first 5 features.
+The coefficients of the linear model should be random numbers between 0 and 1.
+The noise should be drawn from a Gaussian distribution with mean 0 and standard deviation 0.5.
+The random seed should be set to 0.
+The data should be saved in a file called synthetic_regression.csv.
+The first row of the file should contain the names of the features and the target.
+The remaining rows should contain the data.
+The file should be saved in the data folder, if necessary create the data folder.
