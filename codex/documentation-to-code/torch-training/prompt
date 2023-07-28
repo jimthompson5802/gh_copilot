@@ -1,0 +1,3 @@
+Read a csv file into a PyTorh dataset.
+Define a 4 layer neural network and train it on the dataset.  Target variable is "y".
+Save the model.
