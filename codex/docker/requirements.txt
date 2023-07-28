@@ -10,6 +10,7 @@ sympy
 pandas
 numpy
 matplotlib
+torch
 
 # support jupyter notebook UI in the container
 jupyter
