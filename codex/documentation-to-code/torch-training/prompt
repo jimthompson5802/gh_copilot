@@ -1,5 +1,5 @@
 write a python program to do the following:
 read data from ../../generate-synthetic-data/workspace/data/synthetic_regression.csv into a pandas dataframe
-Convert the pandas dataframe to a PyTorch dataset
-Define a 4 layer neural network and train it on the dataset.  Target variable is "target".
+Convert the pandas dataframe to a PyTorch dataset.  Create a 80% training and 20% test split.
+Define a 4 layer neural network and train it on the dataset.  Target variable is "target".  print loss value at the end of every epoch.
 Save the model.

@@ -1,14 +1,8 @@
 import pandas as pd
 
-def load_data(file_path):
-    """
-    Load data from the synthetic_regression.csv file into a pandas DataFrame.
+class DataLoader:
+    def __init__(self, file_path):
+        self.file_path = file_path
 
-    Args:
-        file_path (str): Path to the CSV file.
-
-    Returns:
-        pandas.DataFrame: Loaded data.
-    """
-    data = pd.read_csv(file_path)
-    return data
+    def load_data(self):
+        return pd.read_csv(self.file_path)
