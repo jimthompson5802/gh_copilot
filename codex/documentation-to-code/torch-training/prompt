@@ -1,3 +1,5 @@
-Read a csv file into a PyTorh dataset.
-Define a 4 layer neural network and train it on the dataset.  Target variable is "y".
+write a python program to do the following:
+read data from ../../generate-synthetic-data/workspace/data/synthetic_regression.csv into a pandas dataframe
+Convert the pandas dataframe to a PyTorch dataset
+Define a 4 layer neural network and train it on the dataset.  Target variable is "target".
 Save the model.
