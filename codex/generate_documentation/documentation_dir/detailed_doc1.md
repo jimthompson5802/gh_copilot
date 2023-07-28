@@ -1,482 +1,460 @@
 # Module:`multivariate_ols.py` Overview
 
-The code is a Python implementation of multivariate linear regression using ordinary least squares (OLS). It includes functions for fitting the regression model, performing hypothesis tests, and generating summary statistics.
-
-The main function in the code is `_multivariate_ols_fit`, which fits the multivariate OLS model to the given data. It takes the endogenous variables (`endog`) and exogenous variables (`exog`) as input and returns the estimated regression coefficients, degrees of freedom for residuals, inverse of the covariance matrix, and sums of squares and cross-products of residuals.
-
-The code also includes a function `multivariate_stats` that calculates various statistics for hypothesis testing, such as Wilks' lambda, Pillai's trace, Hotelling-Lawley trace, and Roy's greatest root. These statistics are used to test the null hypothesis that the coefficients of the regression model are zero.
-
-The function `_multivariate_ols_test` performs hypothesis tests based on the given hypotheses. It takes the contrast matrix (`L`), transform matrix (`M`), and constant matrix (`C`) as input and calculates the test statistics and p-values.
-
-The code also includes a class `_MultivariateOLS` that represents the multivariate OLS model. It has a `fit` method that fits the model using the `_multivariate_ols_fit` function and returns an instance of `_MultivariateOLSResults` class.
-
-The `_MultivariateOLSResults` class represents the results of the multivariate OLS model. It has a `mv_test` method that performs hypothesis tests based on the fitted model and returns an instance of `MultivariateTestResults` class.
-
-The `MultivariateTestResults` class represents the results of the hypothesis tests. It has a `summary` method that generates a summary of the test results, including the test statistics and p-values.
-
-Overall, the code provides a comprehensive implementation of multivariate linear regression using OLS and includes functions for fitting the model, performing hypothesis tests, and generating summary statistics.
+The module contains functions and classes for performing multivariate linear regression analysis. It includes functions for fitting the model, conducting hypothesis tests, and generating summary statistics. The main class in the module is `_MultivariateOLS`, which represents a multivariate linear regression model. The `fit` method of this class fits the model to the data. The `mv_test` method conducts hypothesis tests on the model. The module also includes a class `_MultivariateOLSResults`, which represents the results of a fitted multivariate linear regression model. The `summary` method of this class generates a summary of the results. The module also includes a class `MultivariateTestResults`, which represents the results of hypothesis tests conducted on a multivariate linear regression model. The `summary` method of this class generates a summary of the test results.
 
 ## Function **`_multivariate_ols_fit`** Overview
-The function `_multivariate_ols_fit` is used to perform multivariate ordinary least squares (OLS) regression. It takes in two parameters: `endog` (the dependent variable) and `exog` (the independent variables). 
+The `_multivariate_ols_fit` function is a Python function that performs multivariate ordinary least squares (OLS) regression. It takes the following parameters:
 
-The function first checks if the number of observations in `endog` and `exog` are the same. If not, it raises a `ValueError`. 
+- `endog`: The dependent variable(s) in the regression model. It should be a 2-dimensional array-like object with shape (nobs, k_endog), where `nobs` is the number of observations and `k_endog` is the number of dependent variables.
 
-Next, it calculates the necessary matrices for hypothesis testing. If the `method` parameter is set to 'pinv', it uses the Moore-Penrose pseudoinverse to calculate the regression coefficients matrix (`params`) and the inverse of the matrix product of `exog` and its transpose (`inv_cov`). It also calculates the sums of squares and cross-products of residuals (`sscpr`). 
+- `exog`: The independent variable(s) in the regression model. It should be a 2-dimensional array-like object with shape (nobs, k_exog), where `nobs` is the number of observations and `k_exog` is the number of independent variables.
 
-If the `method` parameter is set to 'svd', it uses the singular value decomposition (SVD) to calculate the regression coefficients matrix (`params`), the inverse of the covariance matrix (`inv_cov`), and the sums of squares and cross-products of residuals (`sscpr`). 
+- `method`: The method used to calculate the regression coefficients and other statistics. It can be either 'pinv' (default) or 'svd'.
 
-If the `method` parameter is neither 'pinv' nor 'svd', it raises a `ValueError`. 
+- `tolerance`: The tolerance level used to check for singularity of the covariance matrix. It is set to 1e-8 by default.
+
+The function performs the following mathematical operations or procedures:
+
+1. It checks if the number of observations in `endog` and `exog` are the same. If not, it raises a `ValueError` indicating that the number of rows should be the same.
+
+2. If the `method` is 'pinv', it calculates the regression coefficients matrix (`params`) using the Moore-Penrose pseudo-inverse of `exog` (`pinv_x`). It also calculates the inverse of the covariance matrix (`inv_cov`) using the pseudo-inverse. If the rank of `inv_cov` is less than `k_exog`, it raises a `ValueError` indicating that the covariance of `exog` is singular. Finally, it calculates the sums of squares and cross-products of residuals (`sscpr`) using the formula Y'Y - (X * params)'B * params, where Y is `endog`, X is `exog`, and B is the matrix of regression coefficients.
+
+3. If the `method` is 'svd', it performs singular value decomposition (SVD) on `exog` to obtain the matrices U, S, and V. It checks if any of the singular values in S are smaller than the tolerance level. If so, it raises a `ValueError` indicating that the covariance of `exog` is singular. It then calculates the regression coefficients matrix (`params`) using the formula V' * inv(S) * U' * Y, where V, S, and U are the SVD matrices. It also calculates the inverse of the covariance matrix (`inv_cov`) using the formula V' * inv(S^2) * V, where S^2 is obtained by squaring the singular values. Finally, it calculates the sums of squares and cross-products of residuals (`sscpr`) using the same formula as in the 'pinv' method.
+
+4. If the `method` is neither 'pinv' nor 'svd', it raises a `ValueError` indicating that the method is not supported.
 
 The function returns a tuple containing the regression coefficients (`params`), the degrees of freedom of the residuals (`df_resid`), the inverse of the covariance matrix (`inv_cov`), and the sums of squares and cross-products of residuals (`sscpr`).
 
-### **Function Details**
-This code defines a function called `_multivariate_ols_fit` that performs multivariate ordinary least squares (OLS) regression. 
-
-The function takes three arguments: `endog`, `exog`, and `method`. 
-- `endog` is a numpy array representing the dependent variable(s) in the regression. 
-- `exog` is a numpy array representing the independent variable(s) in the regression. 
-- `method` is a string specifying the method to use for the regression. The default method is 'svd', but 'pinv' is also supported. 
-
-The function first checks if the number of observations in `endog` and `exog` are the same. If not, it raises a ValueError. 
-
-Next, it calculates the degrees of freedom for the residuals. 
-
-If the method is 'pinv', it calculates the regression coefficients matrix using the Moore-Penrose pseudoinverse of `exog` (denoted as `pinv_x`). It also calculates the inverse of the covariance matrix of `exog` (denoted as `inv_cov`). If the rank of `inv_cov` is less than the number of independent variables, it raises a ValueError. Finally, it calculates the sums of squares and cross-products of residuals (denoted as `sscpr`) and returns the regression coefficients, degrees of freedom, inverse covariance matrix, and `sscpr`.
-
-If the method is 'svd', it performs singular value decomposition (SVD) on `exog` to obtain the matrices `u`, `s`, and `v`. It checks if any of the singular values are smaller than a tolerance value. If so, it raises a ValueError. It then calculates the regression coefficients, inverse covariance matrix, and `sscpr` using the SVD results and returns them.
-
-If the method is neither 'pinv' nor 'svd', it raises a ValueError.
-
-Note: The code assumes that the necessary libraries (e.g., numpy) have been imported.
-
 ## Function **`multivariate_stats`** Overview
-The function `multivariate_stats` takes in several parameters: `eigenvals`, `r_err_sscp`, `r_contrast`, `df_resid`, and an optional parameter `tolerance`. It performs calculations and returns a DataFrame containing various statistical values.
+The `multivariate_stats` function takes in several parameters:
 
-The function calculates different multivariate statistical measures based on the given input parameters. It computes the values for "Wilks' lambda", "Pillai's trace", "Hotelling-Lawley trace", and "Roy's greatest root". These measures are commonly used in multivariate analysis to assess the significance of differences between groups or conditions.
+- `eigenvals`: A numpy array of eigenvalues.
+- `r_err_sscp`: A scalar representing the residual error sum of squares and cross products.
+- `r_contrast`: A scalar representing the contrast sum of squares and cross products.
+- `df_resid`: A scalar representing the degrees of freedom for the residuals.
+- `tolerance`: A scalar representing the tolerance value for determining if an eigenvalue is greater than the tolerance.
 
-The function uses the input parameters to perform calculations and populate the DataFrame with the computed values. It utilizes numpy and pandas libraries for mathematical operations and data manipulation. The function also uses the `stats` module from the scipy library to calculate p-values using the F-distribution.
+The function performs several mathematical operations and procedures to calculate various statistics related to multivariate analysis. Here is a breakdown of the mathematical operations performed:
 
-The resulting DataFrame contains the computed statistical values for each measure, including the value itself, the degrees of freedom, the F-value, and the p-value. The DataFrame is then returned as the output of the function.
+1. The function initializes variables `v`, `p`, `q`, and `s` based on the input parameters.
+2. It creates a boolean array `ind` by checking if each eigenvalue is greater than the tolerance.
+3. It calculates the number of eigenvalues greater than the tolerance and assigns it to `n_e`.
+4. It creates two new arrays `eigv2` and `eigv1` by filtering the eigenvalues based on the boolean array `ind` and performing element-wise operations on the filtered eigenvalues.
+5. It calculates the values for the "Wilks' lambda", "Pillai's trace", "Hotelling-Lawley trace", and "Roy's greatest root" statistics using the filtered eigenvalues and assigns them to the corresponding cells in the `results` DataFrame.
+6. It calculates the values for the "Wilks' lambda" statistic using the input parameters `v`, `p`, and `q`, and assigns them to the corresponding cells in the `results` DataFrame.
+7. It calculates the values for the "Pillai's trace" statistic using the input parameters `s`, `m`, `n`, and `V`, and assigns them to the corresponding cells in the `results` DataFrame.
+8. It calculates the values for the "Hotelling-Lawley trace" statistic using the input parameters `n`, `p`, `q`, `U`, `b`, and `c`, and assigns them to the corresponding cells in the `results` DataFrame.
+9. It calculates the values for the "Roy's greatest root" statistic using the input parameters `p`, `q`, `sigma`, `r`, and assigns them to the corresponding cells in the `results` DataFrame.
+10. It calculates the p-values for each statistic using the `stats.f.sf` function and assigns them to the corresponding cells in the `results` DataFrame.
+11. Finally, it returns the `results` DataFrame containing the calculated statistics.
 
-### **Function Details**
-This code defines a function called `multivariate_stats` that calculates various statistics for multivariate analysis. The function takes the following parameters:
+Here is the LaTex code for the equations used in the function:
 
-- `eigenvals`: a numpy array of eigenvalues
-- `r_err_sscp`: a scalar representing the residual sum of squares and cross products
-- `r_contrast`: a scalar representing the contrast sum of squares and cross products
-- `df_resid`: a scalar representing the degrees of freedom for the residuals
-- `tolerance`: a scalar representing the tolerance for determining which eigenvalues to include in the calculations (default is 1e-8)
+1. Wilks' lambda:
 
-The function first assigns the input parameters to local variables `v`, `p`, `q`, and `s`. It then calculates the number of eigenvalues greater than the tolerance and assigns it to `n_e`. It also calculates `eigv2` as the subset of eigenvalues greater than the tolerance and `eigv1` as the reciprocal of each eigenvalue in `eigv2`.
+$$
+\text{{Wilks' lambda}} = \prod_{i=1}^{n_e} (1 - \text{{eigv2}}_i)
+$$
 
-The function then creates an empty DataFrame called `results` with columns named 'Value', 'Num DF', 'Den DF', 'F Value', and 'Pr > F', and index values corresponding to different statistics.
+2. Pillai's trace:
 
-Next, the function defines a helper function `fn` that returns the real part of a complex number.
+$$
+\text{{Pillai's trace}} = \sum_{i=1}^{n_e} \text{{eigv2}}_i
+$$
 
-The function then calculates the values for each statistic and assigns them to the corresponding cells in the `results` DataFrame.
+3. Hotelling-Lawley trace:
 
-Finally, the function calculates the degrees of freedom and F-values for each statistic, calculates the p-values using the `stats.f.sf` function from the `scipy` library, and assigns them to the corresponding cells in the `results` DataFrame.
+$$
+\text{{Hotelling-Lawley trace}} = \sum_{i=1}^{n_e} \frac{{\text{{eigv2}}_i}}{{1 - \text{{eigv2}}_i}}
+$$
 
-The function returns the `results` DataFrame.
+4. Roy's greatest root:
+
+$$
+\text{{Roy's greatest root}} = \max_{i=1}^{n_e} \frac{{\text{{eigv2}}_i}}{{1 - \text{{eigv2}}_i}}
+$$
+
+Note: The LaTex code provided above can be used to display the equations in a markdown document.
 
 ## Function **`_multivariate_ols_test`** Overview
-The function `_multivariate_ols_test` is a helper function that is used to perform a multivariate ordinary least squares (OLS) test. 
+The function `_multivariate_ols_test` is a Python function that performs a multivariate ordinary least squares (OLS) test. It takes four parameters: `hypotheses`, `fit_results`, `exog_names`, and `endog_names`.
 
-The function takes four arguments: `hypotheses`, `fit_results`, `exog_names`, and `endog_names`. 
+- `hypotheses` is a list of hypothesis matrices. Each hypothesis matrix represents a linear combination of the regression coefficients that is being tested. The dimensions of each hypothesis matrix should match the dimensions of the regression coefficient matrix.
+- `fit_results` is a tuple containing the results of the OLS regression. It includes the estimated regression coefficients (`params`), the degrees of freedom of the residuals (`df_resid`), the inverse of the covariance matrix (`inv_cov`), and the sum of squares and cross-products matrix (`sscpr`).
+- `exog_names` is a list of names for the exogenous variables (independent variables) in the regression model.
+- `endog_names` is a list of names for the endogenous variable (dependent variable) in the regression model.
 
-- `hypotheses` is a list of hypothesis matrices that define the null hypotheses to be tested. 
-- `fit_results` is a tuple containing the results of the OLS regression, including the estimated parameters, the degrees of freedom of the residuals, the inverse covariance matrix, and the sum of squared centered predicted residuals. 
-- `exog_names` is a list of names for the exogenous variables in the regression. 
-- `endog_names` is a list of names for the endogenous variables in the regression. 
+The function defines an inner function `fn` that takes three parameters: `L`, `M`, and `C`. These parameters represent the hypothesis matrix, the projection matrix, and the constant matrix, respectively.
 
-The function defines an inner function `fn` that takes three arguments: `L`, `M`, and `C`. 
+The function then performs the following mathematical operations:
 
-- `L` is a matrix that defines the linear combination of the estimated parameters to be tested. 
-- `M` is a matrix that defines the linear combination of the observed variables to be tested. 
-- `C` is a matrix that defines the constant term in the linear combination. 
+1. Calculate `t1` by multiplying the hypothesis matrix `L` with the estimated regression coefficients `params` and the projection matrix `M`, and subtracting the constant matrix `C`. This can be represented as:
 
-Inside the `fn` function, the function calculates the test statistic for the null hypothesis using the provided matrices and the fit results from the OLS regression. 
 
-- The first step is to calculate `t1`, which is the linear combination of the estimated parameters. 
-- Then, `t2` is calculated as the product of `L`, the inverse covariance matrix, and the transpose of `L`. 
-- The rank of `t2` is calculated and stored in `q`. 
-- Finally, the test statistic `H` is calculated as the product of `t1`, the inverse of `t2`, and the transpose of `t1`. 
+$$
+t1 = L \cdot \text{{params}} \cdot M - C
+$$
 
-The function also calculates the error term `E` using the observed variables and the sum of squared centered predicted residuals. 
+2. Calculate `t2` by multiplying the hypothesis matrix `L` with the inverse of the covariance matrix `inv_cov`, and then multiplying the result by the transpose of `L`. This can be represented as:
 
-The function returns the error term `E`, the test statistic `H`, the rank `q`, and the degrees of freedom of the residuals. 
 
-The function then calls another function `_multivariate_test` with the calculated values and returns the result.
+$$
+t2 = L \cdot \text{{inv_cov}} \cdot L^T
+$$
 
-### **Function Details**
-The code defines a function called `_multivariate_ols_test` that takes in four arguments: `hypotheses`, `fit_results`, `exog_names`, and `endog_names`. 
+3. Calculate the rank of `t2` using the `matrix_rank` function.
+4. Calculate `H` by taking the dot product of `t1` (transposed) with the inverse of `t2`, and then taking the dot product of the result with `t1`. This can be represented as:
 
-Inside the function, there is a nested function called `fn` that takes in three arguments: `L`, `M`, and `C`. This nested function is used to calculate the test statistics for the multivariate OLS test.
 
-The code then extracts the necessary values from the `fit_results` variable, which is assumed to be a tuple containing the estimated parameters, the degrees of freedom of the residuals, the inverse covariance matrix, and the sum of squared centered predicted residuals.
+$$
+H = t1^T \cdot \text{{inv}}(t2) \cdot t1
+$$
 
-Next, the code calculates the first test statistic `t1` by multiplying `L` with the estimated parameters `params` and `M`, and subtracting `C`.
+5. Calculate `E` by taking the dot product of the transpose of the projection matrix `M` with the sum of squares and cross-products matrix `sscpr`, and then taking the dot product of the result with `M`. This can be represented as:
 
-The code then calculates the matrix `t2` by multiplying `L` with the inverse covariance matrix `inv_cov`, and then multiplying the result with the transpose of `L`.
 
-The code uses the `matrix_rank` function to calculate the rank `q` of the matrix `t2`.
+$$
+E = M^T \cdot \text{{sscpr}} \cdot M
+$$
 
-Finally, the code calculates the test statistics `E` and `H` by multiplying `M` with the sum of squared centered predicted residuals `sscpr`, and by multiplying `t1` with the inverse of `t2` and then with `t1` transposed, respectively.
+6. Return the values of `E`, `H`, the rank `q` of `t2`, and the degrees of freedom of the residuals `df_resid`.
 
-The function then returns the test statistics `E`, `H`, `q`, and `df_resid` as a tuple.
-
-The code also calls another function `_multivariate_test` and passes the test statistics and other arguments to it. However, the implementation of this function is not provided in the code snippet.
+Finally, the function returns the result of calling the `_multivariate_test` function with the `hypotheses`, `exog_names`, `endog_names`, and `fn` as parameters.
 
 ## Function **`_multivariate_test`** Overview
-The function `_multivariate_test` takes in four parameters: `hypotheses`, `exog_names`, `endog_names`, and `fn`. 
+The `_multivariate_test` function takes in four parameters: `hypotheses`, `exog_names`, `endog_names`, and `fn`. 
 
-The `hypotheses` parameter is a list of tuples, where each tuple represents a hypothesis. The length of each tuple can be 2, 3, or 4. The first element of the tuple is the name of the hypothesis, the second element is the contrast matrix `L`, the third element is the transform matrix `M`, and the fourth element is the constant matrix `C`. The function checks the length of each tuple and assigns the values accordingly.
+- `hypotheses` is a list of tuples, where each tuple represents a hypothesis to be tested. The length of each tuple can be 2, 3, or 4, depending on the number of constraints specified. The first element of the tuple is the name of the hypothesis, the second element is the contrast matrix `L`, the third element is the transform matrix `M`, and the fourth element is the constant matrix `C`.
 
-The `exog_names` parameter is a list of names for the exogenous variables, and the `endog_names` parameter is a list of names for the endogenous variables.
+- `exog_names` is a list of names for the exogenous variables.
 
-The `fn` parameter is a function that takes in the contrast matrix `L`, transform matrix `M`, and constant matrix `C` as arguments and returns four values: `E`, `H`, `q`, and `df_resid`.
+- `endog_names` is a list of names for the endogenous variables.
 
-The function then iterates over each hypothesis in the `hypotheses` list. It checks the type of each element in `L`, `M`, and `C` and performs necessary validations. It calculates the values of `E`, `H`, `q`, and `df_resid` by calling the `fn` function. It calculates the rank of the sum of `E` and `H` and sorts the eigenvalues of the inverse of `E + H` multiplied by `H`. It then calls the `multivariate_stats` function to calculate the statistical values based on the eigenvalues, rank, `q`, and `df_resid`. Finally, it stores the results in a dictionary with the hypothesis name as the key and the statistical values, contrast matrix `L`, transform matrix `M`, constant matrix `C`, `E`, and `H` as the values.
+- `fn` is a function that performs the necessary calculations to obtain the error matrix `E`, hypothesis matrix `H`, degrees of freedom `df_resid`, and the number of constraints `q`. This function takes in the contrast matrix `L`, transform matrix `M`, and constant matrix `C` as parameters.
 
-The function returns the dictionary of results.
+The function then iterates over each hypothesis in the `hypotheses` list and performs the following steps:
 
-### **Function Details**
-This code defines a function called `_multivariate_test` that takes in four arguments: `hypotheses`, `exog_names`, `endog_names`, and `fn`. 
+1. Checks the length of the hypothesis tuple to determine the number of constraints specified.
 
-The `hypotheses` argument is a list of tuples, where each tuple represents a hypothesis. Each hypothesis tuple can have 2, 3, or 4 elements. The first element is the name of the hypothesis, the second element is the contrast matrix `L`, the third element is the transform matrix `M`, and the fourth element is the constant matrix `C`. 
+2. If the contrast matrix `L` is specified as a string, it converts it to a contrast matrix using the `DesignInfo` class.
 
-The `exog_names` argument is a list of names for the exogenous variables, and the `endog_names` argument is a list of names for the endogenous variables. 
+3. If the transform matrix `M` is not specified, it sets it to an identity matrix with the same number of rows as the number of endogenous variables.
 
-The `fn` argument is a function that takes in the contrast matrix `L`, transform matrix `M`, and constant matrix `C`, and returns four values: `E`, `H`, `q`, and `df_resid`. 
+4. If the transform matrix `M` is specified as a string, it converts it to a transform matrix using the `DesignInfo` class.
 
-Inside the function, the number of exogenous variables `k_xvar` and the number of endogenous variables `k_yvar` are calculated based on the lengths of `exog_names` and `endog_names`, respectively. 
+5. If the constant matrix `C` is not specified, it sets it to a zero matrix with the same dimensions as the contrast matrix `L`.
 
-A dictionary called `results` is created to store the results for each hypothesis. 
+6. Checks the dimensions of the contrast matrix `L`, transform matrix `M`, and constant matrix `C` to ensure they are compatible.
 
-The function then iterates over each hypothesis in the `hypotheses` list. If the length of the hypothesis tuple is 2, 3, or 4, the name, contrast matrix `L`, transform matrix `M`, and constant matrix `C` are assigned accordingly. If any of the elements in `L` or `M` are strings, they are converted to linear constraints using the `DesignInfo` class. 
+7. Calls the provided function `fn` with the contrast matrix `L`, transform matrix `M`, and constant matrix `C` as parameters to obtain the error matrix `E`, hypothesis matrix `H`, degrees of freedom `df_resid`, and the number of constraints `q`.
 
-Next, the function checks the dimensions of `L`, `M`, and `C` to ensure they are valid. 
+8. Calculates the sum of the error matrix `E` and hypothesis matrix `H` and computes the rank of the resulting matrix.
 
-The function then calls the `fn` function with `L`, `M`, and `C` as arguments to calculate `E`, `H`, `q`, and `df_resid`. 
+9. Computes the eigenvalues of the inverse of the sum of the error matrix `E` and hypothesis matrix `H` multiplied by the hypothesis matrix `H`.
 
-The sum of `E` and `H` is calculated and stored in `EH`. 
+10. Calls the `multivariate_stats` function with the eigenvalues, number of constraints `q`, degrees of freedom `df_resid`, and the rank of the sum of the error matrix `E` and hypothesis matrix `H` to obtain a statistical table.
 
-The rank of `EH` is calculated using the `matrix_rank` function and stored in `p`. 
+11. Stores the results in a dictionary with the hypothesis name as the key and the statistical table, contrast matrix `L`, transform matrix `M`, constant matrix `C`, error matrix `E`, and hypothesis matrix `H` as the values.
 
-The eigenvalues of the inverse of `EH` multiplied by `H` are calculated and sorted in ascending order. 
+12. Returns the dictionary of results.
 
-A function called `multivariate_stats` is called with the sorted eigenvalues, `p`, `q`, and `df_resid` as arguments to calculate a statistic table. 
-
-The results for the current hypothesis are stored in the `results` dictionary with the name of the hypothesis as the key. 
-
-Finally, the `results` dictionary is returned.
+The mathematical operations performed include matrix operations such as matrix addition, matrix multiplication, matrix inversion, and eigenvalue computation. The function also checks the dimensions of the matrices to ensure compatibility.
 
 ## Class **`_MultivariateOLS`** Overview
-The class _MultivariateOLS is a subclass of the Model class. It is used to fit a multivariate ordinary least squares (OLS) regression model. 
+The `_MultivariateOLS` class is a subclass of the `Model` class in Python. It is used to fit multivariate ordinary least squares (OLS) models. 
 
-The __init__ method initializes the _MultivariateOLS object by checking if the endogenous variable has more than one column. If it has only one column, a ValueError is raised. The superclass's __init__ method is then called to initialize the Model object.
+The class has an attribute `_formula_max_endog` which is set to `None`. 
 
-The fit method fits the multivariate OLS model using the specified method. It calls the _multivariate_ols_fit function to perform the fitting and stores the fitted model in the _fittedmod attribute. It returns an instance of the _MultivariateOLSResults class, which contains the results of the fitting process.
+The `__init__` method is the constructor of the class. It takes the arguments `endog`, `exog`, `missing`, `hasconst`, and `**kwargs`. It checks if the shape of `endog` is either 1-dimensional or has only 1 column. If this condition is met, it raises a `ValueError` indicating that there must be more than one dependent variable to fit multivariate OLS. It then calls the constructor of the superclass `Model` with the given arguments.
+
+The `fit` method is used to fit the multivariate OLS model. It takes an optional argument `method` which defaults to `'svd'`. It fits the model using the `_multivariate_ols_fit` function, passing the `endog`, `exog`, and `method` arguments. It then returns an instance of the `_MultivariateOLSResults` class, passing itself as an argument.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the object's attributes and perform any necessary setup.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created. In the case of the `_MultivariateOLS` class, this method is used to initialize an instance of the class.
 
-In the given code, the `__init__` method is defined with several parameters: `self`, `endog`, `exog`, `missing`, `hasconst`, and `**kwargs`. 
+The method takes several parameters:
 
-The `self` parameter refers to the instance of the class that is being created. It is automatically passed to the method when it is called.
+- `self`: This parameter refers to the instance of the class itself. It is automatically passed when the method is called and is used to access the attributes and methods of the class.
 
-The `endog` parameter represents the dependent variable(s) in a multivariate OLS (Ordinary Least Squares) regression. The `exog` parameter represents the independent variable(s) or predictors.
+- `endog`: This parameter represents the dependent variable(s) in the multivariate OLS model. It can be a 1-dimensional or 2-dimensional array-like object.
 
-The `missing` parameter is optional and specifies how missing values in the data should be handled. The default value is 'none', indicating that missing values are not allowed.
+- `exog`: This parameter represents the independent variable(s) in the multivariate OLS model. It can be a 1-dimensional or 2-dimensional array-like object.
 
-The `hasconst` parameter is also optional and specifies whether a constant term should be included in the regression model. The default value is `None`, which means that the presence of a constant term is determined automatically.
+- `missing`: This parameter specifies how missing values in the data should be handled. The default value is `'none'`, which means missing values are not allowed. Other possible values include `'drop'` (to drop any rows with missing values) and `'raise'` (to raise an error if there are any missing values).
 
-The `**kwargs` parameter allows for additional keyword arguments to be passed to the method.
+- `hasconst`: This parameter specifies whether a constant term should be included in the model. The default value is `None`, which means the presence of a constant term is determined automatically based on the data. Other possible values include `True` (to include a constant term) and `False` (to exclude a constant term).
 
-Inside the method, there is a conditional statement that checks the shape of the `endog` variable. If it has only one dimension or if the second dimension has a size of 1, a `ValueError` is raised, indicating that there must be more than one dependent variable for multivariate OLS.
+- `**kwargs`: This parameter allows for additional keyword arguments to be passed to the superclass constructor.
 
-Finally, the `super()` function is used to call the `__init__` method of the superclass (parent class) of `_MultivariateOLS`. This ensures that any initialization code in the superclass is also executed.
+The method first checks the shape of the `endog` parameter to ensure that it has more than one dependent variable. If the shape is 1-dimensional or the second dimension is 1, a `ValueError` is raised.
 
-Overall, the `__init__` method in this code initializes the attributes of the `_MultivariateOLS` object and performs some validation checks before calling the superclass's `__init__` method.
+Next, the method calls the `__init__` method of the superclass (`super(_MultivariateOLS, self).__init__`) to initialize the instance with the `endog`, `exog`, `missing`, and `hasconst` parameters. The `super()` function is used to refer to the superclass of the current class.
 
-#### **Method Details**
-This code defines the `__init__` method for a class called `_MultivariateOLS`. This class is likely a subclass of another class, possibly related to multivariate ordinary least squares (OLS) regression.
-
-The `__init__` method takes several arguments:
-- `self`: a reference to the instance of the class
-- `endog`: the dependent variable(s) for the regression
-- `exog`: the independent variable(s) for the regression
-- `missing`: a string indicating how missing values should be handled (default is 'none')
-- `hasconst`: a boolean indicating whether the model includes a constant term (default is None)
-- `**kwargs`: additional keyword arguments that can be passed to the superclass's `__init__` method
-
-The method first checks the shape of the `endog` variable. If it is a 1-dimensional array or if it has only one column, a `ValueError` is raised, indicating that there must be more than one dependent variable for multivariate OLS.
-
-If the shape check passes, the method calls the `__init__` method of the superclass (presumably the superclass of `_MultivariateOLS`). The `endog`, `exog`, `missing`, `hasconst`, and `**kwargs` arguments are passed to the superclass's `__init__` method using the `super()` function.
+The mathematical operations or procedures performed by this method are not explicitly stated in the code provided. However, based on the context, it can be inferred that the method is used to set up the multivariate OLS model by initializing the dependent and independent variables, handling missing values, and determining whether a constant term should be included. The actual mathematical operations for fitting the model and estimating the coefficients are likely performed in other methods of the class.
 
 ### Method **`fit`** Overview
-The method "fit" is a method of a class that fits a multivariate ordinary least squares (OLS) model to the data. It takes an optional argument "method" which specifies the method to be used for fitting the model. The default method is "svd". 
+The `fit` method in Python is used to fit a multivariate ordinary least squares (OLS) regression model. It takes an optional parameter `method` which specifies the method to be used for fitting the model. The default method is 'svd'.
 
-Inside the "fit" method, the "_multivariate_ols_fit" function is called with the endogenous variable (self.endog) and the exogenous variables (self.exog) as inputs, along with the specified method. This function performs the actual fitting of the OLS model using the specified method.
+The purpose of each parameter in the `fit` method is as follows:
 
-The result of the fitting process is stored in the "_fittedmod" attribute of the class instance. Finally, the method returns an instance of the "_MultivariateOLSResults" class, which encapsulates the results of the fitting process.
+- `self`: It refers to the instance of the class that the method is being called on. In this case, it refers to the instance of the multivariate OLS regression model.
 
-#### **Method Details**
-The given code defines a `fit` method for a class. This method fits a multivariate ordinary least squares (OLS) model to the data.
+- `method`: It is an optional parameter that specifies the method to be used for fitting the model. The default value is 'svd'. Other possible values for this parameter could be 'pinv' or 'qr'.
 
-The `fit` method takes an optional argument `method`, which specifies the method to use for fitting the model. The default value is `'svd'`.
+The `fit` method calls the `_multivariate_ols_fit` function to perform the actual fitting of the model. The fitted model is stored in the `_fittedmod` attribute of the instance.
 
-Inside the `fit` method, the `_multivariate_ols_fit` function is called with the `endog` and `exog` attributes of the class as arguments, along with the `method` argument. The result of this function call is stored in the `_fittedmod` attribute of the class.
-
-Finally, an instance of the `_MultivariateOLSResults` class is created with the current instance as an argument, and returned.
-
-Note: The code snippet provided is incomplete and does not include the definition of the `_multivariate_ols_fit` and `_MultivariateOLSResults` classes.
+The `_multivariate_ols_fit` function performs the mathematical operations or procedures required to fit the multivariate OLS regression model. Unfortunately, the specific mathematical operations or procedures performed by this function are not provided in the given code snippet. Therefore, it is not possible to generate LaTeX code for displaying the equations in a markdown document.
 
 ## Class **`_MultivariateOLSResults`** Overview
-The class `_MultivariateOLSResults` is a class that represents the results of a multivariate ordinary least squares (OLS) regression. It is initialized with a fitted multivariate OLS model. 
+The `_MultivariateOLSResults` class is a Python class that represents the results of a multivariate ordinary least squares (OLS) regression. It has the following attributes and methods:
 
-The class has several attributes:
-- `design_info`: This attribute stores the design information of the fitted model, which includes information about the terms in the model.
-- `exog_names`: This attribute stores the names of the exogenous variables in the model.
-- `endog_names`: This attribute stores the names of the endogenous variables in the model.
-- `_fittedmod`: This attribute stores the fitted multivariate OLS model.
+Attributes:
+- `design_info`: The design information of the fitted multivariate OLS model, which includes information about the terms used in the regression.
+- `exog_names`: The names of the exogenous variables used in the regression.
+- `endog_names`: The names of the endogenous variables used in the regression.
+- `_fittedmod`: The fitted multivariate OLS model.
 
-The class also has a `__str__` method that returns a string representation of the summary of the results.
-
-The class has a `mv_test` method that performs a multivariate hypothesis test. It takes an optional argument `hypotheses`, which specifies the hypotheses to test. If `hypotheses` is not provided, the method automatically generates hypotheses based on the design information of the model. The method returns the results of the hypothesis test as a `MultivariateTestResults` object.
-
-The class has a `summary` method that raises a `NotImplementedError`. This method is meant to be overridden by subclasses to provide a summary of the results.
+Methods:
+- `__str__()`: Returns a string representation of the summary of the multivariate OLS results.
+- `mv_test(hypotheses=None, skip_intercept_test=False)`: Performs a multivariate hypothesis test on the regression coefficients. The `hypotheses` parameter allows the user to specify custom hypotheses to test. If `hypotheses` is not provided, default hypotheses are generated based on the design information or the number of exogenous variables. The `skip_intercept_test` parameter determines whether to skip the hypothesis test for the intercept term. The method returns a `MultivariateTestResults` object.
+- `summary()`: Raises a `NotImplementedError`.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from a class. It is used to initialize the attributes of the object.
 
-In this specific code, the `__init__` method takes a parameter `fitted_mv_ols` and assigns its attributes to the corresponding attributes of the object being created. 
+In the given code snippet, the `__init__` method takes one parameter `fitted_mv_ols`. This parameter represents a fitted multivariate ordinary least squares (OLS) model.
 
-First, it checks if the `fitted_mv_ols` object has a `data` attribute and if that `data` attribute has a `design_info` attribute. If both conditions are true, it assigns the `design_info` attribute of `fitted_mv_ols.data` to the `design_info` attribute of the object being created. Otherwise, it assigns `None` to the `design_info` attribute.
+The purpose of the `__init__` method is to initialize the attributes of the object. Here is a breakdown of what each line of code in the method does:
 
-Next, it assigns the `exog_names` attribute of `fitted_mv_ols` to the `exog_names` attribute of the object being created.
+1. `if (hasattr(fitted_mv_ols, 'data') and hasattr(fitted_mv_ols.data, 'design_info')):` checks if the `fitted_mv_ols` object has attributes `data` and `design_info`. This is done using the `hasattr` function.
 
-Then, it assigns the `endog_names` attribute of `fitted_mv_ols` to the `endog_names` attribute of the object being created.
+2. If the condition in the previous line is `True`, it means that the `fitted_mv_ols` object has the required attributes. In this case, `self.design_info` is assigned the value of `fitted_mv_ols.data.design_info`. This line initializes the `design_info` attribute of the object.
 
-Finally, it assigns the `_fittedmod` attribute of `fitted_mv_ols` to the `_fittedmod` attribute of the object being created.
+3. If the condition in line 1 is `False`, it means that the `fitted_mv_ols` object does not have the required attributes. In this case, `self.design_info` is assigned the value `None`. This line initializes the `design_info` attribute of the object.
 
-Overall, the `__init__` method initializes the attributes of the object being created based on the attributes of the `fitted_mv_ols` object passed as a parameter.
+4. `self.exog_names = fitted_mv_ols.exog_names` assigns the value of `fitted_mv_ols.exog_names` to the `exog_names` attribute of the object. This line initializes the `exog_names` attribute.
 
-#### **Method Details**
-This code defines the `__init__` method for a class. The method takes one parameter, `fitted_mv_ols`, which is an object of some type. 
+5. `self.endog_names = fitted_mv_ols.endog_names` assigns the value of `fitted_mv_ols.endog_names` to the `endog_names` attribute of the object. This line initializes the `endog_names` attribute.
 
-The method checks if the `fitted_mv_ols` object has a `data` attribute and if that `data` attribute has a `design_info` attribute. If both conditions are true, it assigns the value of `fitted_mv_ols.data.design_info` to the `design_info` attribute of the class. Otherwise, it assigns `None` to the `design_info` attribute.
+6. `self._fittedmod = fitted_mv_ols._fittedmod` assigns the value of `fitted_mv_ols._fittedmod` to the `_fittedmod` attribute of the object. This line initializes the `_fittedmod` attribute.
 
-The method also assigns the values of `fitted_mv_ols.exog_names`, `fitted_mv_ols.endog_names`, and `fitted_mv_ols._fittedmod` to the `exog_names`, `endog_names`, and `_fittedmod` attributes of the class, respectively.
+The `__init__` method does not perform any mathematical operations or procedures. It is solely responsible for initializing the attributes of the object based on the provided `fitted_mv_ols` parameter.
+
+Here is the LaTex code for the equations in a markdown document:
+
+
+$$
+\begin{align*}
+\text{self.design\_info} &= \text{fitted\_mv\_ols.data.design\_info} \\
+\text{self.exog\_names} &= \text{fitted\_mv\_ols.exog\_names} \\
+\text{self.endog\_names} &= \text{fitted\_mv\_ols.endog\_names} \\
+\text{self.\_fittedmod} &= \text{fitted\_mv\_ols.\_fittedmod} \\
+\end{align*}
+$$
 
 ### Method **`__str__`** Overview
-The method __str__ is a special method in Python that is used to define a string representation of an object. It is called by the built-in str() function and is used to provide a human-readable description of the object.
+The `__str__` method in Python is a special method that is automatically called when we use the `str()` function or the `print()` function on an object. It is used to return a string representation of the object.
 
-In the given code, the __str__ method is defined within a class. It calls the summary() method of the object and converts the returned value to a string using the __str__ method of the summary object. The converted string is then returned as the string representation of the object.
+In the given code snippet, the `__str__` method is defined within a class and it calls another method called `summary()` to get the string representation of the object. The `summary()` method is assumed to be defined elsewhere in the class.
 
-By implementing the __str__ method, you can customize how an object is represented as a string when it is printed or converted to a string using the str() function. This allows you to provide meaningful and informative descriptions of your objects.
+The purpose of the `__str__` method is to provide a human-readable string representation of the object. It is often used for debugging or displaying information about the object.
 
-#### **Method Details**
-The given code is a method definition for the `__str__` method in a class. This method is used to define the string representation of an object of that class.
-
-In this code, the `__str__` method is defined to return the string representation of the object's `summary` attribute. The `summary` attribute is assumed to be a method or property of the object that returns a string.
-
-The `__str__` method is called when the `str()` function is used on an object or when the object is used in a string context (e.g., when using the `print` function).
-
-Here's an example of how this code could be used:
-
-```python
-class MyClass:
-    def __init__(self):
-        self.summary = "This is a summary"
-
-    def __str__(self):
-        return self.summary.__str__()
-
-obj = MyClass()
-print(obj)  # Output: This is a summary
-```
-
-In this example, an object of the `MyClass` class is created and its `summary` attribute is set to the string "This is a summary". When the `print` function is called on the object, the `__str__` method is automatically invoked and it returns the string representation of the `summary` attribute, which is then printed to the console.
+As for the mathematical operations or procedures performed in the `__str__` method, it is not possible to determine that without knowing the implementation of the `summary()` method. The `summary()` method might perform some mathematical calculations or include mathematical equations, but without further information, it is not possible to generate LaTeX code for the equations.
 
 ### Method **`mv_test`** Overview
-The method `mv_test` is a function that performs multivariate hypothesis testing in a linear regression model. It takes in three parameters: `self`, `hypotheses`, and `skip_intercept_test`.
+The `mv_test` method in Python is used to perform multivariate hypothesis tests in a linear regression model. It takes two parameters: `hypotheses` and `skip_intercept_test`.
 
-If the `hypotheses` parameter is not provided, the method generates a set of hypotheses based on the design information of the model. It creates a list of hypotheses for each term in the design, excluding the intercept term if `skip_intercept_test` is set to `True`. Each hypothesis consists of a key (term name), a contrast matrix `L_contrast`, and a `None` value for the test statistic.
+- `hypotheses` (optional): This parameter allows the user to specify the hypotheses to be tested. It is a list of lists, where each inner list contains three elements: the name of the hypothesis, the contrast matrix `L_contrast`, and the restriction matrix `R_restriction`. If no hypotheses are provided, the method will automatically generate them based on the design information of the model or the number of exogenous variables.
+- `skip_intercept_test` (optional): This parameter is a boolean value that determines whether the intercept term should be included in the hypothesis tests. If set to `True`, the method will skip the hypothesis test for the intercept term.
 
-If the `hypotheses` parameter is provided, the method directly uses the given hypotheses.
+The method first checks the number of exogenous variables (`k_xvar`) in the model. If no hypotheses are provided, it generates them based on the design information or the number of exogenous variables. For each exogenous variable, it creates a hypothesis with a contrast matrix `L` that has a single 1 in the corresponding position and zeros elsewhere.
 
-The method then calls the `_multivariate_ols_test` function, passing the hypotheses, the fitted model, the names of the exogenous variables, and the names of the endogenous variables. This function performs the actual multivariate hypothesis testing and returns the results.
+The method then calls the `_multivariate_ols_test` function, passing the hypotheses, the fitted model (`self._fittedmod`), the names of the exogenous variables (`self.exog_names`), and the names of the endogenous variables (`self.endog_names`). This function performs the actual multivariate hypothesis tests and returns the results.
 
-Finally, the method creates a `MultivariateTestResults` object using the returned results, the names of the endogenous variables, and the names of the exogenous variables. This object is then returned by the `mv_test` method.
+Finally, the method creates a `MultivariateTestResults` object using the results from the hypothesis tests, the names of the endogenous variables, and the names of the exogenous variables. This object is then returned by the method.
 
-#### **Method Details**
-This code defines a method called `mv_test` within a class. The method takes three parameters: `self`, `hypotheses`, and `skip_intercept_test`. 
-
-The `self` parameter refers to the instance of the class that the method is being called on. 
-
-The `hypotheses` parameter is an optional parameter that defaults to `None`. If no value is provided for `hypotheses`, the method will generate a set of hypotheses based on the design information of the model. 
-
-The `skip_intercept_test` parameter is a boolean flag that determines whether or not to skip the intercept test. If set to `True`, the method will skip the test for the intercept term in the model. 
-
-The method first determines the number of exogenous variables (`k_xvar`) by counting the number of names in the `exog_names` attribute of the class. 
-
-If no hypotheses are provided, the method generates a set of hypotheses based on the design information of the model. If the design information is available, the method iterates over the terms in the design information and creates a contrast matrix (`L_contrast`) for each term. If the `skip_intercept_test` flag is set to `True`, the method skips the test for the intercept term. Each hypothesis is represented as a list containing the term name, the contrast matrix, and `None` (indicating that no specific alternative hypothesis is specified). 
-
-If the design information is not available, the method generates a set of hypotheses based on the number of exogenous variables. For each variable, a contrast matrix (`L`) is created with a single 1 in the corresponding position. Each hypothesis is represented as a list containing the variable name, the contrast matrix, and `None`. 
-
-The method then calls a function called `_multivariate_ols_test` with the generated hypotheses, the fitted model (`self._fittedmod`), the exogenous variable names (`self.exog_names`), and the endogenous variable names (`self.endog_names`). The results of the test are stored in the `results` variable. 
-
-Finally, the method returns an instance of a `MultivariateTestResults` class, passing the `results`, the endogenous variable names, and the exogenous variable names as arguments.
+The mathematical operations or procedures performed by the method include generating contrast matrices `L_contrast` and restriction matrices `R_restriction` for each hypothesis, and calling the `_multivariate_ols_test` function to perform the hypothesis tests. The specific mathematical operations within the `_multivariate_ols_test` function are not described in the given code snippet.
 
 ### Method **`summary`** Overview
-The method summary is a placeholder method that raises a NotImplementedError. This means that the method is not implemented and needs to be overridden in a subclass. The purpose of this method is to provide a general summary or description of the object or class it belongs to. By raising a NotImplementedError, it serves as a reminder for the developer to implement the summary method in the subclass to provide a specific summary for that particular object or class.
+The `summary` method is a placeholder method that raises a `NotImplementedError`. It does not take any parameters.
 
-#### **Method Details**
-The code provided is a method definition for a function called "summary" within a class. The "self" parameter suggests that this method is intended to be used within an object instance of the class.
+The purpose of this method is to provide a summary of the mathematical operations or procedures performed by the Python class or object it belongs to. However, since it is not implemented, it does not perform any mathematical operations or procedures.
 
-The code currently raises a NotImplementedError, which is a built-in exception in Python. This exception is typically used to indicate that a method or function has not been implemented yet and needs to be overridden in a subclass or implemented in the current class.
-
-In this case, the "summary" method is not implemented and will raise the NotImplementedError when called. The implementation of this method should be added by the developer to provide the desired functionality.
+In terms of LaTex code, there are no mathematical equations or procedures to document for this method.
 
 ## Class **`MultivariateTestResults`** Overview
-The class MultivariateTestResults is used to store and manipulate the results of a multivariate linear model. 
+The `MultivariateTestResults` class is a Python class that represents the results of a multivariate linear model. It has the following attributes and methods:
 
-The class has the following attributes:
-- results: a dictionary containing the results of the multivariate linear model. The keys of the dictionary represent the different effects in the model, and the values are dictionaries containing the statistics for each effect.
-- endog_names: a list of the names of the endogenous variables in the model.
-- exog_names: a list of the names of the exogenous variables in the model.
+Attributes:
+- `results`: A dictionary containing the results of the multivariate linear model.
+- `endog_names`: A list of the names of the endogenous variables.
+- `exog_names`: A list of the names of the exogenous variables.
 
-The class has the following methods:
-- __str__: returns a string representation of the summary of the multivariate linear model.
-- __getitem__: allows accessing the results of the multivariate linear model using indexing.
-- summary_frame: returns the results as a multiindex dataframe, where the index levels are the effect and the statistic.
-- summary: returns a summary of the multivariate linear model, including the statistics for each effect. The optional arguments show_contrast_L, show_transform_M, and show_constant_C control whether to include the contrast matrix, the transformation matrix, and the constant term in the summary, respectively.
+Methods:
+- `__init__(self, results, endog_names, exog_names)`: Initializes the `MultivariateTestResults` object with the given results, endogenous variable names, and exogenous variable names.
+- `__str__(self)`: Returns a string representation of the `MultivariateTestResults` object.
+- `__getitem__(self, item)`: Returns the result corresponding to the given item from the `results` dictionary.
+- `summary_frame(self)`: Returns the results as a multiindex dataframe.
+- `summary(self, show_contrast_L=False, show_transform_M=False, show_constant_C=False)`: Returns a summary of the multivariate linear model results. The summary includes the statistics for each variable, as well as optional information about contrast, transformation, and constant.
+
+Overall, the `MultivariateTestResults` class provides a convenient way to store and access the results of a multivariate linear model, and also provides methods to generate a summary of the results.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object.
+The `__init__` method in Python is a special method that is automatically called when an object is created from a class. It is used to initialize the attributes of the object.
 
-In this specific code, the `__init__` method takes in three parameters: `results`, `endog_names`, and `exog_names`. These parameters are used to initialize the attributes of the object.
+In the given code snippet, the `__init__` method takes three parameters: `results`, `endog_names`, and `exog_names`. Here is the purpose of each parameter:
 
-The `self.results` attribute is set to the value of the `results` parameter. The `self.endog_names` attribute is set to a list created from the `endog_names` parameter. The `self.exog_names` attribute is set to a list created from the `exog_names` parameter.
+- `results`: This parameter represents the results of a mathematical operation or procedure. It could be a list, array, or any other data structure that holds the results.
+- `endog_names`: This parameter represents the names of the endogenous variables in the mathematical model. Endogenous variables are the variables whose values are determined by the model itself.
+- `exog_names`: This parameter represents the names of the exogenous variables in the mathematical model. Exogenous variables are the variables whose values are determined outside the model.
 
-Overall, the `__init__` method is used to initialize the attributes of the object with the provided values.
+The `__init__` method performs the following mathematical operations or procedures:
 
-#### **Method Details**
-This code defines a class with an initializer method. The initializer method takes three parameters: "results", "endog_names", and "exog_names". 
+1. Assigns the value of the `results` parameter to the `self.results` attribute. This attribute will hold the results of the mathematical operation or procedure.
+2. Converts the `endog_names` parameter to a list and assigns it to the `self.endog_names` attribute. This attribute will hold the names of the endogenous variables.
+3. Converts the `exog_names` parameter to a list and assigns it to the `self.exog_names` attribute. This attribute will hold the names of the exogenous variables.
 
-Inside the initializer method, the "results" parameter is assigned to the instance variable "self.results". The "endog_names" parameter is converted to a list using the "list()" function and assigned to the instance variable "self.endog_names". Similarly, the "exog_names" parameter is converted to a list and assigned to the instance variable "self.exog_names". 
+Here is the LaTex code to display the equations in a markdown document:
 
-The purpose of this class is not clear from the provided code snippet. It seems to be a class that stores some results, endogenous variable names, and exogenous variable names.
+1. $self.results = results$
+2. $self.endog\_names = list(endog\_names)$
+3. $self.exog\_names = list(exog\_names)$
 
 ### Method **`__str__`** Overview
-The method __str__ is a special method in Python that is used to define a string representation of an object. It is called by the built-in str() function and is used to provide a human-readable description of the object.
+The `__str__` method in Python is a special method that is automatically called when we use the `str()` function or the `print()` function on an object. It is used to provide a string representation of the object.
 
-In the given code, the __str__ method is defined within a class. It calls the summary() method of the object and converts the returned value to a string using the __str__ method of the summary object. The converted string is then returned as the string representation of the object.
+In the given code snippet, the `__str__` method is defined within a class and it calls another method `summary()` to get a summary of the object and then converts it to a string using the `__str__` method of the summary object.
 
-By implementing the __str__ method, you can customize how an object is represented as a string when it is printed or converted to a string using the str() function. This allows you to provide meaningful and informative descriptions of your objects.
+The purpose of the `__str__` method is to provide a human-readable string representation of the object. It is often used for debugging or displaying information about the object.
 
-#### **Method Details**
-The given code is a method definition for the `__str__` method in a class. This method is used to define the string representation of an object of that class.
-
-In this code, the `__str__` method is defined to return the string representation of the object's `summary` attribute. The `summary` attribute is assumed to be a method or property of the object that returns a string.
-
-The `__str__` method is called when the `str()` function is used on an object or when the object is used in a string context (e.g., when using the `print` function).
-
-Here's an example of how this code could be used:
-
-```python
-class MyClass:
-    def __init__(self):
-        self.summary = "This is a summary"
-
-    def __str__(self):
-        return self.summary.__str__()
-
-obj = MyClass()
-print(obj)  # Output: This is a summary
-```
-
-In this example, an object of the `MyClass` class is created and its `summary` attribute is set to the string "This is a summary". When the `print` function is called on the object, the `__str__` method is automatically invoked and it returns the string representation of the `summary` attribute, which is then printed to the console.
+As for the mathematical operations or procedures performed in the `summary()` method, it is not provided in the given code snippet. Therefore, we cannot generate LaTeX code for mathematical equations without knowing the specific operations or procedures involved.
 
 ### Method **`__getitem__`** Overview
-The method __getitem__ is a special method in Python that allows objects to be accessed using the square bracket notation. It is used to define the behavior of the object when it is indexed or sliced using square brackets.
+The `__getitem__` method in Python is a special method that allows instances of a class to be accessed using the square bracket notation. It is used to define the behavior of the object when it is indexed or sliced using square brackets.
 
-In the given code, the __getitem__ method is defined within a class. It takes two parameters: self (which refers to the instance of the class) and item (which represents the index or slice being accessed).
+The method takes two parameters:
+- `self`: It is a reference to the instance of the class.
+- `item`: It represents the index or slice that is being accessed.
 
-The method returns the value of the item at the specified index from the "results" attribute of the object. It allows the object to be treated like a sequence or a container, enabling indexing and slicing operations on it.
+The purpose of the `__getitem__` method is to retrieve the value associated with the given index or slice from the object. In the provided code snippet, it returns the value of `self.results[item]`.
 
-For example, if an instance of the class is created and assigned to a variable "obj", the __getitem__ method allows accessing elements of the "results" attribute using square brackets. For instance, obj[0] would return the first element of the "results" attribute.
+The mathematical operations or procedures performed by the `__getitem__` method depend on the specific implementation of the class. It could be used to retrieve a specific element from a list, dictionary, or any other data structure stored in the `self.results` attribute.
 
-#### **Method Details**
-This code defines the `__getitem__` method for a class. This method is used to implement the indexing behavior for objects of this class. 
+To display mathematical equations in a markdown document, you can use LaTeX code. Here's an example of how you can represent a mathematical equation using LaTeX:
 
-The `__getitem__` method takes an argument `item`, which represents the index or key used to access an element of the object. 
+```latex
 
-Inside the method, it returns the value of `self.results[item]`, which retrieves the element at the specified index or key from the `results` attribute of the object.
+$$ equation $$
+```
+
+For example, if the `__getitem__` method is used to retrieve an element from a list, you can represent it in LaTeX as:
+
+```latex
+
+$$ \text{{element}} = self.results[item] $$
+```
+
+This will display the equation as:
+
+
+$$ \text{{element}} = self.results[item] $$
 
 ### Method **`summary_frame`** Overview
-The method `summary_frame` is a function that returns the results of a statistical analysis as a multi-index dataframe. 
+The `summary_frame` method in Python is used to return the results of a statistical analysis as a multiindex dataframe. 
 
-The function iterates over the keys in the `self.results` dictionary and creates a temporary dataframe `tmp` by copying the 'stat' key from the dictionary. It then adds a new column 'Effect' to the temporary dataframe with the value of the current key. 
+Parameters:
+- `self`: The instance of the class that the method belongs to.
 
-The temporary dataframe is then appended to a list `df`. After iterating over all the keys, the list of dataframes is concatenated along the axis 0 to create a single dataframe `df`. 
+Mathematical operations or procedures:
+1. Create an empty list called `df`.
+2. Iterate over each key in the `results` dictionary.
+3. Create a copy of the `stat` dataframe for the current key and assign it to the variable `tmp`.
+4. Add a new column called 'Effect' to the `tmp` dataframe and set its values to the current key.
+5. Reset the index of the `tmp` dataframe and append it to the `df` list.
+6. Concatenate all the dataframes in the `df` list along the axis 0 to create a single dataframe.
+7. Set the index of the dataframe to be a multiindex with levels 'Effect' and 'index'.
+8. Set the names of the index levels to 'Effect' and 'Statistic'.
+9. Return the resulting dataframe.
 
-The index of the dataframe is set to be a multi-index with levels 'Effect' and 'index'. The names of the index levels are set to 'Effect' and 'Statistic' respectively. 
+LaTeX code for the mathematical operations or procedures:
 
-Finally, the function returns the resulting dataframe.
+1. Create an empty list called `df`: 
 
-#### **Method Details**
-The code defines a method called `summary_frame` that returns the results as a multi-index dataframe. 
 
-The method first initializes an empty list called `df`. Then, it iterates over the keys in the `self.results` dictionary. For each key, it creates a copy of the 'stat' dataframe associated with that key and assigns it to the variable `tmp`. 
+$$
+\text{{df = []}}
+$$
 
-Next, a new column called 'Effect' is added to the `tmp` dataframe, with the value set to the current key. 
+2. Iterate over each key in the `results` dictionary: 
 
-The `tmp` dataframe is then appended to the `df` list. 
 
-After iterating over all the keys, the `df` list is concatenated along the axis 0 (rows) using `pd.concat` to create a single dataframe. 
+$$
+\text{{for key in self.results:}}
+$$
 
-The resulting dataframe is then set to have a multi-index with levels 'Effect' and 'index' using `df.set_index(['Effect', 'index'])`. 
+3. Create a copy of the `stat` dataframe for the current key and assign it to the variable `tmp`: 
 
-Finally, the names of the index levels are set to 'Effect' and 'Statistic' using `df.index.set_names(['Effect', 'Statistic'], inplace=True)`. 
 
-The resulting dataframe is returned.
+$$
+\text{{tmp = self.results[key]['stat'].copy()}}
+$$
+
+4. Add a new column called 'Effect' to the `tmp` dataframe and set its values to the current key: 
+
+
+$$
+\text{{tmp.loc[:, 'Effect'] = key}}
+$$
+
+5. Reset the index of the `tmp` dataframe and append it to the `df` list: 
+
+
+$$
+\text{{df.append(tmp.reset\_index())}}
+$$
+
+6. Concatenate all the dataframes in the `df` list along the axis 0 to create a single dataframe: 
+
+
+$$
+\text{{df = pd.concat(df, axis=0)}}
+$$
+
+7. Set the index of the dataframe to be a multiindex with levels 'Effect' and 'index': 
+
+
+$$
+\text{{df = df.set\_index(['Effect', 'index'])}}
+$$
+
+8. Set the names of the index levels to 'Effect' and 'Statistic': 
+
+
+$$
+\text{{df.index.set\_names(['Effect', 'Statistic'], inplace=True)}}
+$$
+
+9. Return the resulting dataframe: 
+
+
+$$
+\text{{return df}}
+$$
 
 ### Method **`summary`** Overview
-The method "summary" is a function that generates a summary of a multivariate linear model. It takes three optional boolean parameters: show_contrast_L, show_transform_M, and show_constant_C. 
+The `summary` method is a method of a Python class. It takes three optional parameters: `show_contrast_L`, `show_transform_M`, and `show_constant_C`. These parameters determine whether or not to include certain information in the summary.
 
-The method creates an instance of the "Summary" class and adds a title to it. Then, for each key in the "results" dictionary, it adds an empty dictionary to the summary, copies the statistical results into a dataframe, modifies the column and index labels, and adds the dataframe to the summary. 
+The purpose of this method is to generate a summary of a multivariate linear model. It creates an instance of the `Summary` class and adds a title to the summary indicating that it is a multivariate linear model.
 
-If the show_contrast_L parameter is True, it adds a dictionary entry with the key and the string ' contrast L=', and then adds a dataframe containing the contrast_L values to the summary. 
+For each key in the `results` attribute of the class, the method adds a dictionary with an empty key-value pair to the summary. It then creates a copy of the statistical results associated with that key and resets the index of the resulting DataFrame. The first column of the DataFrame is renamed to the current key, and the index is set to empty strings.
 
-If the show_transform_M parameter is True, it adds a dictionary entry with the key and the string ' transform M=', and then adds a dataframe containing the transform_M values to the summary. 
+The method then adds the DataFrame to the summary. If the `show_contrast_L` parameter is `True`, it adds a dictionary with the key-value pair indicating that the contrast matrix `L` is included. It creates a DataFrame from the `contrast_L` attribute of the `results` dictionary and adds it to the summary.
 
-If the show_constant_C parameter is True, it adds a dictionary entry with the key and the string ' constant C=', and then adds a dataframe containing the constant_C values to the summary. 
+If the `show_transform_M` parameter is `True`, it adds a dictionary with the key-value pair indicating that the transform matrix `M` is included. It creates a DataFrame from the `transform_M` attribute of the `results` dictionary and adds it to the summary.
 
-Finally, it returns the summary object.
+If the `show_constant_C` parameter is `True`, it adds a dictionary with the key-value pair indicating that the constant vector `C` is included. It creates a DataFrame from the `constant_C` attribute of the `results` dictionary and adds it to the summary.
 
-#### **Method Details**
-This code defines a method called "summary" that takes in three boolean parameters: show_contrast_L, show_transform_M, and show_constant_C. 
+Finally, the method returns the `Summary` instance.
 
-The method creates an instance of the "Summary" class from the "summary2" module and adds a title to it. 
-
-Then, for each key in the "results" attribute of the object, the method performs the following steps:
-
-1. Adds an empty dictionary to the summary.
-2. Copies the "stat" attribute of the "results[key]" object to a new DataFrame called "df" and resets its index.
-3. Modifies the column names of "df" by replacing the first column name with the current key.
-4. Modifies the index of "df" by setting it to four empty strings.
-5. Adds "df" to the summary.
-6. If show_contrast_L is True, adds a dictionary entry with the key as the current key and the value as ' contrast L=' to the summary.
-7. Creates a new DataFrame called "df" from the "contrast_L" attribute of the "results[key]" object, with column names as "exog_names".
-8. Adds "df" to the summary.
-9. If show_transform_M is True, adds a dictionary entry with the key as the current key and the value as ' transform M=' to the summary.
-10. Creates a new DataFrame called "df" from the "transform_M" attribute of the "results[key]" object, with index as "endog_names".
-11. Adds "df" to the summary.
-12. If show_constant_C is True, adds a dictionary entry with the key as the current key and the value as ' constant C=' to the summary.
-13. Creates a new DataFrame called "df" from the "constant_C" attribute of the "results[key]" object.
-14. Adds "df" to the summary.
-
-Finally, the method returns the "summ" object.
+The mathematical operations or procedures performed by this method involve creating DataFrames from the statistical results of the multivariate linear model and adding them to the summary. These DataFrames represent the contrast matrix `L`, the transform matrix `M`, and the constant vector `C`. The method does not perform any mathematical operations itself, but rather organizes and presents the results of the model.
 

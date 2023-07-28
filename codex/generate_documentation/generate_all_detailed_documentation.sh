@@ -1,0 +1,9 @@
+#!/bin/bash
+
+python generate_detailed_documentation.py multivariate_ols.py documentation_dir/detailed_doc1.md
+python generate_detailed_documentation.py large_modules/llm.py documentation_dir/large_module_llm.md
+python generate_detailed_documentation.py large_modules/image_feature.py documentation_dir/large_module_image_feature.md
+python generate_detailed_documentation.py large_modules/sequence_encoders.py documentation_dir/large_module_sequence_encoders.md
+python generate_detailed_documentation.py large_modules/trainer.py documentation_dir/large_module_trainer.md
+python generate_detailed_documentation.py large_modules/visualize.py documentation_dir/large_module_visualize.md
+python generate_detailed_documentation.py large_modules/attention_modules.py documentation_dir/large_module_attenion_modules.md

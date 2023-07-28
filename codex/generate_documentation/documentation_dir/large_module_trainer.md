@@ -7,704 +7,778 @@
 ## **Error in generating class level documentation**
 
 ### Method **`get_schema_cls`** Overview
-The method `get_schema_cls` is a function that returns the class `ECDTrainerConfig`. 
+The `get_schema_cls` method in Python is a function that returns the `ECDTrainerConfig` class. This method does not take any parameters.
 
-This method is likely used in a larger codebase where different classes are used to define schemas or configurations. By calling `get_schema_cls`, the code can dynamically retrieve the appropriate schema class based on certain conditions or requirements.
+The purpose of the `get_schema_cls` method is to provide access to the `ECDTrainerConfig` class, which is likely a configuration class used for training an ECD (Error Correcting Decoder) model.
 
-The purpose of this method is to provide a flexible way to obtain the schema class needed for a specific task or operation. It allows for dynamic selection of the schema class, which can be useful in scenarios where different configurations or schemas are required based on different conditions or inputs.
-
-#### **Method Details**
-The given Python code defines a function named `get_schema_cls` that returns the class `ECDTrainerConfig`.
+Since the method does not perform any mathematical operations or procedures, there is no need to generate LaTeX code for equations.
 
 ### Method **`__init__`** Overview
-The `__init__` method is the constructor method of a class. It is called when an object of the class is created. In this specific code, the `__init__` method initializes the training process for a model with a set of options and hyperparameters.
+The `__init__` method is the constructor of a class in Python. It is called when an object of the class is created. In this case, the `__init__` method is defined for a class that represents a trainer for an ECD (Encoder-Decoder) model in the Ludwig library.
 
-The method takes several parameters, including the `config` object that specifies the training hyperparameters, the `model` object that represents the underlying Ludwig model, and various other optional parameters such as `resume`, `skip_save_model`, `skip_save_progress`, `skip_save_log`, `callbacks`, `report_tqdm_to_ray`, `random_seed`, `distributed`, and `device`.
+The purpose of each parameter in the `__init__` method is as follows:
 
-Inside the method, the parameters are assigned to instance variables of the class, such as `self.epochs`, `self.train_steps`, `self.total_steps`, `self.regularization_lambda`, `self.regularization_type`, `self.batch_size`, and so on. These instance variables store the values of the parameters and can be accessed throughout the class.
-
-The method also performs additional operations, such as initializing the distributed strategy, setting up the learning rate, compiling the model if specified, setting up gradient clipping, preparing for training, enabling automatic mixed precision (AMP) if specified, and setting up the signal handler for interrupting the training process.
-
-Overall, the `__init__` method initializes the training process by setting up the necessary parameters and performing various setup operations before the actual training begins.
-
-#### **Method Details**
-The given code defines the `__init__` method of a class. This method is used to initialize the object of the class with the provided arguments.
-
-The method takes the following parameters:
-- `self`: The object instance itself.
-- `config`: An instance of `ECDTrainerConfig` class that specifies training hyperparameters.
-- `model`: An instance of `ECD` class, which is the underlying Ludwig model.
-- `resume`: A boolean indicating whether to resume training a model that was being trained (default: False).
-- `skip_save_model`: A boolean indicating whether to disable saving model weights and hyperparameters each time the model improves (default: False).
-- `skip_save_progress`: A boolean indicating whether to disable saving progress each round of evaluation (default: False).
-- `skip_save_log`: A boolean indicating whether to disable saving TensorBoard logs (default: False).
-- `callbacks`: A list of `ludwig.callbacks.Callback` objects that provide hooks into the Ludwig pipeline (default: None).
+- `config`: An instance of `ECDTrainerConfig` that specifies the training hyperparameters.
+- `model`: The underlying Ludwig model (`ludwig.models.ecd.ECD`).
+- `resume`: A boolean indicating whether to resume training a model that was being trained.
+- `skip_save_model`: A boolean indicating whether to disable saving model weights and hyperparameters each time the model improves.
+- `skip_save_progress`: A boolean indicating whether to disable saving progress each round of evaluation.
+- `skip_save_log`: A boolean indicating whether to disable saving TensorBoard logs.
+- `callbacks`: A list of `ludwig.callbacks.Callback` objects that provide hooks into the Ludwig pipeline.
 - `report_tqdm_to_ray`: A boolean indicating whether to enable using the ray based tqdm Callback for progress bar reporting.
-- `random_seed`: A float indicating the default initialization for the random seeds (default: 42).
-- `distributed`: An optional `DistributedStrategy` object representing the distributed strategy (default: None).
-- `device`: An optional string indicating the device to load the model on from a saved checkpoint (default: None).
+- `random_seed`: The default initialization for the random seeds.
+- `distributed`: A distributed strategy for training (default: None).
+- `device`: The device to load the model on from a saved checkpoint (default: None).
 - `**kwargs`: Additional keyword arguments.
 
-The method initializes various attributes of the class using the provided arguments and sets default values for some attributes. It also handles distributed training, sets up the optimizer tuning, and prepares for automatic mixed precision (AMP) training if enabled.
+The `__init__` method performs the following mathematical operations or procedures:
+
+1. Initializes the `distributed` attribute with the provided `distributed` parameter or a default `LocalStrategy` if `distributed` is None.
+2. Assigns the values of various hyperparameters from the `config` parameter to instance variables.
+3. Initializes the `total_steps` attribute to 0.
+4. Initializes the `received_sigint` attribute to False.
+5. Initializes the `report_tqdm_to_ray` attribute with the provided `report_tqdm_to_ray` parameter.
+6. Initializes the `callbacks` attribute with the provided `callbacks` parameter or an empty list if `callbacks` is None.
+7. Initializes the `device` attribute with the provided `device` parameter or the default device obtained from `get_torch_device()` function.
+8. Adjusts the base learning rate based on the distributed strategy and gradient accumulation steps.
+9. Assigns the provided `model` to the `model` attribute and moves it to the specified device.
+10. Initializes the `compiled_model` attribute with the provided `model` or a compiled version of the model if `config.compile` is True.
+11. Creates a gradient clipping configuration based on the provided `config.gradient_clipping`.
+12. Initializes the `use_amp` attribute based on the `config.use_mixed_precision` and the availability of a GPU device.
+13. Initializes the `scaler` attribute with a `torch.cuda.amp.GradScaler` if `use_amp` is True, otherwise assigns None.
+14. Stores the original SIGINT handler for later restoration.
 
 ### Method **`prepare`** Overview
-The method "prepare" is a part of a class and it is used to initialize and configure the distributed training setup. 
+The `prepare` method in Python is used to initialize and configure a distributed training setup. It takes no parameters other than the `self` parameter, which refers to the instance of the class that the method belongs to.
 
-In this method, the "self.dist_model" and "self.optimizer" variables are assigned the values returned by the "self.distributed.prepare" function. This function takes three arguments: "self.compiled_model", "self.config", and "self.base_learning_rate". It is responsible for preparing the model and optimizer for distributed training by setting up the necessary configurations and parameters.
+The method performs the following mathematical operations or procedures:
 
-After that, the "self.scheduler" variable is assigned an instance of the "LRScheduler" class. This class is initialized with the learning rate scheduler configuration from "self.config.learning_rate_scheduler" and the optimizer. The scheduler is responsible for adjusting the learning rate during training based on a predefined schedule.
+1. It calls the `prepare` method of the `distributed` object, passing in the `compiled_model`, `config`, and `base_learning_rate` as parameters. The returned values are assigned to the `dist_model` and `optimizer` variables.
 
-Overall, the "prepare" method sets up the distributed training environment, prepares the model and optimizer, and initializes the learning rate scheduler.
+2. It creates an instance of the `LRScheduler` class, passing in the `learning_rate_scheduler` from the `config` and the `optimizer` as parameters. The instance is assigned to the `scheduler` variable.
 
-#### **Method Details**
-This code defines a method called `prepare` within a class. The method takes in `self` as a parameter, indicating that it is a member function of the class.
-
-Inside the method, it initializes two variables `self.dist_model` and `self.optimizer` using the `self.distributed.prepare` method. The `self.compiled_model`, `self.config`, and `self.base_learning_rate` are passed as arguments to the `self.distributed.prepare` method.
-
-After that, it initializes another variable `self.scheduler` using the `LRScheduler` class and passing `self.config.learning_rate_scheduler` and `self.optimizer` as arguments to its constructor.
-
-Overall, this method is responsible for preparing the distributed model, optimizer, and scheduler for further operations.
+The mathematical operations or procedures performed by the `prepare` method do not involve any explicit mathematical calculations or equations. Therefore, there is no need to generate LaTex code for displaying equations in a markdown document.
 
 ### Method **`train_step`** Overview
-The `train_step` method is a function that performs a single training step in a machine learning model. It takes as input a dictionary of input data (`inputs`) and a dictionary of target data (`targets`). It also has an optional argument `should_step` which determines whether to perform a step of the optimizer after computing gradients.
+The `train_step` method is used to perform a single training step in a machine learning model. It takes in input data (`inputs`) and target data (`targets`) as dictionaries of tensors. The `should_step` parameter is a boolean value indicating whether to perform a step of the optimizer after computing gradients. 
 
-The method first checks if the optimizer is an instance of `torch.optim.LBFGS`. If it is, it performs the training step using the L-BFGS optimizer. It computes the model outputs, loss, and all losses using the `dist_model` and `train_loss` methods. If `evaluate_training_set` is False, it updates the evaluation metrics with the current model parameters.
+The method first checks if the optimizer is an instance of `torch.optim.LBFGS`. If so, it performs the training step using the L-BFGS optimizer. It defines a closure function that computes the loss, performs backpropagation, and returns the loss. The `self.distributed.step` method is then called with the optimizer and closure function to perform the optimization step. After that, it obtains the model predictions and loss using the `self.dist_model` and `self.model.train_loss` methods.
 
-If the optimizer is not an instance of `torch.optim.LBFGS`, the method proceeds to the next block of code. It uses automatic mixed precision (AMP) if `use_amp` is True, which allows for faster training on GPUs. It prepares the model update using the `distributed.prepare_model_update` method. It then computes the model outputs, loss, and all losses using the `dist_model` and `train_loss` methods. The loss is divided by the `gradient_accumulation_steps` to account for gradient accumulation.
+If the optimizer is not an instance of `torch.optim.LBFGS`, the method proceeds to the next block of code. It uses `torch.cuda.amp.autocast()` to enable automatic mixed precision training if `self.use_amp` is True. It also uses `self.distributed.prepare_model_update` to prepare the model for an update.
 
-The method then performs the backward pass by computing the gradients of the loss with respect to the model parameters. If `use_amp` is True, it uses the `scaler.scale` method to scale the loss before backward propagation. Otherwise, it uses the `distributed.backward` method.
+Next, it obtains the model predictions and loss using the `self.dist_model` and `self.model.train_loss` methods. The loss is divided by `self.gradient_accumulation_steps`. 
 
-If `should_step` is False, the method short-circuits the parameter updates and returns the loss and all losses.
+The backward pass is then performed using either `self.scaler.scale` (if `self.use_amp` is True) or `self.distributed.backward`. 
 
-Next, the method waits for gradient aggregation to complete before clipping the gradients. If `use_amp` is True, it unscales the gradients using the `scaler.unscale_` method. It then clips the gradients if `allow_clip_gradients` is True.
+If `should_step` is False, the method returns the loss and all_losses without performing parameter updates. Otherwise, it waits for gradient aggregation to complete, performs gradient clipping if allowed, and applies gradient updates using `self.scaler.step` (if `self.use_amp` is True) or `self.distributed.step`. 
 
-Finally, the method prepares the optimizer update using the `distributed.prepare_optimizer_update` method. If `use_amp` is True, it uses the `scaler.step` method to update the optimizer. Otherwise, it uses the `distributed.step` method. If `use_amp` is True, it also updates the scaler in case of overflow or underflow.
+If `self.use_amp` is True, the scaler is updated in case of overflow or underflow. 
 
-If `evaluate_training_set` is False, the method updates the evaluation metrics with the current model parameters. It then zeros the gradients of the optimizer using the `distributed.zero_grad` method.
-
-The method returns the loss and all losses.
-
-#### **Method Details**
-The given code defines a `train_step` method that performs a single training step for a model. 
-
-The method takes in three parameters:
-- `inputs`: A dictionary of input data, where the keys are feature names and the values are input tensors.
-- `targets`: A dictionary of target data, where the keys are feature names and the values are target tensors.
-- `should_step`: A boolean indicating whether to perform a step of the optimizer after computing gradients.
-
-The method returns a tuple containing the loss tensor and a dictionary of losses for every output feature.
-
-The method first checks if the optimizer is an instance of `torch.optim.LBFGS`. If so, it defines a closure function that is used by the L-BFGS optimizer to reevaluate the loss function. It then calls `self.distributed.step(self.optimizer, closure)` to perform the optimization step using the L-BFGS optimizer.
-
-After the optimization step, the method obtains the model predictions and loss by calling `self.dist_model((inputs, targets))` and `self.model.train_loss(targets, model_outputs, self.regularization_type, self.regularization_lambda)`, respectively.
-
-If `self.evaluate_training_set` is `False`, the method updates the evaluation metrics using the current model predictions.
-
-If the optimizer is not an instance of `torch.optim.LBFGS`, the method performs the training step using gradient accumulation and gradient clipping. It first obtains the model predictions and loss, and then performs the backward pass using either AMP (Automatic Mixed Precision) or the distributed backward method.
-
-If `should_step` is `False`, the method short-circuits the parameter updates and returns the loss and all_losses.
-
-The method then waits for gradient aggregation to complete before clipping the gradients. If AMP is used, it unscales the gradients before gradient clipping. It then clips the gradients if gradient clipping is allowed, and applies the gradient updates using either the scaler's step method or the distributed step method.
-
-If AMP is used, the method updates the scaler in case of overflow or underflow.
-
-Finally, if `self.evaluate_training_set` is `False`, the method updates the evaluation metrics using the current model predictions, and zeros the gradients of the optimizer.
+Finally, if `self.evaluate_training_set` is False, the method updates evaluation metrics using the current model predictions and targets. It then zeros the gradients using `self.distributed.zero_grad`.
 
 The method returns the loss and all_losses.
 
 ### Method **`clip_grads`** Overview
-The method `clip_grads` is a function that applies gradient clipping to a given set of variables. Gradient clipping is a technique used in machine learning to prevent the gradients from becoming too large during the training process, which can lead to unstable training or exploding gradients.
+The `clip_grads` method in Python is used to apply gradient clipping to a set of variables. It takes a single parameter `variables`, which is a list of variables whose gradients need to be clipped.
 
-The method takes a parameter `variables`, which is a list of variables whose gradients need to be clipped. It first checks if the `clipglobalnorm` parameter is set in the `gradient_clipping_config` object. If it is, it calls the `clip_grad_norm_` function from the `torch.nn.utils` module to clip the gradients of the variables to a maximum norm specified by `clipglobalnorm`.
+The method first checks if the `clipglobalnorm` parameter in the `gradient_clipping_config` object is set. If it is, the method calls the `torch.nn.utils.clip_grad_norm_` function to clip the gradients of the variables based on the global norm. The global norm is the norm of all the gradients concatenated together.
 
-Next, it checks if the `clipnorm` parameter is set in the `gradient_clipping_config` object. If it is, it again calls the `clip_grad_norm_` function to clip the gradients of the variables to a maximum norm specified by `clipnorm`.
+The `clipglobalnorm` parameter specifies the maximum allowed global norm for the gradients. If the global norm exceeds this value, the gradients are rescaled to ensure that the norm is within the specified limit.
 
-Finally, it checks if the `clipvalue` parameter is set in the `gradient_clipping_config` object. If it is, it calls the `clip_grad_value_` function from the `torch.nn.utils` module to clip the gradients of the variables to a maximum value specified by `clipvalue`.
+The method then checks if the `clipnorm` parameter in the `gradient_clipping_config` object is set. If it is, the method again calls the `torch.nn.utils.clip_grad_norm_` function to clip the gradients of the variables based on the norm. The norm is calculated separately for each variable.
 
-In summary, the `clip_grads` method applies gradient clipping to a set of variables by either clipping their gradients based on their norm or by clipping their gradients based on a maximum value.
+The `clipnorm` parameter specifies the maximum allowed norm for each individual gradient. If the norm of any gradient exceeds this value, it is rescaled to ensure that the norm is within the specified limit.
 
-#### **Method Details**
-This code defines a method called `clip_grads` that applies gradient clipping to a list of variables. Gradient clipping is a technique used in deep learning to prevent exploding gradients during training.
+Finally, the method checks if the `clipvalue` parameter in the `gradient_clipping_config` object is set. If it is, the method calls the `torch.nn.utils.clip_grad_value_` function to clip the gradients of the variables based on the value.
 
-The method takes in two parameters: `self` (which refers to the instance of the class that the method belongs to) and `variables` (a list of variables to apply gradient clipping to).
+The `clipvalue` parameter specifies the maximum allowed value for each individual gradient. If any gradient exceeds this value, it is clipped to the specified limit.
 
-The method first checks if `clipglobalnorm` is set in the `gradient_clipping_config` attribute of the class. If it is, it calls `torch.nn.utils.clip_grad_norm_` function to clip the gradients of the variables to the specified global norm.
-
-Next, it checks if `clipnorm` is set in the `gradient_clipping_config` attribute. If it is, it again calls `torch.nn.utils.clip_grad_norm_` function to clip the gradients of the variables to the specified norm.
-
-Finally, it checks if `clipvalue` is set in the `gradient_clipping_config` attribute. If it is, it calls `torch.nn.utils.clip_grad_value_` function to clip the gradients of the variables to the specified value.
-
-Overall, this method provides a way to apply gradient clipping to a list of variables based on the configuration specified in the `gradient_clipping_config` attribute.
+In summary, the `clip_grads` method applies gradient clipping to a set of variables by either rescaling the gradients based on the global norm, rescaling the gradients based on the norm of each individual gradient, or clipping the gradients based on their values.
 
 ### Method **`write_eval_summary`** Overview
-The method `write_eval_summary` is a static method that takes four parameters: `cls`, `summary_writer`, `metrics`, and `step`. 
+The `write_eval_summary` method is a Python function that takes in four parameters: `cls`, `summary_writer`, `metrics`, and `step`. 
 
-The purpose of this method is to write evaluation summary metrics to a summary writer. 
+- `cls` is a reference to the class instance that the method is being called on.
+- `summary_writer` is an object that is responsible for writing summary data to a file or other output destination.
+- `metrics` is a dictionary that contains the evaluation metrics for different features. The keys of the dictionary are the feature names, and the values are dictionaries that contain the metrics for each feature. The keys of these inner dictionaries are the metric names, and the values are lists of metric values.
+- `step` is an integer that represents the current step or iteration of the evaluation process.
 
-First, it checks if the `summary_writer` parameter is not empty. If it is empty, the method returns without doing anything.
+The purpose of the `write_eval_summary` method is to write the evaluation metrics to the `summary_writer` object. It does this by iterating over the `metrics` dictionary and adding each metric value to the `summary_writer` using the `add_scalar` method. The metric tag is constructed by combining the feature name and the metric name, and the metric value is taken from the last element of the last list in the metrics list.
 
-Then, it iterates over the `metrics` dictionary, which contains evaluation metrics for different features. For each feature, it iterates over the metrics for that feature. If there are metrics available, it constructs a metric tag using the feature name and metric name. It retrieves the last value from the metrics list and assigns it to `metric_val`. Finally, it adds the scalar value `metric_val` to the summary writer with the metric tag and the current `step` as the global step.
+The method also checks if the `summary_writer` object is not `None` before writing the metrics. If the `summary_writer` is `None`, the method simply returns without doing anything.
 
-After iterating over all the metrics, the method calls `summary_writer.flush()` to ensure that all the written data is flushed to the storage.
-
-In summary, the `write_eval_summary` method writes evaluation summary metrics to a summary writer, allowing for easy visualization and analysis of the metrics during the evaluation process.
-
-#### **Method Details**
-The code defines a function called `write_eval_summary` that takes four parameters: `cls`, `summary_writer`, `metrics`, and `step`. 
-
-The function first checks if `summary_writer` is not `None`. If it is `None`, the function returns immediately.
-
-Next, the function iterates over the `metrics` dictionary. Each key-value pair in `metrics` represents a feature name and its corresponding output feature. 
-
-For each feature, the function iterates over the metrics of that feature. Each key-value pair in the output feature represents a metric name and its corresponding metrics. 
-
-If there are metrics available for a particular metric name, the function constructs a metric tag by combining the feature name and the metric name with a forward slash ("/") and the prefix "epoch_". 
-
-The last metric value in the list of metrics is extracted and stored in the variable `metric_val`. 
-
-Finally, the function calls the `add_scalar` method of the `summary_writer` object to add the metric value as a scalar summary with the metric tag and the global step. The `flush` method is then called to ensure that the summary is written to the summary writer.
+In terms of mathematical operations or procedures, the `write_eval_summary` method does not perform any mathematical calculations. It simply retrieves the metric values from the `metrics` dictionary and writes them to the `summary_writer` object. Therefore, there is no need to generate LaTeX code for mathematical equations in this case.
 
 ### Method **`write_step_summary`** Overview
-The method `write_step_summary` is a class method that takes several parameters: `cls`, `train_summary_writer`, `combined_loss`, `all_losses`, `step`, and `learning_rate`. 
+The `write_step_summary` method is a class method in Python. It takes several parameters:
 
-The purpose of this method is to write a summary of the training step to a summary writer, which is typically used for logging and visualization purposes in machine learning models. 
+- `cls`: This parameter represents the class itself and is used to access class-level variables or methods.
+- `train_summary_writer`: This parameter is an object that is responsible for writing summaries or logs during training.
+- `combined_loss`: This parameter represents the combined loss value at a particular step during training.
+- `all_losses`: This parameter is a dictionary that contains all the individual losses for different features.
+- `step`: This parameter represents the current step or iteration during training.
+- `learning_rate`: This parameter represents the learning rate value at a particular step during training. It is an optional parameter.
 
-The method first checks if the `train_summary_writer` is not None. If it is None, the method returns without performing any further actions.
+The purpose of the `write_step_summary` method is to write various training summaries or logs using the `train_summary_writer` object. It performs the following mathematical operations or procedures:
 
-If the `train_summary_writer` is not None, the method proceeds to write the combined loss to the summary writer using the `add_scalar` method. The combined loss is written under the tag "combined/step_training_loss" with the value of `combined_loss` and the global step set to `step`.
+1. It writes the combined loss value to the summary writer using the `add_scalar` method. The summary writer is responsible for storing and visualizing the loss values over time.
+2. It iterates over the `all_losses` dictionary and writes each individual loss value to the summary writer using the `add_scalar` method. Each loss value is associated with a specific feature and is stored under a unique tag.
+3. If the `learning_rate` parameter is provided, it writes the learning rate value to the summary writer using the `add_scalar` method.
+4. Finally, it flushes the summary writer to ensure that all the written summaries are saved.
 
-Next, the method iterates over the `all_losses` dictionary, which contains feature names as keys and corresponding losses as values. For each feature name and loss, the method writes the loss to the summary writer using the `add_scalar` method. The loss is written under the tag "{feature_name}/step_training_loss" with the value of `loss.detach().float()` and the global step set to `step`.
+Here is the LaTex code for the equations mentioned in the method:
 
-If the `learning_rate` parameter is provided, the method writes the learning rate to the summary writer using the `add_scalar` method. The learning rate is written under the tag "combined/step_learning_rate" with the value of `learning_rate` and the global step set to `step`.
+1. Combined loss:
+   - LaTex code: $combined\_loss$
+   - Markdown code: `$$combined\_loss$$`
 
-Finally, the method flushes the summary writer to ensure that all the written data is saved.
+2. Individual losses:
+   - LaTex code: $loss_{feature\_name}$
+   - Markdown code: `$$loss_{feature\_name}$$`
 
-In summary, the `write_step_summary` method writes the combined loss, individual losses, and learning rate (if provided) for a training step to a summary writer.
-
-#### **Method Details**
-This code defines a function called `write_step_summary` that takes several parameters: `cls`, `train_summary_writer`, `combined_loss`, `all_losses`, `step`, and `learning_rate`. 
-
-The function first checks if `train_summary_writer` is not `None`. If it is `None`, the function returns immediately without doing anything.
-
-If `train_summary_writer` is not `None`, the function proceeds to write summary information to the `train_summary_writer`.
-
-First, it adds a scalar value `combined_loss` to the summary writer with the tag "combined/step_training_loss" and the global step `step`.
-
-Then, it iterates over the items in the `all_losses` dictionary. For each item, it adds a scalar value `loss.detach().float()` to the summary writer with the tag "{feature_name}/step_training_loss" and the global step `step`.
-
-Finally, if `learning_rate` is not `None`, it adds a scalar value `learning_rate` to the summary writer with the tag "combined/step_learning_rate" and the global step `step`.
-
-After writing all the summary information, the function calls `train_summary_writer.flush()` to ensure that all the written data is immediately flushed to the storage.
-
-Note: The code assumes that `train_summary_writer` is an object with a method `add_scalar` to add scalar values to the summary writer, and a method `flush` to flush the written data.
+3. Learning rate:
+   - LaTex code: $learning\_rate$
+   - Markdown code: `$$learning\_rate$$`
 
 ### Method **`is_cpu_training`** Overview
-The method `is_cpu_training` is a function defined within a class. It checks whether the current device being used for training is the CPU or not. 
+The Python method `is_cpu_training` is a function that checks whether the training is being performed on a CPU device. It takes no parameters other than the `self` parameter, which refers to the instance of the class that the method belongs to.
 
-The method first converts the `self.device` attribute (which represents the current device being used for training) into a `torch.device` object. Then, it compares this device object with the `torch.device("cpu")` object, which represents the CPU device. 
+The purpose of this method is to compare the current device being used for training with the CPU device. It converts the `self.device` attribute to a `torch.device` object and compares it with the `torch.device("cpu")` object. If the two devices are the same, it returns `True`, indicating that the training is being performed on a CPU. Otherwise, it returns `False`.
 
-If the two device objects are equal, the method returns `True`, indicating that the current device is the CPU. Otherwise, it returns `False`, indicating that the current device is not the CPU.
-
-#### **Method Details**
-The given code is a method named `is_cpu_training` that belongs to a class. It checks if the current device being used for training is the CPU.
-
-The code converts the `self.device` attribute to a `torch.device` object and compares it with the `torch.device("cpu")` object. If they are equal, it returns `True`, indicating that the training is being done on the CPU. Otherwise, it returns `False`.
-
-Note that this code assumes that `torch` module is imported and available.
+There are no mathematical operations or procedures performed in this method. It simply compares two device objects to determine if they are the same.
 
 ### Method **`tune_batch_size`** Overview
-The `tune_batch_size` method is used to automatically tune the batch size for training a model. It takes in a model configuration, a training dataset, and several optional parameters. 
+The `tune_batch_size` method is used to automatically tune the batch size for training a model. It takes several parameters:
 
-First, the method sets temporary values for skipping saving the model, progress, and log. This is done to prevent modifications to these components during the batch size tuning process.
+- `config`: A dictionary containing the configuration settings for the model.
+- `training_set`: The dataset used for training the model.
+- `random_seed`: An optional parameter specifying the random seed for reproducibility.
+- `max_trials`: An optional parameter specifying the maximum number of trials to perform for batch size tuning.
+- `halving_limit`: An optional parameter specifying the number of times the batch size can be halved during tuning.
+- `snapshot_weights`: An optional boolean parameter indicating whether to save a snapshot of the model and optimizer state during tuning.
+- `on_best_batch_size_updated`: An optional callback function that is called when the best batch size is updated.
 
-Next, the method determines the maximum batch size based on whether a GPU is available or not. If a GPU is available, the maximum batch size is set to the specified value. Otherwise, it is capped at a lower value to ensure stable training on CPU.
+The purpose of the `tune_batch_size` method is to find the optimal batch size for training the model. It does this by performing a series of trials with different batch sizes and selecting the batch size that results in the best performance.
 
-The model is then set to training mode, and a batch size evaluator is created. A temporary directory is created to store a snapshot of the model and optimizer state if `snapshot_weights` is set to True. This snapshot is used to restore the original state after batch size tuning.
+The method starts by setting temporary values for the `skip_save_model`, `skip_save_progress`, and `skip_save_log` attributes to `True`. This is done to prevent saving the model, progress, and log during the batch size tuning process.
 
-The method then calls the `select_best_batch_size` method of the evaluator to find the best batch size. This is done by evaluating the model's performance with different batch sizes and selecting the one that yields the best results. The maximum number of trials and the coordinator status are passed as parameters.
+Next, the method determines the maximum batch size based on whether CUDA is available or not. If CUDA is available, the maximum batch size is set to `self.max_batch_size`. Otherwise, it is set to the minimum of `self.max_batch_size` and `MAX_CPU_BATCH_SIZE`.
 
-The best batch size is then broadcasted to all distributed processes if applicable, and the method returns the best batch size.
+The model is then set to training mode using the `self.dist_model.train()` method.
 
-Finally, the method restores the original values for saving the model, progress, and log. If `snapshot_weights` is True, the model weights and optimizer state are restored from the snapshot to undo any updates made during batch size tuning.
+A batch size evaluator is created using the `_create_batch_size_evaluator` method.
 
-#### **Method Details**
-The given code is a method called `tune_batch_size` in a class. It is used to tune the batch size for training a model. Here is a breakdown of the code:
+A temporary directory is created using `tempfile.TemporaryDirectory()` to store the snapshot of the model and optimizer state if `snapshot_weights` is `True`.
 
-1. The method takes several parameters: `config` (a dictionary containing model configuration), `training_set` (the dataset used for training), `random_seed` (an optional random seed for reproducibility), `max_trials` (the maximum number of trials to find the best batch size), `halving_limit` (the number of times to halve the batch size during the tuning process), `snapshot_weights` (a flag indicating whether to save a snapshot of the model weights during tuning), and `on_best_batch_size_updated` (an optional callback function to be called when the best batch size is updated).
+If `snapshot_weights` is `True`, a snapshot of the model and optimizer state is saved using the `self.distributed.create_checkpoint_handle` method and the `checkpoint.save` method.
 
-2. The method starts by logging a message indicating that batch size tuning is starting.
+The best batch size is selected using the `evaluator.select_best_batch_size` method, which takes the length of the training set, the maximum batch size, the maximum number of trials, and whether the current process is the coordinator process as parameters.
 
-3. It temporarily sets some attributes (`skip_save_model`, `skip_save_progress`, `skip_save_log`) to True. These attributes control whether to save the model, training progress, and logs during training. By setting them to True, the method ensures that these saving operations are skipped during the batch size tuning process.
+The best batch size is then broadcasted to all processes using the `self.distributed.broadcast_object` method.
 
-4. It checks if the training is being done on a GPU or CPU and sets the maximum batch size accordingly. If a GPU is available, the maximum batch size is set to `self.max_batch_size`. Otherwise, it is set to the minimum of `self.max_batch_size` and `MAX_CPU_BATCH_SIZE`.
+Finally, the original values of `skip_save_model`, `skip_save_progress`, and `skip_save_log` are restored. If `snapshot_weights` is `True`, the model weights and optimizer state are restored using the `self.resume_weights_and_optimizer` method.
 
-5. It sets the model to training mode (`self.dist_model.train()`).
-
-6. It creates an evaluator object for batch size selection using the `_create_batch_size_evaluator` method.
-
-7. It creates a temporary directory using `tempfile.TemporaryDirectory()` to store the snapshot of the model weights if `snapshot_weights` is True.
-
-8. If `snapshot_weights` is True, it saves a snapshot of the model and optimizer state using the `create_checkpoint_handle` method of the `distributed` object. The snapshot is saved in the temporary directory.
-
-9. It tries to find the best batch size using the `select_best_batch_size` method of the evaluator object. The method takes the length of the training set, the maximum batch size, the maximum number of trials, and a flag indicating whether the current process is the coordinator process. The best batch size is selected based on the evaluation of different batch sizes.
-
-10. The best batch size is then broadcasted to all processes using `self.distributed.broadcast_object`.
-
-11. Finally, the method restores the original values of the attributes (`skip_save_model`, `skip_save_progress`, `skip_save_log`) and, if `snapshot_weights` is True, it restores the model weights and optimizer state from the snapshot.
-
-12. The method returns the best batch size.
-
-Note: Some parts of the code refer to other methods or attributes that are not shown in the given code snippet.
+The mathematical operations or procedures performed by the `tune_batch_size` method are mainly related to selecting the best batch size based on the performance of the model. These operations involve iterating over different batch sizes, training the model with each batch size, and evaluating the performance of the model. The specific mathematical operations or equations used in these procedures are not explicitly mentioned in the code.
 
 ### Method **`_create_batch_size_evaluator`** Overview
-The method `_create_batch_size_evaluator` creates an instance of the `_TrainerBatchSizeEvaluator` class, which is a subclass of `BatchSizeEvaluator`. This evaluator is used to evaluate the performance of the trainer with different batch sizes.
+The `_create_batch_size_evaluator` method is a private method in a Python class. It returns an instance of the `_TrainerBatchSizeEvaluator` class, which is a subclass of `BatchSizeEvaluator`.
 
-The `_TrainerBatchSizeEvaluator` class has two methods: `reset` and `step`. 
+The purpose of this method is to create a batch size evaluator object that can be used during training. The batch size evaluator is responsible for resetting the model's metrics and optimizer gradients before each evaluation step, and for setting the batch size for distributed training. It also generates sample inputs and outputs for the model based on the specified batch size, and passes them to the `train_step` method of the trainer.
 
-The `reset` method is responsible for resetting the metrics of the trainer's model and zeroing the gradients of the optimizer.
+The method takes no parameters other than `self`, which refers to the instance of the class that the method is called on.
 
-The `step` method takes a batch size as input and performs a training step using that batch size. It sets the batch size for the distributed model, creates sample inputs and outputs with the given batch size, and passes them to the `train_step` method of the trainer.
+The mathematical operations or procedures performed by this method are as follows:
 
-The `_create_batch_size_evaluator` method returns an instance of the `_TrainerBatchSizeEvaluator` class.
+1. Reset the model's metrics and optimizer gradients.
+2. Set the batch size for distributed training using the `set_batch_size` method of the trainer's `distributed` attribute.
+3. Generate sample inputs for the model based on the specified batch size. This is done by iterating over the input features of the model and calling their `create_sample_input` method with the specified batch size. The generated inputs are then converted to the trainer's device.
+4. Generate sample outputs for the model based on the specified batch size. This is done in a similar way to step 3, but with the output features of the model.
+5. Call the `train_step` method of the trainer with the generated inputs and outputs.
 
-#### **Method Details**
-The code defines a method `_create_batch_size_evaluator` that returns an instance of `_TrainerBatchSizeEvaluator`, which is a subclass of `BatchSizeEvaluator`. 
+Here is the LaTex code for the equations involved:
 
-Inside the `_TrainerBatchSizeEvaluator` class, there are two methods: `reset` and `step`. 
 
-The `reset` method resets the metrics of the trainer's model and sets the gradients of the optimizer to zero. 
+$$
+\text{{inputs}} = \{ \text{{input\_feature\_name}}: \text{{input\_feature.create\_sample\_input}}(\text{{batch\_size}}= \text{{batch\_size}}).to(\text{{trainer.device}}) \text{{ for input\_feature\_name, input\_feature in trainer.model.input\_features.items()}} \}
+$$
 
-The `step` method takes a `batch_size` parameter and performs a training step using the given batch size. It sets the batch size for the distributed model, creates sample inputs and outputs with the given batch size, and then calls the `train_step` method of the trainer with the inputs and targets.
+
+$$
+\text{{targets}} = \{ \text{{output\_feature\_name}}: \text{{output\_feature.create\_sample\_output}}(\text{{batch\_size}}= \text{{batch\_size}}).to(\text{{trainer.device}}) \text{{ for output\_feature\_name, output\_feature in trainer.model.output\_features.items()}} \}
+$$
+
+
+$$
+\text{{trainer.train\_step}}(\text{{inputs}}, \text{{targets}})
+$$
 
 ### Method **`run_evaluation`** Overview
-The method `run_evaluation` is a function that performs evaluation on a training, validation, and test set. It takes in various parameters such as the training set, validation set, test set, progress tracker, summary writers, model hyperparameters path, output features, metrics names, save path, loss tensor, all losses dictionary, early stopping steps, and checkpoint manager.
+The `run_evaluation` method in Python is used to perform evaluation on training, validation, and test sets. It takes several parameters:
 
-The method starts by initializing the start time and calling a callback function to notify any listeners that the evaluation has started. It then increments the checkpoint number and logs the current step and epoch if the process is the coordinator.
+1. `self`: The instance of the class that the method belongs to.
+2. `training_set`: The training set data.
+3. `validation_set`: The validation set data.
+4. `test_set`: The test set data.
+5. `progress_tracker`: An object that tracks the progress of the evaluation.
+6. `train_summary_writer`: The summary writer for training metrics.
+7. `validation_summary_writer`: The summary writer for validation metrics.
+8. `test_summary_writer`: The summary writer for test metrics.
+9. `model_hyperparameters_path`: The path to save the model hyperparameters.
+10. `output_features`: The features to be outputted.
+11. `metrics_names`: The names of the metrics.
+12. `save_path`: The path to save the evaluation results.
+13. `loss`: The loss tensor.
+14. `all_losses`: A dictionary that stores all the losses.
+15. `early_stopping_steps`: The number of steps for early stopping.
+16. `checkpoint_manager`: The checkpoint manager for saving the model.
 
-Next, the method creates a `MetricsPrintedTable` object to store and print the evaluation metrics. It sets the evaluation batch size to the maximum of the current batch size and the batch size stored in the progress tracker.
+The method performs the following mathematical operations or procedures:
 
-If the evaluation on the training set is enabled, the method calls the `evaluation` function to compute metrics on the training set. Otherwise, it uses the metrics accumulated during training. The metrics are added to the printed table and the evaluation summary is written to the train summary writer.
-
-If a validation set is provided, the method calls the `evaluation` function to compute metrics on the validation set. The metrics are added to the printed table and the evaluation summary is written to the validation summary writer. Callback functions are called to notify listeners that the validation has started and ended.
-
-If a test set is provided, the method calls the `evaluation` function to compute metrics on the test set. The metrics are added to the printed table and the evaluation summary is written to the test summary writer. Callback functions are called to notify listeners that the test has started and ended.
-
-The elapsed time for the evaluation is calculated and logged if the process is the coordinator. The printed table is also logged.
-
-The method then checks if early stopping should be performed based on the validation metrics history. If a validation set is provided and has a size greater than 0, the method calls the `check_progress_on_validation` function to determine if early stopping should be performed. Otherwise, if there is no validation set, the model is saved.
-
-After the evaluation is completed, callback functions are called to notify listeners that the evaluation has ended. The CUDA cache is cleared to free up memory.
-
-Finally, the method returns a boolean value indicating whether the trainer should early stop based on the validation metrics history.
-
-#### **Method Details**
-The given code is a method called `run_evaluation` in a class. This method is responsible for running evaluation on training, validation, and test sets. It takes several parameters including the training set, validation set, test set, progress tracker, summary writers, model hyperparameters path, output features, metrics names, save path, loss tensor, all losses dictionary, early stopping steps, and checkpoint manager.
-
-The method starts by initializing the start time and calling a callback function to notify any listeners that the evaluation has started. It then increments the checkpoint number and logs the current step and epoch if the current process is the coordinator.
-
-Next, the method creates a `MetricsPrintedTable` object to store and print the evaluation metrics. It sets the evaluation batch size to the maximum of the current batch size and the batch size stored in the progress tracker.
-
-If the `evaluate_training_set` flag is set to `True`, the method runs a separate pass over the training data to compute metrics. Otherwise, it uses the metrics accumulated during training. The metrics are added to the printed table and the evaluation summary is written to the train summary writer.
-
-If a validation set is provided, the method calls a callback function to notify listeners that the validation has started. It then evaluates the metrics on the validation set, adds them to the printed table, and writes the evaluation summary to the validation summary writer. After that, it calls a callback function to notify listeners that the validation has ended.
-
-If a test set is provided, the method calls a callback function to notify listeners that the test has started. It evaluates the metrics on the test set, adds them to the printed table, and writes the evaluation summary to the test summary writer. Finally, it calls a callback function to notify listeners that the test has ended.
-
-The elapsed time is calculated and logged if the current process is the coordinator. The printed table is also logged.
-
-Next, the method checks if there is a validation set and if the validation set size is greater than 0. If both conditions are met, it calls another method `check_progress_on_validation` to check the progress on the validation set and determine if the trainer should early stop. If there is no validation set, the model is saved if the `skip_save_model` flag is not set.
-
-After that, the method calls a callback function to notify listeners that the evaluation has ended. It clears the CUDA cache to free up memory and returns a boolean value indicating whether the trainer should early stop.
+1. Initializes the start time of the evaluation.
+2. Calls the `on_eval_start` callback function.
+3. Updates the checkpoint number in the progress tracker.
+4. Prints the evaluation step and epoch if the current process is the coordinator.
+5. Initializes a `MetricsPrintedTable` object to store the metrics.
+6. Sets the evaluation batch size to the maximum of the current batch size and the batch size in the progress tracker.
+7. If `evaluate_training_set` is `True`, runs a separate pass over the training data to compute metrics. Otherwise, uses the metrics accumulated during training.
+8. Adds the train metrics to the printed table.
+9. Writes the train metrics summary to the train summary writer.
+10. If a validation set is provided, calls the `on_validation_start` callback function.
+11. Evaluates the metrics on the validation set.
+12. Adds the validation metrics to the printed table.
+13. Writes the validation metrics summary to the validation summary writer.
+14. Calls the `on_validation_end` callback function.
+15. If a test set is provided, calls the `on_test_start` callback function.
+16. Evaluates the metrics on the test set.
+17. Adds the test metrics to the printed table.
+18. Writes the test metrics summary to the test summary writer.
+19. Calls the `on_test_end` callback function.
+20. Calculates the elapsed time of the evaluation.
+21. Prints the evaluation time if the current process is the coordinator.
+22. Logs the information in the printed table.
+23. Checks the progress on the validation set and determines whether to break the evaluation based on validation metrics history.
+24. If there is no validation set or the validation set size is 0, saves the model.
+25. Calls the `on_save_best_checkpoint` callback function.
+26. Calls the `on_eval_end` callback function.
+27. Clears the CUDA cache to free up memory.
+28. Returns whether the trainer should early stop, based on validation metrics history.
 
 ### Method **`train`** Overview
-The `train` method is used to train a model with a set of hyperparameters. It takes in a training set, an optional validation set, and an optional test set. The trained model is saved in a specified directory. The method also has an option to return the state dictionary of the model instead of the model itself.
+The `train` method is used to train a model with a set of hyperparameters. It takes several parameters:
 
-The method starts by setting up some general configurations and file names. It then sets up the session and initializes Tensorboard writers for logging. If the training is being resumed from a previous run, it loads the progress tracker and weights and optimizer from the saved checkpoints. Otherwise, it creates a new progress tracker.
+- `training_set`: The training set.
+- `validation_set`: The validation dataset.
+- `test_set`: The test dataset.
+- `save_path`: The directory that will contain the saved model.
+- `return_state_dict`: Whether to return the state dict of the model instead of the model itself.
 
-The training loop begins by setting the total number of steps and the steps per checkpoint. It then updates the learning rate scheduler and starts the training loop. In each iteration of the loop, it trains the model on a batch of data, updates the progress tracker, and performs evaluation on the validation and test sets. It also saves the training progress and checks for early stopping.
+The method performs the following mathematical operations or procedures:
 
-After the training loop finishes, the method performs some post-training tasks, such as saving the training progress and closing the Tensorboard writers. It then loads the best weights from the saved checkpoint and returns the trained model or its state dictionary, along with the training, validation, and test metrics.
+1. General setup: It initializes some variables and checks if the method is running on the main thread.
+2. Setup file names: It creates directories for saving the model and sets the paths for saving the model hyperparameters and Tensorboard logs.
+3. Sync save_path across the workers: It synchronizes the save_path variable across all workers in a distributed training setup.
+4. Setup session: It creates a checkpoint manager and sets up Tensorboard writers for training, validation, and test sets.
+5. Resume logic: It checks if the training should be resumed from a previous run based on the resume flag and the existence of progress tracker and checkpoint files.
+6. Training loop: It trains the model for a specified number of steps or epochs. It initializes the batcher, resets the metrics, and trains over a full epoch of data. It also saves the training progress and performs early stopping if needed.
+7. Post Training Epoch: It increments the epoch counter and saves the training progress.
+8. Finished Training: It performs cleanup tasks and closes the Tensorboard writers and checkpoint manager.
+9. Load the best weights from saved checkpoint: It loads the best weights from the saved checkpoint for inference.
+10. Restore original sigint signal handler: It restores the original sigint signal handler.
 
-#### **Method Details**
-The given code defines a `train` method for a model trainer class. This method is used to train a model with a set of hyperparameters. The method takes several parameters including the training set, validation set, test set, save path, and a flag to indicate whether to return the state dict of the model or the model itself.
-
-The method starts by setting up some general configurations and file names. It then checks if the training is being run on the main thread and sets up a signal handler to handle interruptions.
-
-Next, it initializes some variables and sets up Tensorboard writers if logging is enabled. It also checks if the training should be resumed from a previous run and handles the resume logic accordingly.
-
-After that, it sets up the training session by creating a checkpoint manager and syncing the model and optimizer across all workers. It also sets the batch size for DeepSpeed if it is being used.
-
-Then, it enters the training loop where it trains the model for a specified number of steps. It initializes the batcher, resets the metrics, and starts the epoch. It then trains over a full epoch of data using the `_train_loop` method.
-
-After each epoch, it performs some post-training tasks such as saving the training progress and checking for early stopping. It also calls any registered callbacks for epoch end.
-
-Finally, after the training is finished, it performs some cleanup tasks, such as closing the Tensorboard writers and checkpoint manager. It also loads the best weights from the saved checkpoint and returns the model or state dict, along with the training, validation, and test metrics.
-
-Note: This code assumes the existence of several helper functions and classes, such as `get_metric_names`, `get_new_progress_tracker`, `LudwigProgressBar`, etc. The implementation of these functions and classes is not provided in the given code snippet.
+The method returns the trained model or the state dict of the model, along with the training, validation, and test metrics.
 
 ### Method **`_train_loop`** Overview
-The `_train_loop` method is responsible for training the model for one epoch through the data. It takes in various parameters such as the batcher, progress tracker, save path, summary writers, datasets, start time, model hyperparameters, output features, metrics names, checkpoint manager, and other configuration parameters.
+The `_train_loop` method is a private method in a Python class. It completes up to one epoch through the data and performs various operations related to training a model. 
 
-Within the method, the gradients are zeroed using `self.distributed.zero_grad(self.optimizer)`. Then, a while loop is executed until either the last batch is reached or the total number of steps is reached. 
+Parameters:
+- `batcher`: An object that provides batches of data for training.
+- `progress_tracker`: An object that tracks the progress of the training.
+- `save_path`: The path where the model checkpoints and progress tracker will be saved.
+- `train_summary_writer`: An object for writing training summaries.
+- `progress_bar`: An object that displays the progress of the training.
+- `training_set`: The training dataset.
+- `validation_set`: The validation dataset.
+- `test_set`: The test dataset.
+- `start_time`: The start time of the training.
+- `validation_summary_writer`: An object for writing validation summaries.
+- `test_summary_writer`: An object for writing test summaries.
+- `model_hyperparameters_path`: The path to the model hyperparameters.
+- `output_features`: The output features of the model.
+- `metrics_names`: The names of the metrics used for evaluation.
+- `checkpoint_manager`: An object for managing checkpoints.
+- `final_steps_per_checkpoint`: The number of steps between each checkpoint.
+- `early_stopping_steps`: The number of steps for early stopping.
 
-In each iteration of the loop, the learning rate is updated, and the `on_batch_start` callback is called. The next batch is obtained from the batcher, and the method determines whether to accumulate gradients or trigger a full parameter update based on the current batch index and the gradient accumulation steps. 
+The method starts by zeroing the gradients of the optimizer using `self.distributed.zero_grad(self.optimizer)`. Then, it enters a while loop that continues until either all batches have been processed or the total number of steps reaches a certain limit.
 
-The inputs and targets are moved to the device (e.g., GPU) if available. The `train_step` method is called to perform a single training step, which returns the loss and all losses. If a parameter update is triggered, the learning rate scheduler is updated.
+Inside the loop, the learning rate is updated, and a callback function is called at the start of each batch. The batch is obtained from the `batcher` object.
 
-If the current process is the coordinator and saving logs is not skipped, the step summary is written to the train summary writer. The progress tracker is updated, and if the current process is the coordinator, a debug message is logged.
+The method then determines whether to accumulate gradients or trigger a full parameter update based on the current batch index and the gradient accumulation steps. It also checks if the current step is a checkpoint step.
 
-The `on_batch_end` callback is called, and if the current step is a final step for checkpointing, the `run_evaluation` method is called to evaluate the model on the training, validation, and test sets. The model is checkpointed, and the progress tracker is saved. If the `run_evaluation` method indicates that training should be stopped, the method returns.
+The tensors in the batch are moved to the GPU if available. The inputs and targets are created using the input and output features of the model.
 
-Finally, the method returns `False` to indicate that training is not complete.
+The `train_step` method is called to perform a single training step using the inputs and targets. The `should_step` parameter determines whether to perform a parameter update.
 
-#### **Method Details**
-The given code is a method called `_train_loop` which is a part of a class. This method is responsible for completing up to one epoch through the data. It takes several parameters including `batcher` (an object that provides batches of data), `progress_tracker` (an object that tracks the progress of training), `save_path` (the path to save the trained model), `train_summary_writer` (a summary writer for training), `progress_bar` (a progress bar to display the progress), `training_set`, `validation_set`, and `test_set` (the datasets for training, validation, and testing), `start_time` (the start time of training), `validation_summary_writer` and `test_summary_writer` (summary writers for validation and testing), `model_hyperparameters_path` (the path to save the model hyperparameters), `output_features` (the output features of the model), `metrics_names` (the names of metrics to evaluate), `checkpoint_manager` (a manager for saving checkpoints), `final_steps_per_checkpoint` (the number of steps between each checkpoint), and `early_stopping_steps` (the number of steps for early stopping).
+If a parameter update is performed, the learning rate scheduler is updated. The step summary is written if the current process is the coordinator and saving logs is not skipped.
 
-Inside the method, it starts by zeroing the gradients of the optimizer using `self.distributed.zero_grad(self.optimizer)`. Then, it enters a while loop that continues until either the last batch is reached or the total number of steps is reached. In each iteration of the loop, it calls a callback function `on_batch_start` with the current training progress and save path.
+The progress tracker is updated, and the progress bar is updated to display the progress. Debug information is logged if the current process is the coordinator.
 
-Next, it obtains the next batch from the `batcher` object. It determines whether to accumulate gradients and trigger a full parameter update based on the current batch index and the gradient accumulation steps. It also checks if it is a checkpoint step based on the current progress tracker steps and the final steps per checkpoint. Then, it increments the batch index.
+Callbacks for the end of the batch are called, and if the current step is a checkpoint step, the `run_evaluation` method is called to evaluate the model on the training, validation, and test sets. The `should_break` variable indicates whether to break out of the loop.
 
-After that, it moves the input and target tensors to the GPU (if available) using `torch.from_numpy` and `to` methods. The inputs and targets are created by iterating over the input and output features of the model and converting the batch data to tensors.
+The model is checkpointed, and the progress tracker is saved if saving progress is not skipped.
 
-Then, it calls the `train_step` method to perform a single training step with the inputs and targets. The `should_step` parameter is passed to indicate whether to perform a parameter update. The method returns the loss and all losses.
-
-If `should_step` is true, it updates the learning rate scheduler using `self.scheduler.step()`.
-
-If the coordinator (the process responsible for coordination in a distributed training setup) is not skipping saving logs, it calls the `write_step_summary` method to write the training summary to the `train_summary_writer`.
-
-The progress tracker steps and the progress bar are updated. If the coordinator is logging, it logs the progress.
-
-Then, it calls the `on_batch_end` callback function with the current training progress, save path, and whether it is a sync step.
-
-If the current progress tracker steps is a multiple of the final steps per checkpoint, it calls the `run_evaluation` method to perform evaluation on the training, validation, and test sets. It passes various parameters including the training progress, summary writers, model hyperparameters path, output features, metrics names, save path, loss, all losses, early stopping steps, and checkpoint manager. The method returns a boolean indicating whether to break the training loop.
-
-After evaluation, it saves the checkpoint using the checkpoint manager if the skip save progress flag is not set. It also saves the progress tracker if it is the coordinator.
-
-Finally, it returns false to indicate that the training loop should continue.
+Finally, the method returns `False` to indicate that the training loop is not broken.
 
 ### Method **`train_online`** Overview
-The method `train_online` is a function that trains a model using an online learning approach. It takes a dataset as input and iteratively trains the model on batches of data from the dataset.
+The `train_online` method is a function that trains a model using an online learning approach. It takes a dataset as input and updates the model parameters iteratively using mini-batches of data.
 
-The method starts by setting the model to training mode using the `train()` function. It then initializes a batcher object from the dataset, which is responsible for generating batches of data for training. The batcher is configured with parameters such as batch size, shuffling, and distributed training.
+Parameters:
+- `self`: The instance of the class that the method belongs to.
+- `dataset`: The dataset object containing the training data.
 
-A progress bar is set up to track the training progress. The progress bar displays information such as the description of the training process, the total number of steps, and the current progress. The progress bar is updated after each training step.
+Mathematical operations/procedures:
+1. Set the model training mode using `self.dist_model.train()`. This ensures that the model is ready for training.
+2. Initialize a batcher object from the dataset, which allows for iterating over mini-batches of data.
+3. Set up a progress bar to track the training progress.
+4. Enter a loop that continues until the last batch of data is reached.
+5. Get the next batch of data from the batcher.
+6. Prepare the inputs and targets for the model by converting the batch data into tensors and moving them to the appropriate device (e.g., GPU).
+7. Call the `train_step` method to update the model parameters using the current batch of data.
+8. Update the progress bar to reflect the completion of one training step.
+9. Close the progress bar after the loop ends.
+10. Return the trained model.
 
-Inside the training loop, the method retrieves the next batch of data from the batcher. The input and target data are extracted from the batch and converted to PyTorch tensors. The input data is stored in the `inputs` dictionary, where the keys are the feature names and the values are the corresponding tensors. Similarly, the target data is stored in the `targets` dictionary.
-
-The `train_step` method is called to perform a single training step using the input and target data. This method updates the model parameters based on the provided data.
-
-After each training step, the progress bar is updated to reflect the progress. The loop continues until the batcher reaches the last batch of data.
-
-Finally, the progress bar is closed, and the trained model is returned.
-
-Overall, the `train_online` method trains a model using an online learning approach by iteratively training on batches of data from a dataset. It tracks the training progress using a progress bar and returns the trained model.
-
-#### **Method Details**
-This code defines a method called `train_online` within a class. The method takes a `dataset` as input and trains a model using an online training approach.
-
-Here is a breakdown of the code:
-
-1. `self.dist_model.train()`: This line sets the model to training mode. It is assumed that `self.dist_model` is an instance of a model class.
-
-2. `with dataset.initialize_batcher(...) as batcher:`: This line initializes a batcher object from the dataset. The batcher is responsible for generating batches of data for training.
-
-3. `progress_bar_config`: This dictionary defines the configuration for the progress bar that will be displayed during training.
-
-4. `progress_bar = LudwigProgressBar(...)`: This line creates an instance of the `LudwigProgressBar` class, which is responsible for displaying the progress of the training loop.
-
-5. `while not batcher.last_batch():`: This loop iterates until the batcher reaches the last batch of data.
-
-6. `batch = batcher.next_batch()`: This line retrieves the next batch of data from the batcher.
-
-7. `inputs`: This dictionary comprehension creates a dictionary of input features and their corresponding values from the batch. The values are converted to PyTorch tensors and moved to the specified device.
-
-8. `targets`: This dictionary comprehension creates a dictionary of output features and their corresponding values from the batch. The values are converted to PyTorch tensors and moved to the specified device.
-
-9. `self.train_step(inputs, targets)`: This line calls a method called `train_step` to perform a single training step using the inputs and targets.
-
-10. `progress_bar.update(1)`: This line updates the progress bar to indicate that one training step has been completed.
-
-11. `progress_bar.close()`: This line closes the progress bar.
-
-12. `return self.model`: This line returns the trained model.
-
-Overall, the `train_online` method trains a model using an online training approach by iterating over batches of data, performing training steps, and updating a progress bar to track the training progress.
+The mathematical operations in this method involve preparing the input and target tensors for the model. This includes converting the batch data into tensors using `torch.from_numpy` and moving them to the desired device using `.to(self.device)`. These operations ensure that the data is in the correct format and device for training the model.
 
 ### Method **`validation_field`** Overview
-The method `validation_field` is a getter method that returns the value of the `_validation_field` attribute. It is defined within a class and is used to access the value of the private attribute `_validation_field`. This method allows other parts of the code to retrieve the value of the `_validation_field` attribute without directly accessing it.
+The `validation_field` method in Python is a simple getter method that returns the value of the `_validation_field` attribute of an object. It does not take any parameters.
 
-#### **Method Details**
-The given code is a method named "validation_field" defined within a class. It returns the value of the attribute "_validation_field" of the class instance.
+The purpose of the `validation_field` method is to provide access to the `_validation_field` attribute, which is a field used for validation purposes. This attribute can be set by other methods or directly accessed by other parts of the code.
+
+As for the mathematical operations or procedures performed by this method, there are none. It simply returns the value of the `_validation_field` attribute.
+
+Here is the LaTex code to display the equation in a markdown document:
+
+
+$$
+\text{{def validation\_field(self):}}
+$$
+
+$$
+\quad \quad \text{{return self.\_validation\_field}}
+$$
 
 ### Method **`validation_metric`** Overview
-The method validation_metric is a function defined within a class. It returns the value of the attribute _validation_metric. 
+The `validation_metric` method in Python is a simple getter method that returns the value of the `_validation_metric` attribute of an object. It does not take any parameters.
 
-This method is used to retrieve the validation metric associated with an instance of the class. The validation metric is a measure or score that is used to evaluate the performance or quality of a model or algorithm during the validation phase. It provides an indication of how well the model is performing and can be used to compare different models or algorithms.
+The purpose of this method is to provide access to the `_validation_metric` attribute, which is a metric used to evaluate the performance of a model during the validation phase. The specific metric and its calculation are not defined in the method itself, but rather in the code that sets the value of the `_validation_metric` attribute.
 
-#### **Method Details**
-The given code is a method named `validation_metric` defined within a class. It returns the value of the attribute `_validation_metric`.
+The method does not perform any mathematical operations or procedures itself. It simply returns the value of the `_validation_metric` attribute.
+
+In LaTeX, the method can be represented as:
+
+
+$$
+\text{{def validation\_metric(self):}}
+$$
+
+$$
+\quad \text{{return self.\_validation\_metric}}
+$$
 
 ### Method **`evaluation`** Overview
-The method "evaluation" takes in several parameters including a dataset, dataset name, metrics log, batch size, and progress tracker. 
+The `evaluation` method in Python takes in several parameters and performs mathematical operations or procedures. Here is a breakdown of each parameter and the purpose it serves:
 
-First, it creates an instance of the Predictor class, passing in the necessary parameters such as the distribution model, batch size, and whether it is distributed or not. It also includes the model itself.
+- `self`: This parameter refers to the instance of the class that the method belongs to. It is used to access the attributes and methods of the class.
 
-Then, it calls the "batch_evaluation" method of the predictor object, passing in the dataset and dataset name. This method performs the evaluation on the dataset in batches, without collecting the predictions.
+- `dataset`: This parameter represents the dataset on which the evaluation is performed. It is typically a collection of input data and corresponding labels.
 
-The method then returns the result of calling the "append_metrics" function, passing in the model, dataset name, metrics, metrics log, and progress tracker. This function appends the metrics to the metrics log and updates the progress tracker.
+- `dataset_name`: This parameter is a string that specifies the name of the dataset. It is used for logging and tracking purposes.
 
-Overall, the "evaluation" method performs evaluation on a dataset using a given model and updates the metrics log and progress tracker.
+- `metrics_log`: This parameter is a dictionary or log file where the evaluation metrics will be stored. It is used to keep track of the performance of the model.
 
-#### **Method Details**
-The given code defines a method called `evaluation` within a class. This method takes several parameters: `self`, `dataset`, `dataset_name`, `metrics_log`, `batch_size`, and `progress_tracker`.
+- `batch_size`: This parameter determines the number of samples processed in each batch during evaluation. It controls the memory usage and computational efficiency.
 
-Inside the method, a `Predictor` object is created with various arguments including `self.dist_model`, `batch_size`, `self.distributed`, `self.report_tqdm_to_ray`, and `self.model`.
+- `progress_tracker`: This parameter is an object or function that tracks the progress of the evaluation. It can be used to display a progress bar or log the progress.
 
-Then, the `batch_evaluation` method of the `predictor` object is called with the `dataset`, `collect_predictions=False`, and `dataset_name` as arguments. The result is stored in the `metrics` variable.
+The method starts by creating an instance of the `Predictor` class, passing in various parameters including the `dist_model`, `batch_size`, `distributed`, `report_tqdm_to_ray`, and `model`. The `Predictor` class is responsible for performing the evaluation.
 
-Finally, the `append_metrics` function is called with `self.model`, `dataset_name`, `metrics`, `metrics_log`, and `progress_tracker` as arguments, and the result is returned.
+Next, the `predictor.batch_evaluation` method is called with the `dataset`, `collect_predictions`, and `dataset_name` parameters. This method performs the evaluation on the dataset and returns the evaluation metrics.
+
+Finally, the `append_metrics` function is called with the `self.model`, `dataset_name`, `metrics`, `metrics_log`, and `progress_tracker` parameters. This function appends the evaluation metrics to the `metrics_log` and updates the `progress_tracker`.
+
+The mathematical operations or procedures performed within the `evaluation` method depend on the implementation of the `Predictor` class and the `append_metrics` function. Without further information, it is not possible to provide specific details about the mathematical operations or procedures.
 
 ### Method **`check_progress_on_validation`** Overview
-The method `check_progress_on_validation` is a function that is used to monitor the progress of a model during validation. It takes in various parameters such as the progress tracker, the name of the validation output feature, the validation metric, the save path, and other hyperparameters related to batch size and early stopping.
+The `check_progress_on_validation` method is used to check the history of validation scores during training. It performs several operations to reduce the learning rate, increase the batch size, and determine whether training should stop. It also saves the model if the scores have improved.
 
-The function first retrieves the most recent validation metric value from the progress tracker. If the value is NaN, it is set to 0. Then, it compares this value with the best evaluation metric value stored in the progress tracker. If the current value is better, it updates the best evaluation metric value and saves the model. It also logs information about the improvement in the validation metric.
+Parameters:
+- `progress_tracker`: An object that tracks the progress of the training.
+- `validation_output_feature_name`: The name of the validation output feature.
+- `validation_metric`: The metric used for validation.
+- `save_path`: The path to save the model.
+- `model_hyperparameters_path`: The path to save the model hyperparameters.
+- `increase_batch_size_on_plateau`: The number of times to increase the batch size on a plateau.
+- `increase_batch_size_on_plateau_patience`: The number of steps to wait before increasing the batch size on a plateau.
+- `increase_batch_size_on_plateau_rate`: The rate at which to increase the batch size on a plateau.
+- `increase_batch_size_on_plateau_max`: The maximum batch size to increase to on a plateau.
+- `increase_batch_size_eval_metric`: The metric used to evaluate the increase in batch size.
+- `increase_batch_size_eval_split`: The split used to evaluate the increase in batch size.
+- `early_stopping_steps`: The number of steps to wait for early stopping.
+- `skip_save_model`: Whether to skip saving the model.
+- `checkpoint_manager`: An object that manages checkpoints.
 
-Next, the function calculates the number of steps since the last improvement in the validation metric and logs this information. It then evaluates the learning rate schedule and the increase in batch size plateau logic.
+Mathematical Operations:
+1. Get the most recent validation metric value:
+```python
+eval_metric: TrainerMetric = all_validation_metrics[validation_metric][-1]
+eval_metric_value = eval_metric[-1]
+```
+2. If the validation metric value is NaN, set it to 0:
+```python
+if eval_metric_value != eval_metric_value:
+    eval_metric_value = 0
+```
+3. Check if the current validation metric value has improved compared to the best evaluation metric value:
+```python
+if improved_fn(eval_metric_value, progress_tracker.best_eval_metric_value):
+```
+4. If the validation metric value has improved, update the best evaluation metric value and save the model:
+```python
+progress_tracker.best_eval_metric_value = eval_metric_value
+progress_tracker.best_eval_metric_steps = progress_tracker.steps
+progress_tracker.best_eval_metric_epoch = progress_tracker.epoch
+progress_tracker.best_eval_metric_checkpoint_number = progress_tracker.checkpoint_number
 
-Finally, the function checks for early stopping conditions. If there has been no improvement in the validation metric for a certain number of steps or if any callback indicates early stopping, the function sets a flag to break the training loop.
+progress_tracker.best_eval_train_metrics = get_latest_metrics_dict(progress_tracker.train_metrics)
+progress_tracker.best_eval_validation_metrics = get_latest_metrics_dict(progress_tracker.validation_metrics)
+progress_tracker.best_eval_test_metrics = get_latest_metrics_dict(progress_tracker.test_metrics)
 
-The function returns a boolean value indicating whether the model should stop training.
+if not skip_save_model:
+    checkpoint_manager.save_best(progress_tracker.steps)
+```
+5. Calculate the number of steps since the last improvement in the validation metric:
+```python
+last_improvement_in_steps = progress_tracker.steps - progress_tracker.best_eval_metric_steps
+progress_tracker.last_improvement_steps = last_improvement_in_steps
+```
+6. Update the learning rate schedule:
+```python
+self.scheduler.eval_step(progress_tracker, validation_output_feature_name)
+```
+7. Increase the batch size on a plateau if necessary:
+```python
+self.increase_batch_size(
+    progress_tracker,
+    validation_output_feature_name,
+    increase_batch_size_on_plateau,
+    increase_batch_size_on_plateau_patience,
+    increase_batch_size_on_plateau_rate,
+    increase_batch_size_on_plateau_max,
+    increase_batch_size_eval_metric,
+    increase_batch_size_eval_split,
+)
+```
+8. Check if early stopping conditions are satisfied:
+```python
+early_stop_bool = 0 < early_stopping_steps <= last_improvement_in_steps
+for callback in self.callbacks:
+    if callback.should_early_stop(self, progress_tracker, self.is_coordinator()):
+        early_stop_bool = True
+        break
+```
+9. If early stopping conditions are met, set `should_break` to True:
+```python
+should_break = True
+```
+10. Return `should_break` to indicate whether training should stop.
 
-#### **Method Details**
-The given code is a method called `check_progress_on_validation` that is part of a class. This method is used to check the history of validation scores during training and make decisions based on those scores.
-
-Here is a breakdown of the code:
-
-1. The method takes several parameters including `progress_tracker` (an object that tracks the progress of training), `validation_output_feature_name` (the name of the validation output feature), `validation_metric` (the metric used for validation), `save_path` (the path to save the model), and others.
-
-2. The method initializes a variable `should_break` to False, which will be used to determine whether the training should stop.
-
-3. The method calls a function `get_improved_fn` to get a function that determines whether a metric value has improved or not.
-
-4. It retrieves the history of validation metrics from the `progress_tracker` object.
-
-5. It gets the most recent value of the specified validation metric.
-
-6. If the value is NaN (not a number), it sets it to 0.
-
-7. It checks if the metric value has improved compared to the best metric value so far. If it has improved, it updates the best metric value, saves the model, and logs the improvement.
-
-8. It calculates the number of steps since the last improvement in the validation metric.
-
-9. It calls a method `eval_step` on a `scheduler` object to update the learning rate schedule.
-
-10. If the parameter `increase_batch_size_on_plateau` is greater than 0, it calls a method `increase_batch_size` to increase the batch size based on the validation metric.
-
-11. It calculates the number of steps since the last increase in batch size.
-
-12. If the early stopping condition is satisfied (either lack of improvement for many steps or via callbacks), it triggers early stopping.
-
-13. It returns the value of `should_break`, which determines whether the training should stop.
-
-Overall, this method is responsible for monitoring the validation scores during training, saving the best model, updating the learning rate schedule, increasing the batch size, and triggering early stopping if necessary.
+LaTeX code for equations:
+1. Fallback to 0 if the validation metric value is NaN:
+```latex
+\text{eval\_metric\_value} = \begin{cases} 
+      0 & \text{if eval\_metric\_value is NaN} \\
+      \text{eval\_metric\_value} & \text{otherwise}
+   \end{cases}
+```
+2. Calculate the absolute change in the evaluation metric value:
+```latex
+\text{absolute\_eval\_metric\_value\_change} = \left| \text{previous\_best\_eval\_metric\_value} - \text{progress\_tracker.best\_eval\_metric\_value} \right|
+```
+3. Log whether the evaluation metric has increased or decreased:
+```latex
+\text{if get\_metric\_objective(validation\_metric) == MINIMIZE:} \\
+\quad \text{log}(\text{validation\_output\_feature\_name}, \text{validation\_metric}, \text{decreased by}, \text{absolute\_eval\_metric\_value\_change}) \\
+\text{else:} \\
+\quad \text{log}(\text{validation\_output\_feature\_name}, \text{validation\_metric}, \text{increased by}, \text{absolute\_eval\_metric\_value\_change})
+```
 
 ### Method **`set_steps_to_1_or_quit`** Overview
-The method `set_steps_to_1_or_quit` is a custom signal handler for the SIGINT signal (interrupt signal). It is used to gracefully exit a training process.
+The `set_steps_to_1_or_quit` method is a custom SIGINT handler used to elegantly exit training in a Python program. It takes two parameters: `signum` and `frame`. 
 
-When the method is called, it checks if a SIGINT signal has been received before. If not, it sets the `total_steps` variable to 1 and sets the `received_sigint` flag to True. It also logs a message indicating that a SIGINT signal has been received and that the training will finish after the next training step. It also informs the user that sending another SIGINT signal will immediately interrupt the process.
+- `signum` is the signal number corresponding to the received signal. In this case, it is used to handle the SIGINT signal.
+- `frame` is the current stack frame at the time the signal was received. It is not used in this method.
 
-If a second SIGINT signal is received, the method logs a message indicating that a second SIGINT signal has been received and that the process will now quit. It then checks if there is an original SIGINT handler defined and if so, restores it. Finally, it exits the program with a status code of 1.
+The purpose of this method is to handle the SIGINT signal, which is typically sent by the operating system when the user presses Ctrl+C. The method provides a graceful way to exit the training process.
 
-In summary, this method allows for graceful termination of a training process by handling SIGINT signals. It provides the option to finish the current training step before quitting or immediately quitting upon receiving a second SIGINT signal.
+The method performs the following mathematical operations or procedures:
 
-#### **Method Details**
-This code defines a method called `set_steps_to_1_or_quit` which is used as a custom signal handler for the SIGINT signal (interrupt signal). 
+1. If `self.received_sigint` is `False`, indicating that a SIGINT signal has not been received before, the method sets `self.total_steps` to 1 and sets `self.received_sigint` to `True`. It also logs a message indicating that a SIGINT signal has been received and the training will finish after the next training step. It also informs the user that another SIGINT signal can be sent to immediately interrupt the process.
 
-When the method is called, it checks if the `received_sigint` attribute of the object is False. If it is False, it sets the `total_steps` attribute to 1, sets `received_sigint` to True, and logs a message indicating that a SIGINT signal has been received and the training will finish after the next training step. It also logs a message indicating that another SIGINT signal can be sent to immediately interrupt the process.
+2. If `self.received_sigint` is `True`, indicating that a SIGINT signal has been received before, the method logs a message indicating that a second SIGINT signal has been received and the training will now quit. It also restores the original SIGINT signal handler if it was previously saved in `self.original_sigint_handler`. Finally, it exits the program with a status code of 1.
 
-If the `received_sigint` attribute is already True, it logs a message indicating that a second SIGINT signal has been received and the program will now quit. It also restores the original SIGINT signal handler if it was previously saved, and exits the program with a status code of 1.
+Here is the LaTex code to display the equations in a markdown document:
 
-This code is used to gracefully handle SIGINT signals during training, allowing the training process to be stopped either after the next training step or immediately.
+1. Setting `self.total_steps` to 1:
+   
+$$ \text{{self.total\_steps}} = 1 $$
+
+2. Logging a message for the first SIGINT signal:
+   
+$$ \text{{logger.critical("\nReceived SIGINT, will finish this training step and then conclude training.")}} $$
+   
+$$ \text{{logger.critical("Send another SIGINT to immediately interrupt the process.")}} $$
+
+3. Logging a message for the second SIGINT signal:
+   
+$$ \text{{logger.critical("\nReceived a second SIGINT, will now quit")}} $$
+
+4. Restoring the original SIGINT signal handler:
+   
+$$ \text{{signal.signal(signal.SIGINT, self.original\_sigint\_handler)}} $$
+
+5. Exiting the program with a status code of 1:
+   
+$$ \text{{sys.exit(1)}} $$
 
 ### Method **`resume_files_exist`** Overview
-The method `resume_files_exist` takes two parameters: `training_progress_tracker_path` and `training_checkpoint_path`, both of which are strings. It returns a boolean value.
+The `resume_files_exist` method is a Python function that checks if certain files exist. It takes two parameters: `training_progress_tracker_path` and `training_checkpoint_path`, both of which are strings representing file paths.
 
-The method checks if certain files exist in the specified paths. It first checks if the file `training_progress_tracker_path` exists using the `path_exists` function. If it doesn't exist, the path is added to the `missing_files` list.
+The purpose of this method is to determine if two specific files exist. It first initializes an empty list called `missing_files` to keep track of any files that are missing.
 
-Next, it constructs the path to the file `latest.ckpt` by joining `training_checkpoint_path` and the filename. It then checks if this file exists using the `path_exists` function. If it doesn't exist, the path is added to the `missing_files` list.
+The method then checks if the file specified by `training_progress_tracker_path` exists using the `path_exists` function. If the file does not exist, the file path is added to the `missing_files` list.
 
-If there are any files in the `missing_files` list, a warning message is logged indicating which files could not be found. The method then returns `False` to indicate that the required files are missing.
+Next, it constructs the file path for the `latest.ckpt` file by joining the `training_checkpoint_path` with the file name. It then checks if this file exists using the `path_exists` function. If it doesn't, the file path is added to the `missing_files` list.
 
-If all the required files are found, the method returns `True` to indicate that the files exist and the model training can be resumed.
+Finally, if there are any files in the `missing_files` list, a warning message is logged using the `logger.warning` function, indicating which files could not be found. The method then returns `False` to indicate that the files are missing. If no files are missing, the method returns `True`.
 
-#### **Method Details**
-The code defines a function called `resume_files_exist` that takes in two parameters: `training_progress_tracker_path` and `training_checkpoint_path`, both of which are strings.
-
-Inside the function, there is a list called `missing_files` which will store the paths of any missing files.
-
-The function checks if the file `training_progress_tracker_path` exists using the `path_exists` function. If it doesn't exist, the path is added to the `missing_files` list.
-
-Next, the function creates a variable called `latest_ckpt` by joining the `training_checkpoint_path` with the file name "latest.ckpt". It then checks if this file exists using the `path_exists` function. If it doesn't exist, the path is added to the `missing_files` list.
-
-If there are any missing files, a warning message is logged using the `logger.warning` function, indicating which files are missing. The function then returns `False` to indicate that the files are not found.
-
-If there are no missing files, the function returns `True` to indicate that the files exist.
+In terms of mathematical operations or procedures, this method does not perform any. It is primarily focused on file existence checks and logging.
 
 ### Method **`resume_training_progress_tracker`** Overview
-The method `resume_training_progress_tracker` is a function that takes two parameters: `self` and `training_progress_tracker_path`. 
+The `resume_training_progress_tracker` method is a Python method that resumes the training progress tracker. It takes two parameters: `self` and `training_progress_tracker_path`. 
 
-This method is used to resume the training progress tracker for a model. It first checks if the current process is the coordinator (using the `is_coordinator()` method). If it is, it logs an information message indicating that the progress tracker is being loaded for the specified model path. It then loads the progress tracker from the specified path using the `load_json()` function and assigns it to the `progress_tracker_dict` variable.
+The purpose of the `self` parameter is to refer to the current instance of the class that the method belongs to. This parameter is used to access the attributes and methods of the class.
 
-Next, it logs a debug message indicating that the model progress tracker dictionary is being broadcasted to all workers. It uses the `broadcast_object()` method from the `distributed` object to broadcast the `progress_tracker_dict` to all workers, using the name "broadcast_progress_tracker". The result of the broadcast is assigned back to the `progress_tracker_dict` variable.
+The purpose of the `training_progress_tracker_path` parameter is to specify the path to the training progress tracker file that needs to be loaded.
 
-Finally, it creates a `ProgressTracker` object by calling the `load()` method of the `ProgressTracker` class, passing in the `progress_tracker_dict` as an argument. This `ProgressTracker` object is then returned by the method.
+The method first initializes the `progress_tracker_dict` variable to `None`. Then, it checks if the current instance is the coordinator by calling the `is_coordinator()` method. If it is the coordinator, it logs a message indicating that the progress tracker is being loaded from the specified path using the `logger.info()` method. It then loads the progress tracker from the specified path using the `load_json()` function and assigns it to the `progress_tracker_dict` variable.
 
-#### **Method Details**
-The given code defines a method called `resume_training_progress_tracker` that takes two parameters: `self` and `training_progress_tracker_path`. 
+Next, the method logs a debug message indicating that the model progress tracker dictionary is being broadcasted to all workers using the `logger.debug()` method. It broadcasts the `progress_tracker_dict` to all workers using the `broadcast_object()` method of the `distributed` object, with the name "broadcast_progress_tracker".
 
-Inside the method, it first initializes a variable `progress_tracker_dict` to `None`. 
+Finally, the method loads the progress tracker from the `progress_tracker_dict` using the `ProgressTracker.load()` method and returns the loaded progress tracker.
 
-Then, it checks if the current instance is a coordinator (using the `is_coordinator()` method). If it is, it logs a message indicating that the progress tracker for the model is being loaded from the specified `training_progress_tracker_path` using the `logger.info()` function. It then calls the `load_json()` function to load the progress tracker from the path and assigns the result to the `progress_tracker_dict` variable.
-
-Next, it logs a debug message indicating that the model progress tracker dictionary is being broadcasted to all workers using the `logger.debug()` function. It calls the `broadcast_object()` method of the `distributed` object (assuming it is an instance of a distributed computing framework) to broadcast the `progress_tracker_dict` to all workers. The `name` parameter is set to "broadcast_progress_tracker".
-
-Finally, it creates a `ProgressTracker` object by calling the `load()` method of the `ProgressTracker` class and passing the `progress_tracker_dict` as an argument. It then returns the `progress_tracker` object.
-
-Note: The code assumes the existence of a `logger` object and a `ProgressTracker` class with a `load()` method. It also assumes the availability of a `load_json()` function.
+There are no mathematical operations or procedures performed in this method.
 
 ### Method **`resume_weights_and_optimizer`** Overview
-The method `resume_weights_and_optimizer` takes in three parameters: `self`, `model_weights_progress_path`, and `checkpoint`. 
+The `resume_weights_and_optimizer` method is a function defined in a Python class. It takes three parameters: `self`, `model_weights_progress_path`, and `checkpoint`.
 
-The purpose of this method is to resume the weights and optimizer of a model from a specified checkpoint. It does this by calling the `load_latest_checkpoint` method of the `CheckpointManager` class, passing in the `checkpoint`, `model_weights_progress_path`, and `self.device` as arguments. This method will load the latest checkpoint from the specified path and update the model's weights and optimizer accordingly.
+- `self`: It is a reference to the current instance of the class.
+- `model_weights_progress_path`: It is a string parameter that represents the path to the directory where the model weights progress is stored.
+- `checkpoint`: It is an object of the `Checkpoint` class.
 
-#### **Method Details**
-The given code is a method called `resume_weights_and_optimizer` which takes in three parameters: `self`, `model_weights_progress_path`, and `checkpoint`. 
+The purpose of this method is to resume the weights and optimizer of a model from a previously saved checkpoint. It does this by calling the `load_latest_checkpoint` method of the `CheckpointManager` class.
 
-The purpose of this method is to resume the weights and optimizer of a model from a given checkpoint. 
+The `load_latest_checkpoint` method takes three parameters: `checkpoint`, `model_weights_progress_path`, and `self.device`.
 
-The method calls the `load_latest_checkpoint` method of the `CheckpointManager` class, passing in the `checkpoint`, `model_weights_progress_path`, and `self.device` as arguments.
+- `checkpoint`: It is an object of the `Checkpoint` class that represents the checkpoint to be loaded.
+- `model_weights_progress_path`: It is a string parameter that represents the path to the directory where the model weights progress is stored.
+- `self.device`: It represents the device (e.g., CPU or GPU) on which the model is loaded.
+
+The `load_latest_checkpoint` method performs the following mathematical operations or procedures:
+
+1. It loads the latest checkpoint from the specified directory using the `model_weights_progress_path` parameter.
+2. It loads the weights and optimizer from the checkpoint and assigns them to the model and optimizer objects respectively.
+3. It ensures that the model and optimizer are moved to the specified device using the `self.device` parameter.
+
+Here is the LaTex code for the mathematical operations or procedures performed by the `resume_weights_and_optimizer` method:
+
+1. Loading the latest checkpoint:
+```
+\text{checkpoint} = \text{load\_latest\_checkpoint}(\text{checkpoint}, \text{model\_weights\_progress\_path}, \text{self.device})
+```
+
+2. Loading the weights and optimizer from the checkpoint:
+```
+\text{model.weights} = \text{checkpoint.weights}
+\text{optimizer} = \text{checkpoint.optimizer}
+```
+
+3. Moving the model and optimizer to the specified device:
+```
+\text{model}.\text{to}(\text{self.device})
+\text{optimizer}.\text{to}(\text{self.device})
+```
 
 ### Method **`increase_batch_size`** Overview
-The `increase_batch_size` method is used to determine if the batch size should be increased during training. It takes several parameters including a progress tracker, the name of the validation output feature, and various configuration values for determining when and how to increase the batch size.
+The `increase_batch_size` method is used to determine if the batch size should be increased based on the progress of the training. Here is a breakdown of the parameters and their purposes:
 
-The method first checks if the number of batch size increases is less than the specified threshold and if the current batch size is not already at the maximum allowed value. If these conditions are met, it proceeds to evaluate the improvement in a specified evaluation metric (e.g., loss) on a specified split (e.g., training, validation, or test).
+- `self`: The instance of the class that the method belongs to.
+- `progress_tracker`: An object that tracks the progress of the training.
+- `validation_output_feature_name`: The name of the validation output feature.
+- `increase_batch_size_on_plateau`: The number of times the batch size should be increased before stopping.
+- `increase_batch_size_on_plateau_patience`: The number of steps to wait before increasing the batch size again.
+- `increase_batch_size_on_plateau_rate`: The rate at which the batch size should be increased.
+- `increase_batch_size_on_plateau_max`: The maximum allowed batch size.
+- `increase_batch_size_eval_metric`: The evaluation metric used to determine if the batch size should be increased. (default: LOSS)
+- `increase_batch_size_eval_split`: The split used for evaluation. (default: TRAINING)
 
-The method retrieves the last recorded metric value for the specified validation output feature and evaluation metric from the progress tracker. It then compares this value with the best recorded value so far for the same metric. If the new value is better, it updates the best metric value and resets the count of steps since the last improvement. Otherwise, it increments the count of steps since the last improvement.
+The method performs the following mathematical operations or procedures:
 
-If the count of steps since the last batch size increase and the count of steps since the last improvement in the evaluation metric both exceed the specified patience threshold, the method increases the batch size. The new batch size is calculated by multiplying the current batch size by a specified rate, and it is capped at the maximum allowed value.
+1. It checks if the number of batch size increases is less than the specified `increase_batch_size_on_plateau` and if the current batch size is not equal to `increase_batch_size_on_plateau_max`.
+2. It determines the split metrics based on the `increase_batch_size_eval_split` parameter.
+3. It retrieves the last metric value for the specified validation output feature and evaluation metric.
+4. It compares the last metric value with the best metric value stored in the progress tracker using the appropriate comparison function based on the evaluation metric.
+5. If the last metric value is improved, it updates the best metric value in the progress tracker and resets the last improvement step count.
+6. If the last metric value is not improved, it increments the last improvement step count and checks if both the batch size increase and evaluation metric improvement happened more than `increase_batch_size_on_plateau_patience` steps ago.
+7. If the conditions in step 6 are met, it calculates the new batch size by multiplying the current batch size with `increase_batch_size_on_plateau_rate` and takes the minimum value between the calculated batch size and `increase_batch_size_on_plateau_max`.
+8. It logs a message indicating that the batch size is being increased due to lack of improvement.
+9. It updates the progress tracker with the new batch size, step count, and number of batch size increases.
+10. It logs a message indicating that the batch size has reached the maximum allowed or the maximum number of increases has been reached.
 
-If the method is executed by the coordinator (e.g., the main process in a distributed training setup), it logs a message indicating that the batch size is being increased due to lack of improvement in the specified evaluation metric.
+Here is the LaTex code for the equations used in the method:
 
-The progress tracker is then updated with the new batch size, the count of steps since the last batch size increase, and the count of batch size increases. If the maximum number of batch size increases has been reached, or if the current batch size is already at the maximum allowed value, additional log messages are printed.
+1. Calculating the new batch size:
 
-Overall, the `increase_batch_size` method uses the progress tracker and specified configuration values to determine if and when the batch size should be increased during training based on the improvement in a specified evaluation metric.
-
-#### **Method Details**
-This code defines a method called `increase_batch_size` within a class. The method takes several parameters including `progress_tracker`, `validation_output_feature_name`, `increase_batch_size_on_plateau`, `increase_batch_size_on_plateau_patience`, `increase_batch_size_on_plateau_rate`, `increase_batch_size_on_plateau_max`, `increase_batch_size_eval_metric`, and `increase_batch_size_eval_split`.
-
-The purpose of this method is to determine if the batch size should be increased based on the progress of the training. It uses the `progress_tracker` object to access the training metrics and evaluate the improvement of a specified evaluation metric.
-
-The method first checks if the number of batch size increases is less than the specified `increase_batch_size_on_plateau` value and if the current batch size is not equal to the maximum allowed batch size (`increase_batch_size_on_plateau_max`). If these conditions are met, it proceeds to evaluate the improvement of the evaluation metric.
-
-The evaluation metric to be considered is specified by `increase_batch_size_eval_metric`, and the split to evaluate (training, validation, or test) is specified by `increase_batch_size_eval_split`. The method retrieves the corresponding metrics from the `progress_tracker` object.
-
-It then compares the last value of the evaluation metric with the best value recorded so far. If the last value is better, it updates the best value and resets the count of steps without improvement. Otherwise, it increments the count of steps without improvement.
-
-If the count of steps without improvement reaches the specified `increase_batch_size_on_plateau_patience` value, and there has been no improvement in the evaluation metric for the same number of steps, the batch size is increased. The new batch size is calculated by multiplying the current batch size by `increase_batch_size_on_plateau_rate` and taking the minimum of that value and `increase_batch_size_on_plateau_max`.
-
-If the code is being executed by the coordinator (not specified in the code snippet), it logs information about the batch size increase.
-
-Finally, the method updates the relevant attributes in the `progress_tracker` object and returns.
+$$
+\text{{new\_batch\_size}} = \min\left(\text{{increase\_batch\_size\_on\_plateau\_rate}} \times \text{{progress\_tracker.batch\_size}}, \text{{increase\_batch\_size\_on\_plateau\_max}}\right)
+$$
 
 ### Method **`is_coordinator`** Overview
-The method `is_coordinator` is a function defined within a class. It checks if the current instance of the class is the coordinator or not. 
+The `is_coordinator` method in Python is a function that checks if the current process is the coordinator or not. It is typically used in distributed computing frameworks like MPI (Message Passing Interface) to determine if a process is the coordinator or not.
 
-The method uses the `self.distributed.rank()` function to determine the rank of the current instance. The `rank()` function is assumed to be a method or attribute of the `distributed` object associated with the class.
+The method does not take any parameters. It is a member function of a class, and the `self` parameter refers to the instance of the class on which the method is called.
 
-The `==` operator is used to compare the rank of the current instance with 0, which is typically the rank of the coordinator. If the rank is equal to 0, the method returns `True`, indicating that the current instance is the coordinator. Otherwise, it returns `False`, indicating that the current instance is not the coordinator.
+The method uses the `distributed.rank()` function to determine the rank of the current process. In distributed computing, each process is assigned a unique rank. The rank of the coordinator is usually 0.
 
-#### **Method Details**
-The given code is a method definition for a class. The method is called `is_coordinator` and it takes one parameter `self`. 
+The method compares the rank of the current process with 0 using the equality operator (`==`). If the rank is 0, it means that the current process is the coordinator, and the method returns `True`. Otherwise, it returns `False`.
 
-Inside the method, it checks if the rank of the distributed object is equal to 0. The `self.distributed.rank()` is assumed to be a method or attribute that returns the rank of the distributed object. If the rank is 0, it returns `True`, indicating that the current instance is the coordinator. Otherwise, it returns `False`.
+Mathematical operations or procedures are not involved in this method. It simply compares the rank of the current process with 0 to determine if it is the coordinator or not.
+
+LaTeX code for the equation used in the method:
+
+
+$$
+\text{{self.distributed.rank()}} == 0
+$$
 
 ### Method **`local_rank`** Overview
-The method `local_rank` is a function that belongs to a class and returns an integer value. It utilizes the `distributed` attribute of the class to access the `local_rank` method of the `distributed` object. The purpose of this method is to retrieve the local rank of the current process in a distributed computing environment. The local rank represents the unique identifier assigned to each process within a specific node or machine in a distributed system.
+The `local_rank` method in Python is a method that returns the local rank of the current process. It is typically used in distributed computing frameworks like PyTorch or TensorFlow to determine the rank of the current process within a distributed setup.
 
-#### **Method Details**
-The given code is a method called `local_rank` defined within a class. It returns the local rank of the current process in a distributed computing environment.
+The method does not take any parameters. It is a member method of a class and is typically called on an instance of that class.
 
-The `self.distributed.local_rank()` is a function call that is expected to be defined within the class. It is likely a part of a distributed computing library or framework that provides functionality for distributed training or parallel computing.
+The method uses the `distributed` attribute of the class instance to access the distributed computing framework's functionality to determine the local rank. The `distributed` attribute is assumed to be an instance of a class that provides the `local_rank` method.
 
-The `local_rank` method returns the value returned by `self.distributed.local_rank()`, which is expected to be an integer representing the local rank of the current process.
+The method returns an integer value representing the local rank of the current process. The local rank is a unique identifier assigned to each process within a distributed setup. It is used to differentiate between different processes and assign specific tasks or data to each process.
+
+The mathematical operations or procedures performed by the `local_rank` method are not explicitly mentioned in the code snippet provided. However, it is assumed that the `local_rank` method internally performs some calculations or accesses system-level information to determine the local rank.
+
+Since the code snippet does not provide any mathematical operations or procedures, there is no LaTex code to generate for displaying equations in a markdown document.
 
 ### Method **`barrier`** Overview
-The method "barrier" is a function defined within a class. It is used to synchronize the execution of multiple processes or threads in a distributed computing environment. 
+The Python method `barrier` is a method that is defined within a class and is delimited by triple backticks. It does not take any parameters. 
 
-In this specific implementation, the method calls the "barrier" function of the "distributed" object. This function is responsible for ensuring that all processes or threads reach a specific point in their execution before proceeding further. It acts as a synchronization point, allowing the processes or threads to wait until all of them have reached the barrier before continuing with their respective tasks. This helps in coordinating the execution of parallel tasks and ensures that all processes or threads are in sync with each other.
+The purpose of this method is to synchronize the execution of multiple processes or threads. It ensures that all processes or threads reach a specific point in the code before proceeding further. 
 
-#### **Method Details**
-The given code defines a method called "barrier" within a class. The method calls the "barrier" function of an object called "distributed" that is a member of the class.
+The method `barrier` calls the `barrier` method of the `distributed` object, which is an instance variable of the class. The `barrier` method of the `distributed` object is responsible for implementing the synchronization mechanism.
+
+There are no mathematical operations or procedures performed by this method. It is solely used for synchronization purposes.
 
 ### Method **`callback`** Overview
-The method `callback` is a function that takes three parameters: `self`, `fn`, and `coordinator_only`. It is defined within a class. 
+The `callback` method in Python is defined as follows:
 
-The purpose of this method is to execute a given function (`fn`) on each callback object stored in the `callbacks` list. The `coordinator_only` parameter is a boolean value that determines whether the function should be executed only on the coordinator object or on all callback objects.
+```python
+def callback(self, fn, coordinator_only=True):
+    if not coordinator_only or self.is_coordinator():
+        for callback in self.callbacks:
+            fn(callback)
+```
 
-If `coordinator_only` is set to `True` and the current object is the coordinator, the function `fn` will be called on each callback object. If `coordinator_only` is set to `False`, the function `fn` will be called on each callback object regardless of whether the current object is the coordinator or not.
+This method takes three parameters:
 
-#### **Method Details**
-The given code defines a method called `callback` within a class. The method takes three parameters: `self`, `fn`, and `coordinator_only` (with a default value of `True`).
+1. `self`: It represents the instance of the class that the method belongs to. It is automatically passed when the method is called.
+2. `fn`: It is a function that will be called for each callback in the `self.callbacks` list.
+3. `coordinator_only` (optional): It is a boolean parameter that determines whether the callback should only be executed if the instance is a coordinator. By default, it is set to `True`.
 
-The purpose of this method is to execute a given function (`fn`) on each callback object stored in the `callbacks` list. However, the execution of the function is conditional based on the value of `coordinator_only` and whether the current object is a coordinator.
+The purpose of this method is to iterate over the `self.callbacks` list and call the provided function `fn` for each callback. However, it only executes the callback if `coordinator_only` is `False` or if the instance is a coordinator.
 
-If `coordinator_only` is `True` and the current object is a coordinator (determined by the `is_coordinator()` method), the function `fn` will be executed on each callback object. If `coordinator_only` is `False`, the function `fn` will be executed on each callback object regardless of whether the current object is a coordinator or not.
+The mathematical operations or procedures performed by this method depend on the implementation of the `fn` function. The `fn` function can be any function that accepts a single parameter, which represents a callback. The purpose of the `fn` function is to perform some mathematical operations or procedures on the callback.
 
-Note that the code assumes the existence of a `callbacks` list attribute within the class.
+As for generating LaTeX code to display equations in a markdown document, it is not directly related to the `callback` method. However, you can use LaTeX code within the `fn` function to generate equations and then include the generated LaTeX code in your markdown document using appropriate syntax.
 
 ### Method **`return_device`** Overview
-The method return_device is a function that belongs to a class and takes no arguments other than the self parameter. It returns the value of the device attribute of the class instance. This method is used to retrieve the value of the device attribute and can be called to obtain the device information stored in the class instance.
+The `return_device` method in Python is a simple method that returns the value of the `device` attribute of an object. It does not take any parameters.
 
-#### **Method Details**
-The given code is a method named `return_device` defined within a class. It returns the value of the `device` attribute of the class instance.
-
-Here is the code:
+Here is the description of the method:
 
 ```python
 def return_device(self):
     return self.device
 ```
 
+- `self`: This parameter refers to the instance of the object that the method is being called on. It is a convention in Python to use `self` as the first parameter of instance methods.
+
+The purpose of this method is to provide access to the `device` attribute of an object. The `device` attribute can be any value or object that is stored within the instance of the object.
+
+The method simply returns the value of the `device` attribute using the `return` statement. The `return` statement terminates the execution of the method and returns the specified value.
+
+If you want to display the equations in a markdown document using LaTex code, you can use the following syntax:
+
+```latex
+
+$$ equation $$
+```
+
+For example, if you have an equation like `y = mx + c`, you can represent it in LaTex code as:
+
+```latex
+
+$$ y = mx + c $$
+```
+
+You can replace `equation` with the actual mathematical equation or expression that you want to display.
+
 ## Class **`RemoteTrainer`** Overview
-The class RemoteTrainer is a subclass of Trainer. It has an initializer that takes in optional arguments for gpus, gpu_memory_limit, and allow_parallel_threads, as well as any additional keyword arguments. It calls the initializer of the superclass Trainer.
+The `RemoteTrainer` class is a subclass of the `Trainer` class in Python. It has an `__init__` method that takes in several parameters, including `gpus`, `gpu_memory_limit`, and `allow_parallel_threads`. It calls the `__init__` method of the parent class using the `super()` function.
 
-The RemoteTrainer class has a property called return_device, which returns the string "cpu". This is used when returning the model weights from a remote location to the driver, as the driver likely does not have a GPU.
+The class has two methods: `train` and `train_online`. These methods are decorated with the `self.distributed.return_first` decorator, which ensures that only the results from the rank 0 process are returned to reduce network overhead.
 
-Additionally, the RemoteTrainer class overrides the train and train_online methods inherited from the Trainer class. It uses the distributed.return_first method to only return results from rank 0, reducing network overhead.
+The class also has a `return_device` property, which returns the device on which the model weights should be placed when returning them from a remote process to the driver. In this case, it always returns "cpu" because the driver likely doesn't have a GPU.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the object's attributes and perform any necessary setup.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object.
 
-In the given code, the `__init__` method takes several parameters: `gpus`, `gpu_memory_limit`, `allow_parallel_threads`, and `**kwargs`. These parameters are optional and can be passed when creating an object of the class.
+In the given code snippet, the `__init__` method is defined with the following parameters:
 
-Inside the method, the `super().__init__(**kwargs)` line calls the `__init__` method of the superclass, which is typically used to initialize inherited attributes and perform any necessary setup in the superclass.
+- `self`: It is a reference to the instance of the class. It is used to access the attributes and methods of the class.
 
-The next two lines of code use the `self.distributed.return_first()` method to set the `train` and `train_online` attributes of the object. These attributes are set to the first result returned by the `return_first()` method, which is likely a distributed computing operation. This is done to reduce network overhead by only returning results from rank 0.
+- `gpus`: It is an optional parameter that specifies the number of GPUs to be used. If not provided, it defaults to `None`.
 
-Overall, the `__init__` method in this code is used to initialize the object's attributes, call the superclass's `__init__` method, and perform some distributed computing operations to set the `train` and `train_online` attributes.
+- `gpu_memory_limit`: It is an optional parameter that specifies the memory limit for each GPU. If not provided, it defaults to `None`.
 
-#### **Method Details**
-This code snippet defines the `__init__` method of a class. The method takes several arguments: `gpus`, `gpu_memory_limit`, `allow_parallel_threads`, and `**kwargs`. 
+- `allow_parallel_threads`: It is a boolean parameter that specifies whether to allow parallel threads or not. It defaults to `True`.
 
-The `super().__init__(**kwargs)` line calls the `__init__` method of the superclass, passing any additional keyword arguments (`**kwargs`) to it.
+- `**kwargs`: It is used to accept any additional keyword arguments that are not explicitly defined. It allows for flexibility in passing arguments to the method.
 
-The next two lines use the `self.distributed.return_first` method to modify the `self.train` and `self.train_online` attributes. This method ensures that only the result from the rank 0 process is returned, reducing network overhead.
+The purpose of the `__init__` method in this code is to initialize the attributes of the object. It first calls the `__init__` method of the parent class using `super().__init__(**kwargs)`. This ensures that any initialization code in the parent class is executed.
 
-Overall, this code initializes the class and sets some attributes based on the provided arguments.
+Then, it sets the `train` attribute of the object to the result of `self.distributed.return_first(self.train)`. Similarly, it sets the `train_online` attribute to the result of `self.distributed.return_first(self.train_online)`. These lines of code ensure that only the results from rank 0 are returned to reduce network overhead.
+
+There are no mathematical operations or procedures performed in this `__init__` method.
 
 ### Method **`return_device`** Overview
-The method `return_device` is a function that returns the string "cpu". It is used to specify the device on which the model weights should be placed when returning them from a remote location to the driver. In this case, the method ensures that the weights are placed on the CPU, as the driver is assumed to not have a GPU.
+The `return_device` method in Python is a function that returns the string "cpu". It does not take any parameters.
 
-#### **Method Details**
-The given code is a Python function named `return_device` that returns the string "cpu". The function does not take any arguments and is defined within a class.
+The purpose of this method is to specify the device on which the model weights should be placed when returning them from a remote location to the driver. In this case, the method suggests placing the weights on the CPU, as the driver may not have a GPU.
+
+There are no mathematical operations or procedures performed in this method. It simply returns the string "cpu".
 

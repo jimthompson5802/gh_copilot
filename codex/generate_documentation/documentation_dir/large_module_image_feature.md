@@ -1,952 +1,1107 @@
 # Module:`image_feature.py` Overview
 
-This code defines a class called `ImageInputFeature` that is a subclass of `InputFeature` and `ImageFeatureMixin`. It is used to handle image input features in a machine learning model.
+The Python code is a module that defines the `ImageInputFeature` class, which is a subclass of `InputFeature` and `ImageFeatureMixin`. This class represents an image input feature in a Ludwig model. 
 
-The code begins with import statements for various libraries and modules. It then defines some constants and sets up logging.
+The module also includes helper functions and classes for image preprocessing, augmentation, and transformation using the torchvision library. It provides methods for reading and resizing images, applying augmentation operations, and normalizing images. 
 
-Next, the code defines several classes and functions related to image augmentation. These classes and functions are used to perform various image augmentation operations such as flipping, rotating, adjusting contrast and brightness, and blurring.
-
-After that, the code defines a class called `ImageAugmentation` that represents a pipeline of image augmentation operations. This class takes a list of augmentation configurations as input and applies the specified augmentations to input images.
-
-The code also defines a class called `_ImagePreprocessing` that represents the preprocessing step for image features. This class takes input images and applies resizing and channel adjustment operations based on the specified preprocessing parameters.
-
-Next, the code defines the `ImageFeatureMixin` class, which provides common functionality for image features. This class defines methods for casting the input column, getting feature metadata, adding feature data to the processed dataframe, and creating a preprocessing module.
-
-Finally, the code defines the `ImageInputFeature` class, which is the main class for handling image input features. This class extends the `InputFeature` class and the `ImageFeatureMixin` class. It overrides some methods from the parent classes and adds additional functionality specific to image features, such as encoding the input images using an encoder and applying image augmentation.
-
-Overall, this code provides a framework for handling image input features in a machine learning model. It includes functionality for image augmentation, preprocessing, and encoding.
+The `ImageInputFeature` class overrides methods from the `InputFeature` and `ImageFeatureMixin` classes to handle image-specific operations such as encoding and forward propagation. It also includes methods for updating the feature configuration and schema based on metadata, and creating a preprocessing module for TorchScript.
 
 ## Class **`RandomVFlip`** Overview
-The class RandomVFlip is a subclass of the torch.nn.Module class. It takes a configuration object of type RandomVerticalFlipConfig as input during initialization. 
+The `RandomVFlip` class is a subclass of `torch.nn.Module` in Python. It takes a configuration object `config` of type `RandomVerticalFlipConfig` as input in its constructor. 
 
-The purpose of the RandomVFlip class is to randomly flip images vertically. In the forward method, it checks if a randomly generated number between 0 and 1 is less than 0.5. If it is, it applies the vertical flip transformation to the input images using the F.vflip function from the torch.nn.functional module. Finally, it returns the flipped images.
+The class has a `forward` method that takes an input `imgs` and performs a random vertical flip operation on it using the `F.vflip` function from the `torchvision.transforms.functional` module. The flip operation is performed with a 50% probability, determined by checking if a randomly generated number is less than 0.5. 
+
+The method returns the modified `imgs` after the flip operation.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In the given code snippet, the `__init__` method is defined with two parameters: `self` and `config`.
 
-In the given code, the `__init__` method takes two parameters: `self` and `config`. The `self` parameter refers to the instance of the class that is being created. The `config` parameter is of type `RandomVerticalFlipConfig`.
+The `self` parameter is a reference to the instance of the class. It is used to access the attributes and methods of the class within the method.
 
-Inside the `__init__` method, the `super().__init__()` line calls the `__init__` method of the parent class, which is typically used to initialize any attributes or perform any necessary setup in the parent class.
+The `config` parameter is of type `RandomVerticalFlipConfig`. It is used to pass a configuration object to the method.
 
-The purpose of this `__init__` method is to initialize the object of the class by setting its attributes based on the provided `config` parameter. The specific implementation of this initialization is not shown in the given code.
+The `super().__init__()` line calls the `__init__` method of the superclass (parent class) of the current class. This is done to ensure that any initialization code in the superclass is executed before the initialization code in the current class.
 
-#### **Method Details**
-The given code is defining an `__init__` method for a class. The method takes two parameters: `self` and `config`. The `self` parameter refers to the instance of the class that the method is being called on.
-
-The `config` parameter is expected to be an object of the `RandomVerticalFlipConfig` class.
-
-The method is calling the `__init__` method of the superclass (assuming there is one) using the `super()` function. This is done to initialize any attributes or perform any setup defined in the superclass.
-
-The purpose of this method is likely to initialize the instance of the class and set any necessary attributes based on the provided `config` object.
+As for the mathematical operations or procedures performed in the `__init__` method, there are none mentioned in the given code snippet. The purpose of this method seems to be solely for initializing the object with the provided configuration.
 
 ### Method **`forward`** Overview
-The method "forward" takes in an input parameter "imgs" and performs a specific operation on it. First, it checks if a randomly generated number between 0 and 1 is less than 0.5. If this condition is true, it applies a vertical flip operation to the input images using the function "F.vflip" from the torch library. Finally, it returns the modified images.
+The `forward` method in Python is defined as follows:
 
-#### **Method Details**
-The given code is a method called "forward" that takes in an input parameter "imgs". 
+```python
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        imgs = F.vflip(imgs)
 
-Inside the method, there is an if statement that checks if a randomly generated number between 0 and 1 is less than 0.5. If the condition is true, the method uses the "F.vflip" function from the torch library to vertically flip the input images.
+    return imgs
+```
+
+This method takes in a parameter `imgs`, which represents an input image or a batch of images. The purpose of this method is to perform a forward pass operation on the input images.
+
+The method first checks if a randomly generated number between 0 and 1 is less than 0.5. If this condition is true, it applies a vertical flip operation to the input images using the `F.vflip` function from the `torchvision.transforms.functional` module.
 
 Finally, the method returns the modified images.
 
+The mathematical operations or procedures performed by this method are as follows:
+
+1. Random Number Generation: A random number between 0 and 1 is generated using the `torch.rand(1)` function.
+
+2. Conditional Check: The generated random number is compared with 0.5 using the `<` operator.
+
+3. Vertical Flip: If the generated random number is less than 0.5, a vertical flip operation is applied to the input images using the `F.vflip` function.
+
+The LaTex code for the mathematical operations can be represented as follows:
+
+1. Random Number Generation: $rand = \text{torch.rand}(1)$
+
+2. Conditional Check: $rand < 0.5$
+
+3. Vertical Flip: $imgs = \text{F.vflip}(imgs)$
+
 ## Class **`RandomHFlip`** Overview
-The class RandomHFlip is a subclass of the torch.nn.Module class. It takes a configuration object of type RandomHorizontalFlipConfig as input in its constructor. 
+The `RandomHFlip` class is a subclass of `torch.nn.Module` in Python. It takes a configuration object `config` of type `RandomHorizontalFlipConfig` as input in its constructor. 
 
-The RandomHFlip class has a forward method that takes an input tensor of images (imgs) as input. Inside the forward method, it checks if a randomly generated number between 0 and 1 is less than 0.5. If it is, it applies a horizontal flip transformation to the input images using the F.hflip function from the torch.nn.functional module. Finally, it returns the modified images.
-
-In summary, the RandomHFlip class is used to randomly apply horizontal flips to a batch of input images.
+The class has a `forward` method that takes an input `imgs` and applies a random horizontal flip to it. It uses `torch.rand(1)` to generate a random number between 0 and 1, and if the generated number is less than 0.5, it applies the horizontal flip using the `F.hflip` function from the `torchvision.transforms` module. Finally, it returns the modified `imgs`.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In the given code snippet, the `__init__` method is defined with two parameters: `self` and `config`.
 
-In the given code, the `__init__` method takes two parameters: `self` and `config`. The `self` parameter refers to the instance of the class that is being created. The `config` parameter is of type `RandomHorizontalFlipConfig`.
+The `self` parameter is a reference to the instance of the class itself. It is used to access the attributes and methods of the class within the method.
 
-Inside the `__init__` method, the `super().__init__()` line calls the `__init__` method of the parent class, which is necessary if the class inherits from another class.
+The `config` parameter is of type `RandomHorizontalFlipConfig`. It is used to pass a configuration object to the method.
 
-The purpose of this `__init__` method is to initialize the object by setting its attributes. The `config` parameter is used to configure the object's behavior related to random horizontal flipping. The specific details of how the `config` parameter is used are not provided in the given code.
+The purpose of the `__init__` method in this code is to initialize the object of the class. It first calls the `__init__` method of the parent class (`super().__init__()`), which ensures that the initialization of the parent class is also performed. Then, it assigns the `config` parameter to an attribute of the object.
 
-#### **Method Details**
-The given code is defining an `__init__` method for a class. The method takes two parameters: `self` (which refers to the instance of the class) and `config` (which is expected to be an instance of the `RandomHorizontalFlipConfig` class).
-
-The method is calling the `__init__` method of the superclass (assuming there is a superclass) using the `super()` function. This is done to initialize any attributes or perform any necessary setup defined in the superclass.
-
-The purpose of this method is likely to initialize the instance of the class with the provided `config` object.
+As for the mathematical operations or procedures performed in the `__init__` method, there are none mentioned in the given code snippet. Therefore, no LaTex code can be generated for mathematical equations.
 
 ### Method **`forward`** Overview
-The method "forward" takes in an input parameter "imgs" and performs a specific operation on it. First, it checks if a randomly generated number between 0 and 1 is less than 0.5. If this condition is true, it applies a horizontal flip operation to the input images using the function "F.hflip" from the torch library. Finally, it returns the modified images.
-
-#### **Method Details**
-The given code is a method called "forward" inside a class. It takes in a parameter "imgs" and performs a horizontal flip on it with a 50% probability using the "F.hflip" function from the torch library. Finally, it returns the modified "imgs".
-
-## Class **`RandomRotate`** Overview
-The class RandomRotate is a subclass of torch.nn.Module and is used for randomly rotating images. It takes a configuration object of type RandomRotateConfig as input during initialization. The degree attribute of the configuration object determines the maximum angle of rotation.
-
-During the forward pass, the RandomRotate class randomly decides whether to rotate the input images or not. If the randomly generated value from torch.rand(1) is less than 0.5, the class selects a random angle within the range (-degree, +degree) and rotates the images using the torchvision.transforms.functional.rotate() function. Otherwise, it returns the input images as they are.
-
-In summary, the RandomRotate class provides a mechanism to randomly rotate images within a specified degree range.
-
-### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
-
-In the given code, the `__init__` method takes two parameters: `self` and `config`. The `self` parameter refers to the instance of the class that is being created. The `config` parameter is an object of the `RandomRotateConfig` class.
-
-Inside the `__init__` method, the `super().__init__()` line calls the `__init__` method of the parent class, which is usually the base class. This is done to ensure that any initialization code in the parent class is executed.
-
-The next line `self.degree = config.degree` assigns the value of the `degree` attribute from the `config` object to the `degree` attribute of the current object. This allows the object to store and access the `degree` value for further use within the class.
-
-Overall, the `__init__` method initializes the attributes of the object by assigning values to them based on the provided `config` object.
-
-#### **Method Details**
-The given code is defining the `__init__` method of a class. The method takes a parameter `config` of type `RandomRotateConfig`. It calls the `__init__` method of the superclass (assuming there is one) using the `super()` function.
-
-Inside the method, it assigns the value of `config.degree` to the instance variable `self.degree`.
-
-### Method **`forward`** Overview
-The method "forward" takes in an input "imgs" and performs a transformation on it. 
-
-First, it checks if a randomly generated number between 0 and 1 is less than 0.5. If it is, it proceeds to the if block. Inside the if block, it generates a random angle within the range of (-degree, +degree) and applies a rotation transformation to the input images using the "F.rotate" function from the torch library. The rotated images are then returned.
-
-If the randomly generated number is greater than or equal to 0.5, the else block is executed. In this case, the method simply returns the input images without any transformation.
-
-#### **Method Details**
-This code defines a forward method for a class. The method takes in an input parameter "imgs" and performs an operation on it. 
-
-If a randomly generated number between 0 and 1 is less than 0.5, the method generates a random angle within the range (-degree, +degree) and rotates the input images by that angle using the F.rotate function from the torch library. 
-
-If the randomly generated number is greater than or equal to 0.5, the method simply returns the input images without any rotation.
-
-## Class **`RandomContrast`** Overview
-The class RandomContrast is a subclass of torch.nn.Module and is used to randomly adjust the contrast of input images. It takes a configuration object of type RandomContrastConfig as an argument in its constructor.
-
-The RandomContrast class has a minimum contrast value (self.min_contrast) and a contrast adjustment range (self.contrast_adjustment_range) which are set based on the values provided in the configuration object.
-
-The forward method of the RandomContrast class takes a batch of images (imgs) as input. It randomly decides whether to adjust the contrast or not by generating a random number between 0 and 1 using torch.rand(1) and comparing it with 0.5.
-
-If the random number is less than 0.5, it performs a random contrast adjustment. It generates a random adjustment factor between self.min_contrast and self.min_contrast + self.contrast_adjustment_range using torch.rand(1) and adjusts the contrast of the input images using the F.adjust_contrast function from the torch.nn.functional module.
-
-If the random number is greater than or equal to 0.5, it returns the input images without any contrast adjustment.
-
-In summary, the RandomContrast class randomly adjusts the contrast of input images based on a given configuration.
-
-### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
-
-In the given code, the `__init__` method takes a parameter `config` of type `RandomContrastConfig`. It first calls the `__init__` method of the superclass (if any) using the `super()` function. This ensures that any initialization code in the superclass is executed.
-
-Then, the method assigns the value of `config.min` to the `min_contrast` attribute of the object. It also calculates the contrast adjustment range by subtracting `config.min` from `config.max` and assigns it to the `contrast_adjustment_range` attribute.
-
-Overall, the `__init__` method initializes the `min_contrast` and `contrast_adjustment_range` attributes of the object based on the values provided in the `config` parameter.
-
-#### **Method Details**
-The given code is a constructor method for a class. It takes a parameter `config` of type `RandomContrastConfig`. The `RandomContrastConfig` is assumed to be a class or data structure that has attributes `min` and `max`.
-
-Inside the constructor, the `min` attribute of `config` is assigned to `self.min_contrast`. The `contrast_adjustment_range` is calculated by subtracting `config.min` from `config.max` and assigned to `self.contrast_adjustment_range`.
-
-The `super().__init__()` line is calling the constructor of the superclass, which is not shown in the given code snippet.
-
-### Method **`forward`** Overview
-The method "forward" takes in an input "imgs" and performs a random contrast adjustment on the images with a certain probability. If a randomly generated number is less than 0.5, it applies a contrast adjustment to the images using the "F.adjust_contrast" function from the torch library. The adjustment factor is randomly generated within a specified range and added to the minimum contrast value. If the randomly generated number is greater than or equal to 0.5, it returns the original images without any modifications.
-
-#### **Method Details**
-This code defines a forward method for a class. The method takes in an input parameter "imgs" and performs a random contrast adjustment on the input images. 
-
-If a randomly generated number between 0 and 1 is less than 0.5, the method applies a contrast adjustment. The adjustment factor is calculated by multiplying a randomly generated number between 0 and 1 with a contrast adjustment range and adding a minimum contrast value. This adjustment factor is then used to adjust the contrast of the input images using the F.adjust_contrast function from the torch library.
-
-If the randomly generated number is greater than or equal to 0.5, the method returns the input images without any contrast adjustment.
-
-Note: The code assumes that the torch and torch.nn.functional (F) libraries have been imported.
-
-## Class **`RandomBrightness`** Overview
-The class RandomBrightness is a subclass of torch.nn.Module and is used to randomly adjust the brightness of images. It takes a configuration object of type RandomBrightnessConfig as input during initialization. The configuration object specifies the minimum and maximum brightness adjustment values.
-
-During the forward pass, the class randomly decides whether to adjust the brightness or not. If the random number generated by torch.rand(1) is less than 0.5, it performs a random brightness adjustment. It generates a random adjustment factor within the specified brightness adjustment range and applies it to the input images using the F.adjust_brightness() function from the torch.nn.functional module. If the random number is greater than or equal to 0.5, it returns the input images without any adjustment.
-
-In summary, the RandomBrightness class provides a way to randomly adjust the brightness of images based on a specified range of brightness adjustment values.
-
-### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
-
-In the given code, the `__init__` method takes two parameters: `self` (which refers to the instance of the class) and `config` (an object of the `RandomBrightnessConfig` class).
-
-Inside the method, the `super().__init__()` line calls the `__init__` method of the superclass (the class from which the current class inherits). This is done to ensure that any initialization code in the superclass is executed.
-
-The next two lines of code assign values to the attributes of the object. `self.min_brightness` is assigned the value of `config.min`, and `self.brightness_adjustment_range` is assigned the difference between `config.max` and `config.min`.
-
-Overall, the `__init__` method initializes the attributes of the object based on the values provided in the `config` parameter.
-
-#### **Method Details**
-The given code is defining the `__init__` method of a class. The method takes a parameter `config` of type `RandomBrightnessConfig`. It calls the `__init__` method of the superclass (assuming there is one) using the `super()` function.
-
-Inside the method, it assigns the value of `config.min` to the instance variable `self.min_brightness`. It also calculates the brightness adjustment range by subtracting `config.min` from `config.max` and assigns it to the instance variable `self.brightness_adjustment_range`.
-
-### Method **`forward`** Overview
-The method "forward" takes in an input "imgs" and performs a random contrast adjustment on it. It first checks if a randomly generated number is less than 0.5. If it is, it calculates a random adjustment factor within a specified range and applies it to the input images using the "adjust_brightness" function from the "F" module. If the random number is greater than or equal to 0.5, it returns the input images without any adjustment.
-
-#### **Method Details**
-The given code is a method called `forward` inside a class. It takes in an input `imgs` and performs a random contrast adjustment on it with a certain probability. If the random number generated is less than 0.5, it applies the contrast adjustment using the `F.adjust_brightness` function from the `torchvision.transforms` module. Otherwise, it returns the input `imgs` without any changes.
-
-Note: The code assumes that the necessary imports and class definition are present before this method.
-
-## Class **`RandomBlur`** Overview
-The class RandomBlur is a subclass of torch.nn.Module and is used for applying random blurring to images. It takes a configuration object of type RandomBlurConfig as input during initialization. The kernel size for blurring is set based on the kernel size specified in the configuration object.
-
-During the forward pass, the class checks if a randomly generated number is less than 0.5. If it is, it applies Gaussian blur to the input images using the specified kernel size. Otherwise, it returns the input images as is.
-
-Overall, the RandomBlur class provides a way to randomly apply blurring to images, which can be useful for data augmentation or other image processing tasks.
-
-### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the attributes of the object.
-
-In the given code, the `__init__` method takes two parameters: `self` (which refers to the instance of the class) and `config` (an object of the class `RandomBlurConfig`). The `config` parameter is used to pass a configuration object to the method.
-
-Inside the method, the `super().__init__()` line calls the `__init__` method of the superclass (the class that this class inherits from). This is done to ensure that any initialization code in the superclass is executed.
-
-The next line `self.kernel_size = [config.kernel_size, config.kernel_size]` initializes the `kernel_size` attribute of the object. It assigns a list with two elements, both equal to the `kernel_size` attribute of the `config` object, to the `kernel_size` attribute of the current object.
-
-Overall, the `__init__` method initializes the attributes of the object based on the provided configuration object.
-
-#### **Method Details**
-The given code is a constructor method for a class. It takes a parameter `config` of type `RandomBlurConfig`. The `RandomBlurConfig` class is assumed to have a property `kernel_size` which is an integer representing the size of the kernel for blurring.
-
-Inside the constructor, the `kernel_size` property is assigned to a list `[config.kernel_size, config.kernel_size]`. This list is used to define the size of the kernel for blurring in both dimensions.
-
-The `super().__init__()` line is calling the constructor of the parent class, which is not shown in the given code. This is done to initialize any attributes or methods inherited from the parent class.
-
-Overall, this code is initializing the `kernel_size` attribute of the class with the value provided in the `config` parameter.
-
-### Method **`forward`** Overview
-The method "forward" takes in an input parameter "imgs" and performs a specific operation on it. 
-
-First, it checks if a randomly generated number between 0 and 1 is less than 0.5. If this condition is true, it applies a Gaussian blur to the input images using a specified kernel size. 
-
-Finally, it returns the modified images.
-
-#### **Method Details**
-The given code is a method called "forward" inside a class. It takes an input parameter "imgs" and applies a Gaussian blur to it with a certain probability.
-
-Here is the code:
+The `forward` method in Python is defined as follows:
 
 ```python
-import torch
-import torch.nn.functional as F
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        imgs = F.hflip(imgs)
 
-class MyClass:
-    def forward(self, imgs):
-        if torch.rand(1) < 0.5:
-            imgs = F.gaussian_blur(imgs, self.kernel_size)
+    return imgs
+```
 
+This method takes in a parameter `imgs`, which represents an input image or a batch of images. The purpose of this method is to perform a forward pass operation on the input images.
+
+The method first checks if a randomly generated number between 0 and 1 is less than 0.5. If this condition is true, it applies a horizontal flip operation to the input images using the `F.hflip` function from the `torchvision.transforms` module.
+
+Finally, the method returns the modified images.
+
+The mathematical operations or procedures performed by this method are not explicitly mentioned in the code. However, the `F.hflip` function performs a horizontal flip operation on the input images, which can be represented mathematically as follows:
+
+Let `I` be the input image and `I'` be the horizontally flipped image. The horizontal flip operation can be defined as:
+
+
+$$
+I'(x, y) = I(W - x, y)
+$$
+
+where `W` is the width of the image and `(x, y)` represents the coordinates of a pixel in the image.
+
+Note: The LaTex code provided above can be used to display the equations in a markdown document.
+
+## Class **`RandomRotate`** Overview
+The `RandomRotate` class is a subclass of `torch.nn.Module` in Python. It takes a configuration object `config` of type `RandomRotateConfig` as input in its constructor. The class has a `degree` attribute that is initialized with the `degree` value from the `config` object.
+
+The class has a `forward` method that takes an input `imgs`. Inside the method, it checks if a randomly generated number is less than 0.5. If it is, it generates a random angle within the range of (-degree, +degree) and applies rotation to the input images using the `F.rotate` function from the `torchvision.transforms.functional` module. If the randomly generated number is greater than or equal to 0.5, it returns the input images as is.
+
+Overall, the `RandomRotate` class randomly rotates input images based on a given degree value.
+
+### Method **`__init__`** Overview
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In this case, the `__init__` method takes in a parameter `config` of type `RandomRotateConfig`.
+
+The purpose of the `__init__` method in this code snippet is to initialize the `degree` attribute of the object. The `degree` attribute is set to the `degree` value from the `config` object.
+
+The mathematical operations or procedures performed in this code snippet are simple assignment operations. The `degree` attribute of the object is assigned the value of the `degree` attribute from the `config` object.
+
+Here is the LaTex code to display the equation in a markdown document:
+
+
+$$
+\text{{self.degree}} = \text{{config.degree}}
+$$
+
+### Method **`forward`** Overview
+The `forward` method in Python is defined as follows:
+
+```python
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        # map angle to interval (-degree, +degree)
+        angle = (torch.rand(1) * 2 * self.degree - self.degree).item()
+        return F.rotate(imgs, angle)
+    else:
         return imgs
 ```
 
-Note that the code assumes that `self.kernel_size` is defined elsewhere in the class.
+This method takes in an input `imgs` and performs a forward operation on it. The purpose of each parameter is as follows:
 
-## Class **`ImageAugmentation`** Overview
-The class `ImageAugmentation` is a subclass of `torch.nn.Module` and is used for applying image augmentation operations to a batch of images. It takes in a list of `BaseAugmentationConfig` objects, which specify the type and parameters of the augmentation operations to be applied. It also takes optional parameters `normalize_mean` and `normalize_std` for renormalizing the images after augmentation.
+- `self`: This parameter refers to the instance of the class that the method belongs to. It is used to access the attributes and methods of the class.
 
-During initialization, the class checks if it is in training mode. If it is, it creates a sequential container `self.augmentation_steps` and adds the augmentation operations to it based on the provided configuration. If it is not in training mode, `self.augmentation_steps` is set to `None`.
+- `imgs`: This parameter represents the input images on which the forward operation is performed.
 
-During the forward pass, if `self.augmentation_steps` is not `None`, the input images are converted from float to uint8 values using the `_convert_back_to_uint8` function. Then, the augmentation operations in `self.augmentation_steps` are applied to the images. After augmentation, the images are converted back to float32 values and renormalized if needed using the `_renormalize_image` function. The augmented images are then returned.
+The method first checks if a randomly generated number is less than 0.5. If it is, it proceeds to perform a rotation operation on the input images. The angle of rotation is randomly generated within the range of (-degree, +degree), where `degree` is an attribute of the class. The `F.rotate` function is used to rotate the images.
 
-The class also provides two helper functions: `_convert_back_to_uint8` and `_renormalize_image`. The `_convert_back_to_uint8` function undoes the normalization step and converts the images from float32 to uint8 dtype, making them displayable as images. The `_renormalize_image` function converts the images from uint8 to float32 dtype and applies the imagenet1k normalization if needed.
+If the randomly generated number is greater than or equal to 0.5, the method simply returns the input images without any modification.
+
+The mathematical operation performed in this method is the rotation of the input images. The angle of rotation is randomly generated within a specified range. The rotation operation is performed using the `F.rotate` function.
+
+To display the equations in a markdown document, the following LaTex code can be used:
+
+Rotation equation:
+
+$$
+\text{{angle}} = \text{{random}}(0, 1) \times 2 \times \text{{degree}} - \text{{degree}}
+$$
+
+## Class **`RandomContrast`** Overview
+The `RandomContrast` class is a subclass of the `torch.nn.Module` class in Python. It is used to randomly adjust the contrast of input images.
+
+The class has a constructor method `__init__` that takes a `config` parameter of type `RandomContrastConfig`. It initializes the minimum contrast value (`min_contrast`) and the contrast adjustment range (`contrast_adjustment_range`) based on the values provided in the `config` object.
+
+The class also has a `forward` method that takes an input `imgs` parameter. It checks if a randomly generated number is less than 0.5. If it is, it randomly adjusts the contrast of the input images using the `F.adjust_contrast` function from the `torchvision.transforms.functional` module. The adjustment factor is calculated by multiplying a randomly generated number within the contrast adjustment range with the contrast adjustment range and adding the minimum contrast value. The adjusted images are then returned.
+
+If the randomly generated number is not less than 0.5, the method simply returns the input images without any contrast adjustment.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the object's attributes and perform any necessary setup.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In this case, the `__init__` method takes in a parameter `config` of type `RandomContrastConfig`.
 
-In this specific implementation, the `__init__` method takes in several parameters:
+The purpose of each parameter in the `__init__` method is as follows:
+- `self`: It is a reference to the instance of the class. It is used to access the attributes and methods of the class.
+- `config`: It is an instance of the `RandomContrastConfig` class. It contains the configuration values for the random contrast adjustment.
 
-- `augmentation_list`: a list of `BaseAugmentationConfig` objects, which specify the type and configuration of augmentations to be applied.
-- `normalize_mean`: an optional list of floats representing the mean values used for normalization.
-- `normalize_std`: an optional list of floats representing the standard deviation values used for normalization.
+The `__init__` method performs the following mathematical operations or procedures:
+- It calls the `__init__` method of the parent class (`super().__init__()`), which initializes the attributes of the parent class.
+- It assigns the value of `config.min` to the `min_contrast` attribute.
+- It calculates the contrast adjustment range by subtracting `config.min` from `config.max` and assigns it to the `contrast_adjustment_range` attribute.
 
-The method starts by calling the `__init__` method of the superclass (in this case, `super().__init__()`), which ensures that any initialization code in the superclass is executed.
+The mathematical operations can be represented using LaTeX code as follows:
 
-Next, it logs a message indicating the creation of an augmentation pipeline, using the `logger.info` function.
+```latex
+\text{min\_contrast} = \text{config.min}
+\text{contrast\_adjustment\_range} = \text{config.max} - \text{config.min}
+```
 
-Then, it assigns the values of `normalize_mean` and `normalize_std` to the corresponding attributes of the object.
-
-If the object is in training mode (determined by the `self.training` attribute), it creates an empty `torch.nn.Sequential` object called `self.augmentation_steps`. It then iterates over each `augmentation_config` in the `augmentation_list` and attempts to get the corresponding augmentation operation using the `get_augmentation_op` function. If successful, it appends the augmentation operation to `self.augmentation_steps`.
-
-If the object is not in training mode, it sets `self.augmentation_steps` to `None`.
-
-Overall, the `__init__` method initializes the object's attributes, sets up the augmentation pipeline, and performs any necessary logging.
-
-#### **Method Details**
-The code defines a class with an `__init__` method that takes in several parameters: `augmentation_list`, `normalize_mean`, and `normalize_std`. The `augmentation_list` parameter is expected to be a list of `BaseAugmentationConfig` objects. The `normalize_mean` and `normalize_std` parameters are optional and expected to be lists of floats.
-
-Inside the `__init__` method, the `logger` is used to log a message indicating the creation of an augmentation pipeline with the given `augmentation_list`.
-
-If the instance of the class is in training mode, the `augmentation_steps` attribute is initialized as a `torch.nn.Sequential` object. Then, for each `aug_config` in the `augmentation_list`, an augmentation operation is obtained using the `get_augmentation_op` function with the type specified in `aug_config`. The obtained augmentation operation is then appended to the `augmentation_steps` sequence.
-
-If the instance is not in training mode, the `augmentation_steps` attribute is set to `None`.
-
-Note: The code includes some TODO comments that suggest possible changes or improvements to be made.
+These equations represent the assignment of values to the `min_contrast` and `contrast_adjustment_range` attributes.
 
 ### Method **`forward`** Overview
-The method "forward" takes in an input parameter "imgs" and performs a series of operations on it. 
+The `forward` method in Python is defined as follows:
 
-First, it checks if there are any augmentation steps defined. If there are, it converts the input images from float to uint8 values, as this is required for the augmentation process. 
+```python
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        # random contrast adjustment
+        adjust_factor = (torch.rand(1) * self.contrast_adjustment_range + self.min_contrast).item()
+        return F.adjust_contrast(imgs, adjust_factor)
+    else:
+        return imgs
+```
 
-Then, it logs a debug message indicating the execution of the augmentation pipeline steps. 
+This method takes in an input `imgs` and performs a random contrast adjustment on it. The purpose of each parameter is as follows:
 
-Next, it applies the augmentation steps to the input images. 
+- `self`: This parameter refers to the instance of the class that the method belongs to. It is used to access class variables and methods.
+- `imgs`: This parameter represents the input images on which the contrast adjustment is to be performed.
 
-After that, it converts the images back to float32 values and renormalizes them if necessary. 
+The method first checks if a randomly generated number is less than 0.5. If it is, it proceeds with the contrast adjustment. The adjustment factor is calculated by multiplying a random number between 0 and 1 with the `contrast_adjustment_range` and adding the `min_contrast` value. The `item()` method is used to convert the adjustment factor to a scalar value.
 
-Finally, it returns the modified images.
+Finally, the method applies the contrast adjustment using the `F.adjust_contrast` function from the `torchvision.transforms.functional` module. If the random number is greater than or equal to 0.5, the method simply returns the input images without any modification.
 
-#### **Method Details**
-The given code is a method called `forward` within a class. It takes in a parameter `imgs` and performs some image augmentation steps on it.
+The mathematical operation performed in this method is the calculation of the adjustment factor using the formula:
 
-Here is a breakdown of the code:
 
-1. The method checks if there are any augmentation steps defined (`self.augmentation_steps`).
-2. If there are augmentation steps, the `imgs` parameter is converted from float to uint8 values using the `_convert_back_to_uint8` method.
-3. A debug log message is printed, indicating the execution of the augmentation pipeline steps.
-4. The `imgs` parameter is passed through the `self.augmentation_steps` function, which applies the defined augmentation steps to the images.
-5. After the augmentation steps are applied, the `imgs` parameter is converted back to float32 values and renormalized if needed using the `_renormalize_image` method.
-6. Finally, the augmented images are returned.
+$$
+\text{{adjust\_factor}} = \text{{random number}} \times \text{{contrast\_adjustment\_range}} + \text{{min\_contrast}}
+$$
 
-Note: The code provided is incomplete, as it references other methods (`_convert_back_to_uint8` and `_renormalize_image`) and variables (`self.augmentation_steps`, `logger`) that are not included in the given code snippet.
+This equation is used to determine the amount of contrast adjustment to be applied to the input images.
+
+## Class **`RandomBrightness`** Overview
+The `RandomBrightness` class is a subclass of `torch.nn.Module` in Python. It takes a configuration object `config` of type `RandomBrightnessConfig` as input in its constructor. 
+
+The class has a `min_brightness` attribute which is set to the `min` value from the `config` object, and a `brightness_adjustment_range` attribute which is calculated as the difference between the `max` and `min` values from the `config` object.
+
+The `forward` method is overridden from the parent class and takes `imgs` as input. It checks if a randomly generated number is less than 0.5. If it is, it performs a random contrast adjustment by generating a random adjustment factor within the `brightness_adjustment_range` and adding it to the `min_brightness`. It then applies the brightness adjustment to the `imgs` using the `F.adjust_brightness` function and returns the adjusted images. If the randomly generated number is greater than or equal to 0.5, it simply returns the original `imgs` without any adjustment.
+
+### Method **`__init__`** Overview
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In this case, the `__init__` method takes two parameters: `self` and `config`.
+
+The `self` parameter is a reference to the instance of the class itself. It is used to access the attributes and methods of the class.
+
+The `config` parameter is an instance of the `RandomBrightnessConfig` class. It is used to configure the random brightness adjustment for the object.
+
+The `__init__` method performs the following mathematical operations:
+
+1. It assigns the `min` attribute of the `config` object to the `min_brightness` attribute of the current object. This represents the minimum brightness value for the random adjustment.
+
+2. It calculates the brightness adjustment range by subtracting the `min` attribute of the `config` object from the `max` attribute of the `config` object. This represents the range of possible brightness adjustments.
+
+The mathematical operations can be represented using LaTeX code as follows:
+
+1. Assignment operation: $self.min\_brightness = config.min$
+
+2. Subtraction operation: $brightness\_adjustment\_range = config.max - config.min$
+
+### Method **`forward`** Overview
+The `forward` method in Python is defined as follows:
+
+```python
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        # random contrast adjustment
+        adjust_factor = (torch.rand(1) * self.brightness_adjustment_range + self.min_brightness).item()
+        return F.adjust_brightness(imgs, adjust_factor)
+    else:
+        return imgs
+```
+
+This method takes in an input `imgs` and performs a random contrast adjustment on it. The purpose of each parameter is as follows:
+
+- `self`: This parameter refers to the instance of the class that the method belongs to. It is used to access the attributes and methods of the class.
+
+- `imgs`: This parameter represents the input images on which the contrast adjustment is to be performed.
+
+The method first checks if a randomly generated number is less than 0.5. If it is, it proceeds with the contrast adjustment. The adjustment factor is calculated by multiplying a random number between 0 and 1 with the `brightness_adjustment_range` attribute of the class and then adding the `min_brightness` attribute. The adjustment factor is then converted to a Python float using the `item()` method.
+
+Finally, the method calls the `F.adjust_brightness` function from the `torchvision.transforms.functional` module, passing in the input images `imgs` and the calculated adjustment factor. This function performs the contrast adjustment on the images and returns the adjusted images.
+
+If the randomly generated number is greater than or equal to 0.5, the method simply returns the input images without any adjustment.
+
+The mathematical operations involved in this method are:
+
+1. Random number generation: `torch.rand(1)` generates a random number between 0 and 1.
+
+2. Contrast adjustment factor calculation: `(torch.rand(1) * self.brightness_adjustment_range + self.min_brightness).item()` calculates the adjustment factor by multiplying a random number between 0 and 1 with the `brightness_adjustment_range` attribute of the class and then adding the `min_brightness` attribute. The adjustment factor is then converted to a Python float using the `item()` method.
+
+The LaTex code for the mathematical operations can be represented as follows:
+
+1. Random number generation: $torch.rand(1)$
+
+2. Contrast adjustment factor calculation: $(torch.rand(1) \times self.brightness\_adjustment\_range + self.min\_brightness).item()$
+
+## Class **`RandomBlur`** Overview
+The `RandomBlur` class is a subclass of `torch.nn.Module` in Python. It takes a `RandomBlurConfig` object as input in its constructor. The class has a `kernel_size` attribute that is initialized with the `kernel_size` value from the `config` object.
+
+The class has a `forward` method that takes an `imgs` parameter. Inside the method, there is a conditional statement that checks if a randomly generated number is less than 0.5. If it is, the `imgs` are blurred using the `F.gaussian_blur` function with the `kernel_size` attribute.
+
+The blurred `imgs` are then returned from the `forward` method.
+
+### Method **`__init__`** Overview
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object. In this case, the `__init__` method takes one parameter `config`, which is an instance of the `RandomBlurConfig` class.
+
+The purpose of the `__init__` method in this code is to initialize the `kernel_size` attribute of the object. The `kernel_size` is a list containing two elements, both of which are set to the value of `config.kernel_size`.
+
+The mathematical operations or procedures performed in this code are simple assignment operations. The `kernel_size` attribute is assigned the value of `config.kernel_size`, which is a single value representing the size of the kernel for blurring.
+
+To display the equation in LaTeX format, you can use the following code:
+
+```latex
+
+$$
+\text{{kernel\_size}} = [config.kernel\_size, config.kernel\_size]
+$$
+```
+
+This will render the equation as:
+
+
+$$ \text{kernel\_size} = [config.kernel\_size, config.kernel\_size] $$
+
+### Method **`forward`** Overview
+The `forward` method in Python is defined as follows:
+
+```python
+def forward(self, imgs):
+    if torch.rand(1) < 0.5:
+        imgs = F.gaussian_blur(imgs, self.kernel_size)
+
+    return imgs
+```
+
+This method takes in a parameter `imgs`, which represents the input images. The purpose of this method is to perform a forward pass through a neural network or a specific layer of a neural network.
+
+The method first checks if a randomly generated number is less than 0.5 using the `torch.rand(1)` function. If this condition is true, it applies a Gaussian blur to the input images using the `F.gaussian_blur` function with a kernel size specified by the `self.kernel_size` parameter.
+
+The method then returns the modified or unmodified input images, depending on whether the Gaussian blur was applied or not.
+
+The mathematical operations or procedures performed by this method are as follows:
+
+1. Random number generation: The method generates a random number using the `torch.rand(1)` function. This random number is used to determine whether the Gaussian blur should be applied or not.
+
+2. Gaussian blur: If the randomly generated number is less than 0.5, the method applies a Gaussian blur to the input images. The specific mathematical operations involved in the Gaussian blur are not explicitly shown in the code snippet, but it is a common image processing technique used to reduce noise and blur the image.
+
+To display the equations in a markdown document, you can use LaTeX code. However, since the code snippet does not include any explicit mathematical equations, there is no need to generate LaTeX code for this particular method.
+
+## Class **`ImageAugmentation`** Overview
+The `ImageAugmentation` class is a subclass of `torch.nn.Module` in Python. It is used to perform image augmentation operations on a batch of images. 
+
+The class takes in a list of `BaseAugmentationConfig` objects, which specify the type of augmentation operation to be performed. It also takes optional parameters `normalize_mean` and `normalize_std` for image normalization.
+
+During initialization, the class creates an augmentation pipeline by sequentially applying the specified augmentation operations. If the class is in training mode, it raises an exception for invalid augmentation operations.
+
+The `forward` method is used to apply the augmentation pipeline to a batch of images. It converts the images to `uint8` format, applies the augmentation steps, and then converts the images back to `float32` format.
+
+The class also provides two helper methods: `_convert_back_to_uint8` and `_renormalize_image`. These methods are used to convert the images between `uint8` and `float32` formats and apply normalization if specified.
+
+Overall, the `ImageAugmentation` class provides a convenient way to perform image augmentation operations on a batch of images.
+
+### Method **`__init__`** Overview
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the object's attributes and perform any necessary setup.
+
+In the given code snippet, the `__init__` method takes three parameters:
+
+1. `self`: This parameter refers to the instance of the class itself. It is automatically passed when the method is called and is used to access the object's attributes and methods.
+
+2. `augmentation_list`: This parameter is a list of `BaseAugmentationConfig` objects. It represents a list of augmentation configurations that will be applied to the input data.
+
+3. `normalize_mean` (optional): This parameter is an optional list of floats. It represents the mean values used for data normalization.
+
+4. `normalize_std` (optional): This parameter is an optional list of floats. It represents the standard deviation values used for data normalization.
+
+The purpose of the `__init__` method is to create an instance of the `AugmentationPipeline` class and initialize its attributes. Here are the mathematical operations or procedures performed in the method:
+
+1. Logging: The method logs a message indicating the creation of the augmentation pipeline and the provided augmentation list.
+
+2. Attribute initialization: The method assigns the values of `normalize_mean` and `normalize_std` to the corresponding attributes of the instance.
+
+3. Augmentation steps creation: If the instance is in training mode, the method creates a `torch.nn.Sequential` object called `augmentation_steps`. It iterates over each augmentation configuration in the `augmentation_list` and tries to get the corresponding augmentation operation using the `get_augmentation_op` function. If successful, the augmentation operation is appended to the `augmentation_steps` sequence. If an invalid augmentation operation is specified, a `ValueError` is raised.
+
+4. Augmentation steps assignment: If the instance is not in training mode, the `augmentation_steps` attribute is set to `None`.
+
+Note: The provided code snippet does not include the definition of the `get_augmentation_op` function, so the exact mathematical operations performed by the augmentation operations cannot be determined without further information.
+
+### Method **`forward`** Overview
+The `forward` method in Python is defined as follows:
+
+```python
+def forward(self, imgs):
+    if self.augmentation_steps:
+        # convert from float to uint8 values - this is required for the augmentation
+        imgs = self._convert_back_to_uint8(imgs)
+
+        logger.debug(f"Executing augmentation pipeline steps:\n{self.augmentation_steps}")
+        imgs = self.augmentation_steps(imgs)
+
+        # convert back to float32 values and renormalize if needed
+        imgs = self._renormalize_image(imgs)
+
+    return imgs
+```
+
+This method takes in an input `imgs` and performs a series of operations on it. Here is a breakdown of the purpose of each parameter and the mathematical operations or procedures it performs:
+
+- `imgs`: This parameter represents the input images on which the method will perform the forward pass.
+
+The method starts by checking if there are any augmentation steps defined (`self.augmentation_steps`). If there are, it proceeds with the following operations:
+
+1. Convert the input images from float to uint8 values using the `_convert_back_to_uint8` method. This conversion is required for the augmentation process.
+
+2. Log a debug message indicating the execution of the augmentation pipeline steps.
+
+3. Apply the augmentation steps to the input images using the `self.augmentation_steps` function.
+
+After the augmentation steps, the method performs the following operations:
+
+4. Convert the augmented images back to float32 values and renormalize them if needed using the `_renormalize_image` method.
+
+Finally, the method returns the processed images.
+
+The mathematical operations or procedures performed in this method involve data type conversion and image augmentation. The specific mathematical equations or formulas are not explicitly mentioned in the code snippet provided.
 
 ### Method **`_convert_back_to_uint8`** Overview
-The method `_convert_back_to_uint8` takes in an input `images` and converts them back to `uint8` format. 
+The `_convert_back_to_uint8` method in Python takes in an input `images` and converts them back to `uint8` format. 
 
-If the `normalize_mean` attribute is set, it calculates the mean and standard deviation using the `normalize_mean` and `normalize_std` attributes. It then multiplies the images by the standard deviation, adds the mean, multiplies by 255.0, and converts the result to `uint8` using the `type(torch.uint8)` function.
+Parameters:
+- `self`: The instance of the class that the method belongs to.
+- `images`: The input images that need to be converted back to `uint8` format.
 
-If the `normalize_mean` attribute is not set, it simply multiplies the images by 255.0 and converts the result to `uint8` using the `type(torch.uint8)` function.
+Purpose of each parameter:
+- `self`: It is used to access the instance variables and methods of the class.
+- `images`: It is the input images that need to be converted back to `uint8` format.
 
-#### **Method Details**
-This code defines a method called `_convert_back_to_uint8` that takes in an input `images`. 
+Mathematical operations or procedures:
+- If the `normalize_mean` attribute of the class is `True`, the method performs the following operations:
+  - Converts the `normalize_mean` attribute to a tensor of type `torch.float32` and reshapes it to have dimensions (-1, 1, 1).
+  - Converts the `normalize_std` attribute to a tensor of type `torch.float32` and reshapes it to have dimensions (-1, 1, 1).
+  - Multiplies the input `images` by the `std` tensor and adds the `mean` tensor.
+  - Multiplies the result by 255.0 to scale the values to the range [0, 255].
+  - Converts the result to `torch.uint8` type.
+- If the `normalize_mean` attribute is `False`, the method performs the following operations:
+  - Multiplies the input `images` by 255.0 to scale the values to the range [0, 255].
+  - Converts the result to `torch.uint8` type.
 
-The method first checks if the `normalize_mean` attribute is set to True. If it is, it creates a tensor `mean` using the `normalize_mean` attribute and converts it to a float32 tensor. It then creates a tensor `std` using the `normalize_std` attribute and converts it to a float32 tensor. Both tensors are reshaped to have dimensions (-1, 1, 1).
-
-Next, it multiplies the input `images` by `std`, adds `mean`, multiplies the result by 255.0, and converts the result to the uint8 data type.
-
-If the `normalize_mean` attribute is not set to True, it simply multiplies the input `images` by 255.0 and converts the result to the uint8 data type.
-
-The method returns the converted images.
+LaTeX code for the mathematical operations:
+- If `normalize_mean` is `True`:
+  - $\text{mean} = \text{torch.as\_tensor}(\text{self.normalize\_mean}, \text{dtype=torch.float32}).\text{view}(-1, 1, 1)$
+  - $\text{std} = \text{torch.as\_tensor}(\text{self.normalize\_std}, \text{dtype=torch.float32}).\text{view}(-1, 1, 1)$
+  - $\text{return } \text{images}.\text{mul}(\text{std}).\text{add}(\text{mean}).\text{mul}(255.0).\text{type}(\text{torch.uint8})$
+- If `normalize_mean` is `False`:
+  - $\text{return } \text{images}.\text{mul}(255.0).\text{type}(\text{torch.uint8})$
 
 ### Method **`_renormalize_image`** Overview
-The method `_renormalize_image` takes in an input `images` and performs renormalization on them. 
+The `_renormalize_image` method in Python takes in an input `images` and performs renormalization on them. 
 
-If the attribute `normalize_mean` is not None, it calculates the mean and standard deviation tensors using the values specified in `normalize_mean` and `normalize_std` respectively. It then converts the `images` to `torch.float32` type, divides them by 255.0 to normalize the pixel values between 0 and 1, subtracts the mean tensor, and finally divides by the standard deviation tensor.
+Parameters:
+- `self`: The instance of the class that the method belongs to.
+- `images`: The input images to be renormalized.
 
-If the attribute `normalize_mean` is None, it simply converts the `images` to `torch.float32` type and divides them by 255.0 to normalize the pixel values between 0 and 1.
+The method first checks if the `normalize_mean` attribute is set. If it is, it performs renormalization using the mean and standard deviation values specified in `normalize_mean` and `normalize_std` respectively. 
 
-The method returns the renormalized images.
+Mathematical operations:
+1. Convert `normalize_mean` and `normalize_std` to tensors of type `torch.float32` and reshape them to have dimensions (-1, 1, 1).
+2. Convert the input `images` to type `torch.float32`.
+3. Divide the pixel values of the images by 255.0 to normalize them between 0 and 1.
+4. Subtract the mean tensor from the normalized images.
+5. Divide the resulting tensor by the standard deviation tensor.
 
-#### **Method Details**
-This code defines a method called `_renormalize_image` that takes in an input `images`. 
+If the `normalize_mean` attribute is not set, the method skips the renormalization step and returns the input images divided by 255.0.
 
-The method first checks if the `normalize_mean` attribute is set. If it is, it creates a tensor `mean` using the `normalize_mean` attribute and converts it to `torch.float32` data type. The shape of the tensor is modified to be (-1, 1, 1), which means it will have the same number of elements as the input `images`, but with dimensions of size 1 in the second and third dimensions.
+LaTeX code for the mathematical operations:
 
-Similarly, a tensor `std` is created using the `normalize_std` attribute and converted to `torch.float32` data type. The shape of this tensor is also modified to be (-1, 1, 1).
+1. Convert `normalize_mean` and `normalize_std` to tensors:
 
-Next, the input `images` are converted to `torch.float32` data type and divided by 255.0 to normalize the pixel values between 0 and 1. If `normalize_mean` is set, the mean tensor is subtracted from the normalized images and then the result is divided by the std tensor. Finally, the normalized images are returned.
+$$
+\text{{mean}} = \text{{torch.as\_tensor}}(\text{{self.normalize\_mean}}, \text{{dtype=torch.float32}}).\text{{view}}(-1, 1, 1)
+$$
 
-If `normalize_mean` is not set, the input `images` are simply divided by 255.0 and returned.
+$$
+\text{{std}} = \text{{torch.as\_tensor}}(\text{{self.normalize\_std}}, \text{{dtype=torch.float32}}).\text{{view}}(-1, 1, 1)
+$$
+
+2. Convert the input `images` to type `torch.float32`:
+
+$$
+\text{{images}} = \text{{images.type}}(\text{{torch.float32}})
+$$
+
+3. Divide the pixel values of the images by 255.0:
+
+$$
+\text{{images}} = \text{{images.div}}(255.0)
+$$
+
+4. Subtract the mean tensor from the normalized images:
+
+$$
+\text{{images}} = \text{{images.sub}}(\text{{mean}})
+$$
+
+5. Divide the resulting tensor by the standard deviation tensor:
+
+$$
+\text{{images}} = \text{{images.div}}(\text{{std}})
+$$
 
 ## Class **`ImageTransformMetadata`** Overview
-The class ImageTransformMetadata represents metadata information about an image transformation. It has three attributes: height, width, and num_channels, all of which are integers.
-
-The height attribute represents the height of the transformed image in pixels. The width attribute represents the width of the transformed image in pixels. The num_channels attribute represents the number of color channels in the transformed image.
-
-This class is used to store and provide access to the metadata information of an image transformation. It allows users to retrieve and manipulate the height, width, and number of channels of the transformed image.
+The `ImageTransformMetadata` class is a Python class that represents metadata information about an image transformation. It has three attributes: `height`, `width`, and `num_channels`, all of which are integers. These attributes store information about the height, width, and number of color channels of an image, respectively.
 
 ## Function **`_get_torchvision_transform`** Overview
-The function `_get_torchvision_transform` takes in `torchvision_parameters` as input, which represents the parameters for a torchvision model variant. It returns a torchvision transform that is compatible with the model variant.
+The `_get_torchvision_transform` function takes in a parameter `torchvision_parameters` of type `TVModelVariant` and returns a tuple containing a torchvision transform and the metadata for the transform.
 
-The function first obtains the raw torchvision transform from `torchvision_parameters.model_weights.DEFAULT.transforms()`. However, since the raw transform assumes that the input image has three channels, the function creates a `torch.nn.Sequential` module that includes an additional step of resizing the image channels to three. This ensures compatibility with images input into Ludwig, which may not always have three channels.
+The purpose of this function is to create a torchvision transform that is compatible with the given model variant. The raw torchvision transform is not directly returned because it assumes that the input image has three channels, which may not always be the case with images input into Ludwig. Therefore, a `Sequential` module is created that includes image resizing before applying the raw torchvision transform.
 
-The function also creates an `ImageTransformMetadata` object that contains information about the transform, such as the height and width of the cropped image and the number of channels in the transformed image.
+The function performs the following steps:
 
-Finally, the function returns a tuple containing the torchvision transform (`torchvision_transform`) and the transform metadata (`transform_metadata`).
+1. Get the raw torchvision transform from `torchvision_parameters.model_weights.DEFAULT.transforms()`.
+2. Create a `Sequential` module called `torchvision_transform` that includes the following operations:
+   - ResizeChannels: This operation resizes the image to have three channels. It is implemented by the `ResizeChannels` class.
+   - torchvision_transform_raw: This is the raw torchvision transform obtained in step 1.
+3. Create an `ImageTransformMetadata` object called `transform_metadata` with the following attributes:
+   - height: The height of the crop size used in the torchvision transform.
+   - width: The width of the crop size used in the torchvision transform.
+   - num_channels: The number of channels in the mean of the torchvision transform.
+4. Return a tuple containing `torchvision_transform` and `transform_metadata`.
 
-### **Function Details**
-The code defines a function `_get_torchvision_transform` that takes in a parameter `torchvision_parameters` of type `TVModelVariant`. The function returns a tuple containing a torchvision transform and the metadata for the transform.
-
-The function first assigns the raw torchvision transform to the variable `torchvision_transform_raw` by calling the `transforms()` method on `torchvision_parameters.model_weights.DEFAULT`. 
-
-Next, a new torchvision transform is created using `torch.nn.Sequential`. This transform includes an additional step of resizing the image channels to 3 using the `ResizeChannels` module, followed by the raw torchvision transform.
-
-The function then creates an `ImageTransformMetadata` object using the metadata from the raw torchvision transform, including the height and width of the crop size and the number of channels.
-
-Finally, the function returns the tuple `(torchvision_transform, transform_metadata)`.
+The mathematical operations or procedures performed by this function do not involve any mathematical equations.
 
 ## Function **`_get_torchvision_parameters`** Overview
-The function `_get_torchvision_parameters` takes two parameters: `model_type` (a string) and `model_variant` (a string). It returns an object of type `TVModelVariant`.
+The function `_get_torchvision_parameters` takes two parameters: `model_type` and `model_variant`. 
 
-This function is used to retrieve the parameters of a specific model variant from the torchvision model registry. The `model_type` parameter specifies the type of the model (e.g., "resnet", "vgg", etc.), and the `model_variant` parameter specifies the specific variant of the model (e.g., "resnet18", "vgg16", etc.).
+- `model_type` is a string that represents the type of the model.
+- `model_variant` is a string that represents the variant of the model.
 
-The function first calls the `get` method on the `torchvision_model_registry` object, passing the `model_type` parameter. This retrieves the registry entry for the specified model type. Then, it calls the `get` method on the retrieved registry entry, passing the `model_variant` parameter. This retrieves the specific model variant from the registry.
+The purpose of this function is to retrieve the parameters of a specific model variant from the torchvision model registry.
+
+The function first calls the `get` method of the `torchvision_model_registry` dictionary, passing `model_type` as the key. This retrieves the model type from the registry.
+
+Then, the `get` method is called on the retrieved model type, passing `model_variant` as the key. This retrieves the specific model variant from the model type.
 
 Finally, the function returns the retrieved model variant.
 
-### **Function Details**
-The given code is a function definition in Python. It defines a function named `_get_torchvision_parameters` that takes two parameters: `model_type` (a string) and `model_variant` (also a string). The function has a return type annotation `-> TVModelVariant`, indicating that it should return an object of type `TVModelVariant`.
-
-The function body consists of a single line that calls the `get` method on the `torchvision_model_registry` object, passing `model_type` as the argument. The result of this method call is then chained with another `get` method call, passing `model_variant` as the argument. The final result is returned by the function.
-
-It is assumed that `torchvision_model_registry` is a dictionary-like object that contains mappings from model types to their corresponding variants. The `get` method is used to retrieve the variant for a given model type.
+There are no mathematical operations or procedures performed in this function.
 
 ## Class **`_ImagePreprocessing`** Overview
-The `_ImagePreprocessing` class is a torch.nn.Module that performs preprocessing on images. It is a torchscript-enabled version of the preprocessing done by `ImageFeatureMixin.add_feature_data`. 
+The `_ImagePreprocessing` class is a Torchscript-enabled version of the preprocessing done by the `ImageFeatureMixin.add_feature_data` method. It takes in a `metadata` dictionary, a `torchvision_transform` module, and a `transform_metadata` object as inputs.
 
-The class takes in the following parameters:
-- `metadata`: A dictionary containing metadata about the training set.
-- `torchvision_transform`: An optional torchvision transform module.
-- `transform_metadata`: An optional metadata object containing information about the image transformation.
+The class initializes by setting the `resize_method` and `torchvision_transform` attributes based on the provided inputs. It also sets the `height`, `width`, and `num_channels` attributes based on the `transform_metadata` object or the `metadata` dictionary.
 
-In the `__init__` method, the class initializes various attributes based on the provided metadata and transform information.
+The `forward` method takes a list of images (`v`) and adjusts their size and number of channels according to the metadata. If `v` is already a `torch.Tensor`, it assumes that the images are already preprocessed to be the same size.
 
-The `forward` method takes a list of images as input and adjusts their size and number of channels according to the metadata. If the input is already a torch.Tensor, it assumes that the images are already preprocessed to be the same size.
+The method first checks if `v` is an instance of `List[torch.Tensor]` or `torch.Tensor`. If it is not, it raises a `ValueError`. 
 
-The method first checks the type of the input and raises an error if it is not supported. If a torchvision transform is provided, it applies the transform to each image in the input list. If the input is a single tensor, it converts it to a list and applies the transform to each image. The resulting images are then stacked into a batch.
+If a `torchvision_transform` is provided, the method performs pre-processing for torchvision pretrained model encoders. It applies the transform to each image in the list and stacks the resulting images into a batch.
 
-If no torchvision transform is provided, the method performs preprocessing for Ludwig defined image encoders. It resizes the images to the specified height and width using the specified resize method. It then checks if the images have the expected number of channels and adjusts them accordingly. If the number of channels is 1, the images are converted to grayscale. If the number of channels is less than the expected number, extra channels are padded. If the number of channels is greater than the expected number, an error is raised.
+If no `torchvision_transform` is provided, the method performs pre-processing for Ludwig defined image encoders. It resizes the images to the specified height and width using the provided resize method. It then checks if the images have the expected size and number of channels. If not, it adjusts the images accordingly. Finally, it converts the images to `torch.float32` and scales them to the range [0, 1].
 
-Finally, the images are converted to float32 and normalized by dividing by 255. The resulting tensor is returned.
+The method returns the preprocessed images as a `torch.Tensor`.
 
 ### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the object's attributes and perform any necessary setup.
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from the class. It is used to initialize the attributes of the object.
 
-In this specific code, the `__init__` method takes in several parameters: `metadata`, `torchvision_transform`, and `transform_metadata`. The `metadata` parameter is a dictionary containing information about the training set. The `torchvision_transform` parameter is an optional argument that represents a transformation module from the torchvision library. The `transform_metadata` parameter is also optional and represents metadata about image transformations.
+In this specific code snippet, the `__init__` method takes four parameters:
 
-Inside the method, the `super().__init__()` line calls the `__init__` method of the superclass, which is typically used to initialize any inherited attributes or perform additional setup.
+1. `self`: It is a reference to the instance of the class. It is used to access the attributes and methods of the class.
 
-The method then assigns the value of the `resize_method` key from the `metadata` dictionary to the `resize_method` attribute of the object. It also assigns the value of the `torchvision_transform` parameter to the `torchvision_transform` attribute.
+2. `metadata`: It is a dictionary containing the metadata of the training set. It is of type `TrainingSetMetadataDict`.
 
-Next, it checks if the `transform_metadata` parameter is not `None`. If it is not `None`, it assigns the values of the `height`, `width`, and `num_channels` attributes from the `transform_metadata` object to the corresponding attributes of the object being initialized. If `transform_metadata` is `None`, it assigns the values of the `height`, `width`, and `num_channels` keys from the `metadata` dictionary to the corresponding attributes.
+3. `torchvision_transform`: It is an optional parameter that represents a transformation module from the `torchvision` library. It is of type `Optional[torch.nn.Module]` and its default value is `None`.
 
-Overall, the `__init__` method initializes the attributes of the object based on the provided parameters and sets default values if necessary.
+4. `transform_metadata`: It is an optional parameter that represents the metadata of the image transformation. It is of type `Optional[ImageTransformMetadata]` and its default value is `None`.
 
-#### **Method Details**
-This code defines the `__init__` method for a class. The method takes in several parameters: `metadata`, `torchvision_transform`, and `transform_metadata`. 
+The purpose of the `__init__` method is to initialize the attributes of the object. Here are the mathematical operations or procedures performed in this method:
 
-The `metadata` parameter is expected to be a dictionary containing training set metadata. 
+1. The `resize_method` attribute is initialized with the value of `metadata["preprocessing"]["resize_method"]`.
 
-The `torchvision_transform` parameter is an optional argument that can be a `torch.nn.Module` object. 
+2. The `torchvision_transform` attribute is initialized with the value of `torchvision_transform`.
 
-The `transform_metadata` parameter is also optional and is expected to be an `ImageTransformMetadata` object.
+3. If `transform_metadata` is not `None`, the `height`, `width`, and `num_channels` attributes are initialized with the corresponding values from `transform_metadata`. Otherwise, they are initialized with the values from `metadata["preprocessing"]`.
 
-Inside the method, the `super().__init__()` line calls the `__init__` method of the superclass (presumably a parent class of the current class).
-
-The method then assigns values to several instance variables based on the provided parameters. 
-
-If `transform_metadata` is not `None`, the `height`, `width`, and `num_channels` instance variables are assigned values from the `transform_metadata` object. Otherwise, they are assigned values from the `metadata` dictionary.
-
-The `resize_method` instance variable is assigned the value of `metadata["preprocessing"]["resize_method"]`.
-
-Overall, this `__init__` method initializes the instance variables of the class based on the provided parameters.
+The mathematical operations or procedures in this method do not involve any complex mathematical calculations. They mainly involve assigning values to attributes based on the provided parameters and metadata. Therefore, there is no need for LaTex code to display equations in a markdown document.
 
 ### Method **`forward`** Overview
-The `forward` method takes a TorchscriptPreprocessingInput object `v` as input and returns a torch.Tensor object. 
+The `forward` method is a method defined in a Python class. It takes a parameter `v` of type `TorchscriptPreprocessingInput` and returns a `torch.Tensor` object.
 
-The method first checks if `v` is already a torch.Tensor or a list of torch.Tensor objects. If it is not, it raises a ValueError.
+The purpose of this method is to preprocess a list of images by adjusting their size and number of channels according to the specified metadata. The method performs different operations based on whether the `torchvision_transform` attribute is set or not.
 
-If a torchvision_transform is specified, the method applies the transform to each image in the input list (if `v` is a list) or to each image in the batch (if `v` is a single tensor). The transformed images are then stacked into a batch using `torch.stack`.
+If `torchvision_transform` is not None, the method performs pre-processing for torchvision pretrained model encoders. It checks if `v` is a list of tensors or a single tensor. If `v` is a list of tensors, it applies the torchvision transform to each image in the list using a list comprehension. If `v` is a single tensor, it converts the tensor to a list and applies the torchvision transform to each image using `torch.unbind` and a list comprehension. The resulting preprocessed images are then stacked into a batch using `torch.stack`.
 
-If no torchvision_transform is specified, the method performs preprocessing for Ludwig defined image encoders. It resizes the images to the specified height and width using the specified resize method. If the images are not already the expected size, they are resized. If the number of channels in the images is not equal to the expected number of channels, the method adjusts the number of channels accordingly. If the expected number of channels is 1, the images are converted to grayscale. If the number of channels is less than the expected number of channels, extra channels are padded with zeros. If the number of channels is greater than the expected number of channels, a ValueError is raised.
+If `torchvision_transform` is None, the method performs pre-processing for Ludwig defined image encoders. It follows a similar logic as above, but instead of applying the torchvision transform, it applies the `resize_image` function to each image in the list using a list comprehension. The resulting preprocessed images are then stacked into a batch using `torch.stack`.
 
-Finally, the method converts the images to float32 and scales the pixel values to the range [0, 1] by dividing by 255. The resulting tensor is returned.
+After the pre-processing steps, the method checks the size and number of channels of the preprocessed images. If the height or width of the images is not equal to the expected height or width specified in the metadata, the images are resized using the `resize_image` function. If the number of channels of the images is not equal to the expected number of channels specified in the metadata, the method performs different operations based on the number of channels. If the expected number of channels is 1, the images are converted to grayscale using the `grayscale` function. If the number of channels is less than the expected number of channels, the method pads the images with extra channels using `torch.nn.functional.pad`. If the number of channels is greater than the expected number of channels, a `ValueError` is raised.
 
-#### **Method Details**
-The given code is a method called `forward` that takes a `TorchscriptPreprocessingInput` object as input and returns a `torch.Tensor` object.
+Finally, the preprocessed images are converted to `torch.float32` and normalized by dividing by 255. The resulting tensor is returned as the output of the method.
 
-The method first checks if the input `v` is a list of `torch.Tensor` objects or a single `torch.Tensor` object. If it is neither, a `ValueError` is raised.
-
-If a torchvision transform is provided (`self.torchvision_transform` is not None), the method applies the transform to each image in the input list (if `v` is a list) or to each image in the batch (if `v` is a single tensor). The transformed images are then stacked into a batch using `torch.stack`.
-
-If no torchvision transform is provided, the method performs preprocessing for Ludwig defined image encoders. It resizes the images to the specified height and width using the specified resize method. If the images have a different size than expected, they are resized. If the number of channels in the images is different than expected, the method handles it accordingly. If the number of channels is 1, the images are converted to grayscale. If the number of channels is less than the expected number, extra channels are padded with zeros. If the number of channels is greater than the expected number, a `ValueError` is raised.
-
-Finally, the images are converted to `torch.float32` and normalized by dividing by 255. The resulting tensor is returned.
+The mathematical operations or procedures performed in this method include applying transformations to images using torchvision transforms, resizing images, converting images to grayscale, padding images with extra channels, and normalizing the pixel values of the images.
 
 ## Class **`ImageFeatureMixin`** Overview
-The class `ImageFeatureMixin` is a mixin class that provides common functionality for image features in Ludwig. It is a subclass of `BaseFeatureMixin` and contains static methods that handle various operations related to image features.
+The `ImageFeatureMixin` class is a mixin class that provides methods for preprocessing image features in Python. It is a subclass of `BaseFeatureMixin` and contains several static methods for handling image data.
 
-The `type()` method returns the type of the feature, which is "IMAGE".
+The `type()` method returns the type of the feature as "IMAGE".
 
-The `cast_column()` method takes a column and a backend as input and returns the column as is, without any casting.
+The `cast_column()` method returns the input column as is, without any casting.
 
-The `get_feature_meta()` method takes a column, preprocessing parameters, backend, and a boolean flag indicating whether the feature is an input feature as input. It returns a dictionary containing the preprocessing parameters.
+The `get_feature_meta()` method returns a dictionary containing the preprocessing parameters for the image feature.
 
-The `_read_image_if_bytes_obj_and_resize()` method is a helper method that reads and resizes an image according to the model definition. It takes various parameters such as the image entry, image width and height, resize method, number of channels, etc. It returns the image object as a numpy array.
+The `_read_image_if_bytes_obj_and_resize()` method is a helper method that reads and resizes an image according to the specified parameters. It takes in an image entry, image width and height, a flag indicating whether to resize the image, the number of channels, the resize method, a flag indicating whether the user specified the number of channels, and a flag indicating whether to standardize the image. It returns the image as a numpy array.
 
-The `_read_image_with_pretrained_transform()` method is another helper method that reads an image and applies a pretrained transform to it. It takes the image entry and a transform function as input and returns the transformed image as a numpy array.
+The `_read_image_with_pretrained_transform()` method is a helper method that reads an image and applies a pretrained transform to it. It takes in an image entry and a transform function, and returns the transformed image as a numpy array.
 
-The `_set_image_and_height_equal_for_encoder()` method is a helper method that sets the image width and height to be equal if required by the downstream encoder. It takes the width, height, preprocessing parameters, and encoder type as input and returns the updated width and height.
+The `_set_image_and_height_equal_for_encoder()` method is a helper method that sets the image width and height to be equal if required by the downstream encoder. It takes in the width, height, preprocessing parameters, and encoder type, and returns the updated width and height.
 
-The `_infer_image_size()` method infers the size of the image to use based on a sample of images. It takes the image sample, maximum height and width, preprocessing parameters, and encoder type as input and returns the inferred height and width.
+The `_infer_image_size()` method infers the size of the image to use based on a sample of images. It takes in a sample of images, maximum height and width, preprocessing parameters, and encoder type, and returns the inferred height and width.
 
-The `_infer_number_of_channels()` method infers the number of channels to use based on a sample of images. It takes the image sample as input and returns the inferred number of channels.
+The `_infer_number_of_channels()` method infers the number of channels to use based on a sample of images. It takes in a sample of images and returns the inferred number of channels.
 
-The `_finalize_preprocessing_parameters()` method is a helper method that determines the height, width, and number of channels for preprocessing the image data. It takes the preprocessing parameters, encoder type, and column as input and returns the required parameters.
+The `_finalize_preprocessing_parameters()` method is a helper method that determines the height, width, and number of channels for preprocessing the image data. It takes in the preprocessing parameters, encoder type, and the image data column, and returns the required parameters.
 
-The `add_feature_data()` method adds the feature data to the processed dataframe. It takes various inputs such as the feature configuration, input dataframe, processed dataframe, metadata, preprocessing parameters, backend, and a flag indicating whether to skip saving the processed input. It performs the necessary preprocessing steps and returns the processed dataframe.
+The `add_feature_data()` method adds the preprocessed image data to the processed dataframe. It takes in the feature configuration, input dataframe, processed dataframe, metadata, preprocessing parameters, backend, and a flag indicating whether to skip saving the processed input. It performs the necessary preprocessing steps based on the specified parameters and returns the processed dataframe.
 
 ### Method **`type`** Overview
-The method type() is a built-in function in Python that returns the type of an object. It takes an object as an argument and returns the type of that object. This method is used to determine the type of an object, such as whether it is a string, integer, list, etc. It is commonly used for type checking and dynamic programming in Python.
+The Python method `type()` is used to determine the type of an object. It takes one parameter, which is the object whose type needs to be determined. The purpose of the `type()` method is to provide information about the class or type of an object.
 
-#### **Method Details**
-The given Python code defines a function named "type" that does not take any arguments. The function returns the value "IMAGE".
+The mathematical operations or procedures performed by the `type()` method are not applicable, as it is not designed for mathematical calculations. Instead, it is used for introspection and determining the type of an object.
 
-### Method **`cast_column`** Overview
-The method `cast_column` takes two parameters: `column` and `backend`. It returns the `column` parameter as it is, without any modifications.
-
-This method is likely used for casting or converting the data type of a column in a database or data structure. The `column` parameter represents the column that needs to be cast, and the `backend` parameter may refer to the specific database or data storage system being used.
-
-However, based on the provided code, it seems that the method does not actually perform any casting or conversion. It simply returns the `column` parameter as it is, without any changes. Therefore, it is possible that this method is a placeholder or a stub that needs to be implemented with the actual casting logic.
-
-#### **Method Details**
-The given Python code defines a function called `cast_column` that takes two parameters: `column` and `backend`. The function simply returns the `column` parameter as it is without any modifications.
-
-### Method **`get_feature_meta`** Overview
-The method `get_feature_meta` takes in four parameters: `column`, `preprocessing_parameters`, `backend`, and `is_input_feature`. It returns a dictionary containing the preprocessing parameters for a specific feature.
-
-The `column` parameter represents the feature column for which the metadata is being retrieved. The `preprocessing_parameters` parameter is a dictionary that stores the preprocessing configuration for the feature. The `backend` parameter represents the backend system being used. The `is_input_feature` parameter is a boolean value indicating whether the feature is an input feature or not.
-
-The method returns a dictionary with a single key-value pair. The key is a constant `PREPROCESSING`, and the value is the `preprocessing_parameters` dictionary. This dictionary provides information about how the feature should be preprocessed, such as scaling, encoding, or any other transformations required.
-
-Overall, the `get_feature_meta` method retrieves and returns the preprocessing metadata for a specific feature, allowing further processing or analysis to be performed based on the provided parameters.
-
-#### **Method Details**
-The given code defines a function named `get_feature_meta` that takes four parameters: `column`, `preprocessing_parameters`, `backend`, and `is_input_feature`. The function returns a dictionary with a single key-value pair, where the key is the string "PREPROCESSING" and the value is the `preprocessing_parameters` parameter.
-
-The `preprocessing_parameters` parameter is expected to be of type `PreprocessingConfigDict`, which is not defined in the given code. The `backend` parameter can be of any type. The `is_input_feature` parameter is expected to be a boolean value.
-
-The function signature indicates that the return value should be of type `FeatureMetadataDict`, which is also not defined in the given code.
-
-### Method **`_read_image_if_bytes_obj_and_resize`** Overview
-The method `_read_image_if_bytes_obj_and_resize` is a helper method that reads and resizes an image according to a specified model definition. 
-
-The method takes in several parameters:
-- `img_entry`: The image object, which can be a byte string, a torch tensor, or a numpy array.
-- `img_width`: The expected width of the image.
-- `img_height`: The expected height of the image.
-- `should_resize`: A boolean indicating whether the image should be resized.
-- `resize_method`: The type of resizing method to use.
-- `num_channels`: The expected number of channels in the image.
-- `user_specified_num_channels`: A boolean indicating whether the user has specified the number of channels.
-- `standardize_image`: A string specifying whether to standardize the image with imagenet1k specifications.
-
-The method first checks the type of `img_entry` and reads the image accordingly. If `img_entry` is a byte string, it calls the `read_image_from_bytes_obj` function to read the image. If `img_entry` is a string, it calls the `read_image_from_path` function to read the image. If `img_entry` is a numpy array, it converts it to a torch tensor. If `img_entry` is already a torch tensor, it assigns it to `img`.
-
-Next, the method checks if `img` is a torch tensor. If it is not, a warning is issued and `None` is returned.
-
-The method then determines the number of channels in `img` using the `num_channels_in_image` function. If `num_channels` is 1 and `img_num_channels` is not 1, the image is converted to grayscale.
-
-If `should_resize` is `True`, the image is resized using the `resize_image` function.
-
-If `user_specified_num_channels` is `True`, the method checks if the number of channels in `img` matches the specified `num_channels`. If the number of channels in `img` is less than `num_channels`, extra channels are added using `torch.nn.functional.pad`. If the number of channels in `img` is not equal to `num_channels`, a warning is issued.
-
-If `user_specified_num_channels` is `False`, the method checks if the number of channels in `img` matches the number of channels in the first image. If they do not match, a `ValueError` is raised.
-
-Next, the method checks if the shape of `img` matches the expected `img_height`, `img_width`, and `num_channels`. If they do not match, a `ValueError` is raised.
-
-Finally, the method casts `img` to `torch.float32` and scales it by dividing by 255. If `standardize_image` is set to `IMAGENET1K`, the image is normalized using the `normalize` function with the specified mean and standard deviation.
-
-The method returns the image as a numpy array.
-
-#### **Method Details**
-This code defines a helper function `_read_image_if_bytes_obj_and_resize` that reads and resizes an image according to certain specifications. The function takes in several parameters:
-
-- `img_entry`: The image data, which can be a byte object, a torch tensor, or a numpy array.
-- `img_width`: The expected width of the image.
-- `img_height`: The expected height of the image.
-- `should_resize`: A boolean indicating whether the image should be resized.
-- `resize_method`: The method to use for resizing the image.
-- `num_channels`: The expected number of channels in the image.
-- `user_specified_num_channels`: A boolean indicating whether the user has specified the number of channels.
-- `standardize_image`: A string specifying whether to standardize the image with imagenet1k specifications.
-
-The function first checks the type of `img_entry` and reads the image accordingly. If `img_entry` is a byte object, it calls the `read_image_from_bytes_obj` function to read the image. If it is a string, it calls the `read_image_from_path` function to read the image. If it is a numpy array, it converts it to a torch tensor. If it is already a torch tensor, it assigns it to `img`.
-
-Next, the function checks if `img` is a torch tensor. If not, it raises a warning and returns `None`.
-
-The function then determines the number of channels in `img` and converts it to grayscale if `num_channels` is 1 and `img_num_channels` is not 1.
-
-If `should_resize` is True, the function resizes the image using the specified `img_height` and `img_width` and the `resize_method`.
-
-If `user_specified_num_channels` is True, the function checks if the number of channels in `img` matches the specified `num_channels`. If not, it pads or drops channels as necessary to match the specified number of channels.
-
-If `user_specified_num_channels` is False, the function raises an exception if the number of channels in `img` does not match the number of channels in the first image.
-
-The function then checks if the shape of `img` matches the specified `img_height`, `img_width`, and `num_channels`. If not, it raises an exception.
-
-Finally, the function casts and rescales `img` to a float32 tensor with values between 0 and 1. If `standardize_image` is set to "IMAGENET1K", it normalizes `img` using the mean and standard deviation specified for IMAGENET1K.
-
-The function returns `img` as a numpy array.
-
-### Method **`_read_image_with_pretrained_transform`** Overview
-The method `_read_image_with_pretrained_transform` takes an image entry and a transformation function as input. It first checks the type of the image entry and performs different actions based on its type. If the image entry is of type `bytes`, it calls the `read_image_from_bytes_obj` function to read the image. If the image entry is of type `str`, it calls the `read_image_from_path` function to read the image. If the image entry is of type `np.ndarray`, it converts it to a torch tensor and permutes the dimensions. If the image entry is not of any of these types, it assumes it is already an image and assigns it to the `img` variable.
-
-Next, it checks if the `img` variable is not a torch tensor. If it is not, it raises a warning and returns `None`.
-
-Finally, it applies the transformation function `transform_fn` to the `img` variable and returns the result as a numpy array.
-
-#### **Method Details**
-This code defines a function called `_read_image_with_pretrained_transform` that takes in an image entry and a transformation function as input. The image entry can be either a bytes object, a torch tensor, a numpy array, or a string representing the path to an image file.
-
-The function first checks the type of the image entry and performs the appropriate action to read the image. If the image entry is a bytes object, it calls the `read_image_from_bytes_obj` function to read the image. If it is a string, it calls the `read_image_from_path` function to read the image. If it is a numpy array, it converts it to a torch tensor and permutes the dimensions. If it is none of these types, it assumes that the image entry is already in the correct format.
-
-Next, the function checks if the image is a torch tensor. If it is not, it raises a warning and returns None.
-
-Finally, the function applies the transformation function to the image and returns the result as a numpy array.
-
-### Method **`_set_image_and_height_equal_for_encoder`** Overview
-The method `_set_image_and_height_equal_for_encoder` takes in the width and height of an image, preprocessing parameters, and the type of encoder as input. It is used to ensure that the image dimensions are compatible with the downstream encoder.
-
-If the preprocessing parameters indicate that the encoder requires equal dimensions for the image, and the height and width are not already equal, the method sets the width and height to the minimum value between the two. It then updates the preprocessing parameters dictionary with the new width and height values.
-
-Finally, the method returns the updated width and height as a tuple.
-
-Overall, this method ensures that the image dimensions are adjusted to meet the requirements of the specified encoder.
-
-#### **Method Details**
-The code defines a function `_set_image_and_height_equal_for_encoder` that takes in the following parameters:
-- `width`: an integer representing the width of the image
-- `height`: an integer representing the height of the image
-- `preprocessing_parameters`: a dictionary containing parameters for preprocessing the image feature
-- `encoder_type`: a string representing the name of the encoder
-
-The function checks if the `preprocessing_parameters` require equal dimensions for the image. If so, and if the height and width are not already equal, the function sets the width and height to the minimum value between them. It then updates the `preprocessing_parameters` dictionary with the new width and height values.
-
-Finally, the function returns the updated width and height as a tuple.
-
-### Method **`_infer_image_size`** Overview
-The method `_infer_image_size` takes in a sample of images, a maximum height and width, preprocessing parameters, and the type of encoder. It calculates the average height and width of the images in the sample. The calculated average height and width are then rounded to the nearest integer. If the rounded values exceed the maximum height and width, the maximum values are used instead. 
-
-The method also checks if the downstream encoder requires images with the same dimensions or specific width and height values. If so, it updates the height and width accordingly. 
-
-Finally, the method returns the inferred height and width as a tuple.
-
-#### **Method Details**
-The code defines a function `_infer_image_size` that takes in several parameters: `image_sample`, `max_height`, `max_width`, `preprocessing_parameters`, and `encoder_type`. 
-
-The purpose of this function is to infer the size to use for a group of images. It calculates the average height and width of the images in the `image_sample` and rounds them to the nearest integer. If the calculated height or width exceeds the `max_height` or `max_width` respectively, it sets the height or width to the maximum value.
-
-The function also checks if the downstream encoder requires images with the same dimensions or specific width and height values. If so, it updates the height and width accordingly.
-
-Finally, the function returns the inferred height and width as a tuple.
-
-### Method **`_infer_number_of_channels`** Overview
-The method `_infer_number_of_channels` takes a list of image samples as input and infers the number of channels to use for the images. It assumes that the majority of the images in the dataset are RGB. 
-
-The method first counts the frequency of different channel depths in the image samples using the `Counter` class. It then checks if the majority of images have 1, 2, or 4 channels. If any of these channel depths are the majority, the method sets the `num_channels` variable accordingly. If none of these channel depths are the majority, the method defaults to using 3 channels.
-
-The method logs an info message indicating the number of images used for inference and the frequency of different channel depths in the image samples. If the inferred `num_channels` is the majority in the sample, it logs a message indicating that it will be used and attempts to convert images with different depths to the inferred number of channels. If the inferred `num_channels` is not the majority, it logs a message indicating that it is defaulting to that number of channels.
-
-Finally, the method logs a message suggesting to explicitly set the number of channels in the preprocessing dictionary of the image input feature configuration. It returns the inferred `num_channels`.
-
-#### **Method Details**
-The given code is a function named `_infer_number_of_channels` that takes in a list of torch.Tensor objects representing image samples. It infers the number of channels to use for the images based on the majority channel depth in the sample.
-
-The function starts by counting the frequency of different channel depths in the image sample using the `Counter` class from the `collections` module. It then checks if the majority of images have 1, 2, or 4 channels. If any of these conditions are met, the corresponding number of channels is assigned to the variable `num_channels`. Otherwise, the default case is to use 3 channels.
-
-The function logs information messages using a logger object. It logs the number of images in the sample, the frequency of different channel depths, and the chosen number of channels. If the chosen number of channels is the majority in the sample, it logs a message indicating that any images with a different depth will be converted to the chosen number of channels. Otherwise, it logs a message indicating that it is defaulting to the chosen number of channels.
-
-Finally, the function logs a message suggesting to explicitly set the number of channels in the preprocessing dictionary of the image input feature configuration if desired. It returns the chosen number of channels.
-
-Note: The code assumes the existence of a logger object named `logger` and a function named `num_channels_in_image` that takes in a torch.Tensor object and returns the number of channels in the image.
-
-### Method **`_finalize_preprocessing_parameters`** Overview
-The `_finalize_preprocessing_parameters` method is a helper method that is used to determine the height, width, and number of channels for preprocessing image data. 
-
-The method takes three parameters: `preprocessing_parameters`, `encoder_type`, and `column`. 
-
-The `preprocessing_parameters` parameter is a dictionary that contains parameters defining how the image feature should be preprocessed. 
-
-The `encoder_type` parameter is a string that represents the name of the encoder. 
-
-The `column` parameter represents the data itself, which can be a Pandas, Modin, or Dask series. 
-
-The method first checks if the `HEIGHT` or `WIDTH` parameters are explicitly provided in the `preprocessing_parameters` dictionary. If either of them is provided, it sets the `explicit_height_width` variable to `True`. 
-
-Next, it checks if the `NUM_CHANNELS` parameter is explicitly provided in the `preprocessing_parameters` dictionary. If it is provided, it sets the `explicit_num_channels` variable to `True`. 
-
-Then, it checks if the `INFER_IMAGE_DIMENSIONS` parameter is `True` and if both `explicit_height_width` and `explicit_num_channels` are `False`. If this condition is true, it sets the `sample_size` variable to the minimum of the length of the `column` and the `INFER_IMAGE_SAMPLE_SIZE` parameter. Otherwise, it sets the `sample_size` variable to 1, indicating that only the first image in the dataset will be used. 
-
-The method then initializes empty lists `sample` and `sample_num_bytes`, and an empty list `failed_entries`. 
-
-It iterates over the first `sample_size` entries in the `column` and performs the following steps for each entry: 
-- If the entry is a string, it tries to read the image from the path specified by the entry using the `read_image_from_path` function. It also keeps track of the number of bytes in the image by appending it to the `sample_num_bytes` list. 
-- If the entry is a torch.Tensor, it appends it to the `sample` list. 
-- If the entry is a numpy.ndarray, it converts it to a torch.Tensor and appends it to the `sample` list. 
-- If none of the above conditions are met, it appends the entry to the `failed_entries` list. 
-
-After iterating over the entries, the method checks if the `sample` list is empty. If it is, it raises a ValueError indicating that the dimensions of the images cannot be inferred. 
-
-Next, the method checks if `explicit_height_width` is `True`. If it is, it tries to convert the `HEIGHT` and `WIDTH` parameters to integers and assigns them to the `height` and `width` variables. It also calls a private method `_set_image_and_height_equal_for_encoder` to update the `height` and `width` if required by the downstream encoder. If any error occurs during this process, a ValueError is raised. 
-
-If `explicit_height_width` is `False`, the method checks if the `INFER_IMAGE_DIMENSIONS` parameter is `True`. If it is, it calls a private method `_infer_image_size` to infer the `height` and `width` from the `sample` images. If `INFER_IMAGE_DIMENSIONS` is `False`, a ValueError is raised indicating that the image dimensions are unknown. 
-
-Next, the method checks if `explicit_num_channels` is `True`. If it is, it assigns the `NUM_CHANNELS` parameter to the `num_channels` variable. 
-
-If `explicit_num_channels` is `False`, the method checks if `INFER_IMAGE_DIMENSIONS` is `True`. If it is, it calls a private method `_infer_number_of_channels` to infer the number of channels from the `sample` images. If `INFER_IMAGE_DIMENSIONS` is `False` and the `sample` list is not empty, it calls the `num_channels_in_image` function to get the number of channels in the first image. If both conditions are `False`, a ValueError is raised indicating that the number of image channels is unknown. 
-
-The method then checks if the `num_channels` variable is an integer. If it is not, a ValueError is raised. 
-
-Finally, the method calculates the average file size of the images in the `sample_num_bytes` list, sets the `standardize_image` variable based on the `standardize_image` parameter in the `preprocessing_parameters` dictionary, and returns a tuple containing the following values: `should_resize`, `width`, `height`, `num_channels`, `user_specified_num_channels`, `average_file_size`, and `standardize_image`.
-
-#### **Method Details**
-The given code is a helper method called `_finalize_preprocessing_parameters` that is used to determine the height, width, and number of channels for preprocessing image data. 
-
-Here is a breakdown of the code:
-
-1. The method takes three parameters: `preprocessing_parameters` (a dictionary containing parameters for image preprocessing), `encoder_type` (the name of the encoder), and `column` (the image data itself, which can be a Pandas, Modin, or Dask series).
-
-2. The method first checks if the height and width parameters are explicitly provided in the `preprocessing_parameters` dictionary, or if the number of channels is explicitly provided. If not, it falls back on using the first image in the dataset to infer the dimensions.
-
-3. The `sample_size` variable is determined based on whether image dimensions need to be inferred or not. If they need to be inferred, the `sample_size` is set to the minimum of the length of the `column` and the `INFER_IMAGE_SAMPLE_SIZE` parameter from `preprocessing_parameters`. Otherwise, `sample_size` is set to 1 (indicating that only the first image will be used).
-
-4. The method initializes empty lists `sample` and `sample_num_bytes` to store the sampled images and their corresponding file sizes. It also initializes an empty list `failed_entries` to store any image entries that failed to be processed.
-
-5. The method iterates over the first `sample_size` images in the `column` and performs the following steps for each image:
-   - If the image entry is a string, it tries to read the image from the path using the `read_image_from_path` function and stores the image and its file size in `sample` and `sample_num_bytes` respectively.
-   - If the image entry is already a tensor, it directly appends it to `sample`.
-   - If the image entry is a numpy array, it converts it to a tensor and appends it to `sample`.
-   - If none of the above conditions are met, it adds the image entry to `failed_entries`.
-
-6. If no valid images were sampled (i.e., `sample` is empty), a `ValueError` is raised indicating that the image dimensions cannot be inferred.
-
-7. The method checks if explicit height and width parameters are provided. If so, it sets the `should_resize` flag to `True` and tries to parse the height and width values from the parameters. It also calls a private method `_set_image_and_height_equal_for_encoder` to update the height and width values based on the requirements of the encoder.
-
-8. If explicit height and width parameters are not provided, the method checks if image dimensions need to be inferred. If so, it sets the `should_resize` flag to `True` and calls a private method `_infer_image_size` to infer the height and width values based on the sampled images, maximum height and width constraints, and other preprocessing parameters.
-
-9. If explicit number of channels parameter is provided, the `user_specified_num_channels` flag is set to `True` and the `num_channels` value is retrieved from the parameters.
-
-10. If explicit number of channels parameter is not provided, the method checks if image dimensions need to be inferred. If so, the `user_specified_num_channels` flag is set to `True` and the `num_channels` value is inferred using the private method `_infer_number_of_channels`. If no images were sampled, a `ValueError` is raised indicating that the image number of channels cannot be inferred.
-
-11. The method asserts that the `num_channels` value is an integer.
-
-12. The average file size of the sampled images is calculated using `np.mean(sample_num_bytes)` if `sample_num_bytes` is not empty, otherwise it is set to `None`.
-
-13. The `standardize_image` parameter is retrieved from `preprocessing_parameters` and checked if it is set to "imagenet1k" and the `num_channels` is not 3. If so, a warning is issued and `standardize_image` is set to `None`.
-
-14. Finally, the method returns a tuple containing the following values: `should_resize`, `width`, `height`, `num_channels`, `user_specified_num_channels`, `average_file_size`, and `standardize_image`.
-
-Note: The code references some private methods (`_set_image_and_height_equal_for_encoder`, `_infer_image_size`, `_infer_number_of_channels`) and external functions (`read_image_from_path`, `num_channels_in_image`) that are not provided in the given code snippet. The functionality of these methods/functions is not clear from the given code, but they are likely used for additional image processing and calculations.
-
-### Method **`add_feature_data`** Overview
-The `add_feature_data` method takes in several parameters including `feature_config`, `input_df`, `proc_df`, `metadata`, `preprocessing_parameters`, `backend`, and `skip_save_processed_input`. 
-
-The method first sets a default value for the "in_memory" parameter in the `preprocessing_parameters` dictionary. 
-
-Then, it retrieves the name, column, and encoder type from the `feature_config` dictionary.
-
-Next, it checks if there is a source path specified in the metadata and assigns it to `src_path`. It also creates a new column `abs_path_column` by applying a mapping function to the `column` values. The mapping function converts relative paths to absolute paths if necessary.
-
-The method then determines if the specified encoder is a torchvision model. If it is, it retrieves the torchvision parameters and logs a warning message. It also sets up the necessary parameters for performing torchvision model transformations.
-
-If the encoder is not a torchvision model, it performs Ludwig specified transformations on the images. It finalizes the preprocessing parameters and updates the metadata with the height, width, and number of channels.
-
-Next, the method creates a partial function `read_image_if_bytes_obj_and_resize` based on the chosen image reading and resizing method.
-
-The method then checks if the data should be processed in memory or if the processed input should be skipped. If either condition is true, it reads the binary files from the `abs_path_column` using the `read_image_if_bytes_obj_and_resize` function. It also handles any failed image reads and assigns a default image to those rows.
-
-If the data should not be processed in memory, it calculates the number of images and initializes an HDF5 file. It then iterates over the `abs_path_column`, reads and resizes each image, and stores it in the HDF5 file. It also handles any failed image reads and assigns a default image to those rows.
-
-Finally, the method updates the `proc_df` with the processed column values and logs a warning message if there were any failed image reads. It returns the updated `proc_df`.
-
-#### **Method Details**
-The given code defines a function called `add_feature_data` that takes several input parameters: `feature_config`, `input_df`, `proc_df`, `metadata`, `preprocessing_parameters`, `backend`, and `skip_save_processed_input`. 
-
-The function performs various preprocessing steps on the input data based on the provided feature configuration. 
-
-Here is a breakdown of the code:
-
-1. The function sets the default value for the "in_memory" parameter in the preprocessing configuration using the `set_default_value` function.
-2. It extracts the name, column, and encoder type from the feature configuration.
-3. It determines the source path based on the metadata and creates an absolute path column using the `map_objects` function.
-4. It checks if the specified encoder is a torchvision model and sets the torchvision parameters accordingly.
-5. If torchvision parameters are specified, it performs torchvision model transformations using the `_get_torchvision_transform` function.
-6. If torchvision parameters are not specified, it performs Ludwig specified transformations using the `_finalize_preprocessing_parameters` function.
-7. It sets the metadata for height, width, and number of channels.
-8. It defines a partial function `read_image_if_bytes_obj_and_resize` based on the chosen transformation method.
-9. It creates a default image based on the number of channels, height, and width.
-10. If the data is to be processed in memory or skipping saving the processed input, it reads the binary files using the `read_binary_files` function and applies the transformation function to each row. It also handles failed image reads and replaces them with the default image.
-11. If the data is not processed in memory, it creates an HDF5 file and saves the processed images to it. It also handles failed image reads and replaces them with the default image.
-12. It updates the `proc_df` with the processed column.
-13. It logs a warning message if there were any failed image reads.
-14. Finally, it returns the updated `proc_df`.
-
-Note: Some functions used in the code, such as `set_default_value`, `get_abs_path`, `_get_torchvision_parameters`, `_get_torchvision_transform`, `_read_image_with_pretrained_transform`, `_read_image_if_bytes_obj_and_resize`, `get_gray_default_image`, `is_dask_series_or_df`, `upload_h5`, and `wrap` are not defined in the given code snippet.
-
-## Class **`ImageInputFeature`** Overview
-The class `ImageInputFeature` is a subclass of `ImageFeatureMixin` and `InputFeature`. It is used to process image inputs in a machine learning model. 
-
-The `__init__` method initializes the `ImageInputFeature` object. It takes an `input_feature_config` parameter of type `ImageInputFeatureConfig` and an optional `encoder_obj` parameter. If `encoder_obj` is provided, it is assigned to the `encoder_obj` attribute of the object. Otherwise, the `initialize_encoder` method is called to initialize the `encoder_obj` attribute based on the specified encoder in the `input_feature_config`.
-
-If image augmentation is enabled in the `input_feature_config`, an augmentation pipeline object is created using the `ImageAugmentation` class. The normalization mean and standard deviation are determined based on the encoder type. If the encoder is a torchvision model, the mean and standard deviation are obtained from the encoder object. If the encoder is a Ludwig encoder and the `standardize_image` parameter in the `preprocessing` section of the `input_feature_config` is set to `IMAGENET1K`, the mean and standard deviation are set to the values for the IMAGENET1K dataset.
-
-The `forward` method takes an input tensor and applies the `encoder_obj` to encode the inputs. The encoded inputs are returned.
-
-The `input_dtype` property returns the data type of the input tensor, which is `torch.float32`.
-
-The `input_shape` property returns the shape of the input tensor as a `torch.Size` object, based on the `input_shape` attribute of the `encoder_obj`.
-
-The `output_shape` property returns the shape of the output tensor as a `torch.Size` object, based on the `output_shape` attribute of the `encoder_obj`.
-
-The `update_config_after_module_init` method updates the feature configuration parameters after the module is initialized. If the `encoder_obj` is a torchvision model, the `height`, `width`, and `num_channels` parameters in the `preprocessing` section of the feature configuration are updated based on the corresponding attributes of the `encoder_obj`.
-
-The `update_config_with_metadata` method updates the feature configuration with metadata. It checks if the `encoder` object has certain keys (`height`, `width`, `num_channels`, `standardize_image`) and sets their values to the corresponding values in the `feature_metadata` dictionary.
-
-The `get_schema_cls` method returns the class `ImageInputFeatureConfig`, which is the schema class for the `ImageInputFeature` configuration.
-
-The `create_preproc_module` method creates a preprocessing module based on the metadata. It checks if there is a `torchvision_model_type` and `torchvision_model_variant` in the `preprocessing` section of the metadata. If so, it retrieves the torchvision parameters and creates a torchvision transform. Otherwise, it sets the torchvision transform and transform metadata to `None`.
-
-The `get_augmentation_pipeline` method returns the augmentation pipeline object created during initialization.
-
-### Method **`__init__`** Overview
-The `__init__` method is a special method in Python classes that is automatically called when an object of the class is created. It is used to initialize the object's attributes and perform any necessary setup.
-
-In this specific code, the `__init__` method takes in several parameters: `self`, `input_feature_config`, `encoder_obj`, and `**kwargs`. 
-
-The `self` parameter refers to the instance of the class that is being created. It is automatically passed to the method when it is called.
-
-The `input_feature_config` parameter is an object of type `ImageInputFeatureConfig` that is used to configure the input features for the class.
-
-The `encoder_obj` parameter is an optional parameter that can be used to specify an encoder object. If it is provided, the `self.encoder_obj` attribute is set to the provided object. Otherwise, the `self.encoder_obj` attribute is initialized by calling the `initialize_encoder` method with the `input_feature_config.encoder` parameter.
-
-The `**kwargs` parameter is used to accept any additional keyword arguments that may be passed to the method.
-
-The method then calls the `super().__init__` method to initialize the base class with the `input_feature_config` parameter and any additional keyword arguments.
-
-Next, the method checks if `input_feature_config.augmentation` is enabled. If it is, the method determines if the specified encoder is a torchvision model. If it is, the `normalize_mean` and `normalize_std` attributes are set to the values from the encoder object. If the encoder is a Ludwig encoder and the `standardize_image` attribute of `input_feature_config.preprocessing` is set to `IMAGENET1K`, the `normalize_mean` and `normalize_std` attributes are set to the values of `IMAGENET1K_MEAN` and `IMAGENET1K_STD` respectively.
-
-Finally, if augmentation is enabled, the method creates an `ImageAugmentation` object called `self.augmentation_pipeline` with the `input_feature_config.augmentation`, `normalize_mean`, and `normalize_std` attributes as parameters.
-
-#### **Method Details**
-This code defines the `__init__` method for a class. The method takes in an `input_feature_config` object of type `ImageInputFeatureConfig` and an optional `encoder_obj` object. It also accepts any additional keyword arguments.
-
-The method first calls the `__init__` method of the parent class using `super().__init__(input_feature_config, **kwargs)`.
-
-Next, it checks if an `encoder_obj` is provided. If it is, the `encoder_obj` attribute of the class is set to the provided object. Otherwise, it calls the `initialize_encoder` method with the `input_feature_config.encoder` argument to initialize the `encoder_obj` attribute.
-
-Then, it checks if augmentation is enabled in the `input_feature_config`. If it is, it proceeds to set up the augmentation pipeline.
-
-If the `encoder_obj` is a torchvision model, it retrieves the `normalize_mean` and `normalize_std` attributes from the `encoder_obj` and assigns them to the `normalize_mean` and `normalize_std` variables.
-
-If the `encoder_obj` is not a torchvision model, it checks if the `input_feature_config.preprocessing.standardize_image` is set to `IMAGENET1K`. If it is, it assigns the `IMAGENET1K_MEAN` and `IMAGENET1K_STD` values to the `normalize_mean` and `normalize_std` variables.
-
-Finally, it creates an `ImageAugmentation` object with the `input_feature_config.augmentation`, `normalize_mean`, and `normalize_std` arguments and assigns it to the `augmentation_pipeline` attribute of the class.
-
-### Method **`forward`** Overview
-The method "forward" takes in a torch.Tensor object as input and returns a torch.Tensor object. It first checks if the input is a torch.Tensor object and if it is of type torch.float32. Then, it encodes the input using an encoder object and returns the encoded input.
-
-#### **Method Details**
-The given code defines a `forward` method for a class. The method takes in an input tensor `inputs` of type `torch.Tensor` and returns the encoded version of the input tensor using an `encoder_obj`.
-
-Here's the breakdown of the code:
-
-1. The method starts with two assertions to validate the input:
-   - `assert isinstance(inputs, torch.Tensor)` checks if the `inputs` is an instance of `torch.Tensor`. If not, it raises an assertion error with a message.
-   - `assert inputs.dtype in [torch.float32]` checks if the `inputs` tensor has a dtype of `torch.float32`. If not, it raises an assertion error with a message.
-
-2. After the input validation, the `inputs` tensor is passed through the `encoder_obj` to obtain the encoded version of the tensor.
-
-3. Finally, the encoded tensor is returned as the output of the `forward` method.
-
-Note: The code assumes that the `encoder_obj` is defined and available within the class.
-
-### Method **`input_dtype`** Overview
-The method `input_dtype` is a function that returns the data type of the input for a given model or function. In this specific code snippet, it returns the data type `torch.float32`, which indicates that the input should be a tensor of 32-bit floating-point numbers. 
-
-The purpose of this method is to provide information about the expected data type of the input, which can be useful for ensuring compatibility and consistency in data processing and model training. By specifying the input data type, it helps in handling and manipulating the input data appropriately within the model or function.
-
-#### **Method Details**
-The given code is a method definition for a function named `input_dtype` in a class. The function returns the data type `torch.float32`.
-
-### Method **`input_shape`** Overview
-The method `input_shape` is a function that belongs to a class and returns an object of type `torch.Size`. It retrieves the input shape of the encoder object and converts it into a `torch.Size` object.
-
-The `input_shape` method is used to determine the shape or dimensions of the input data that is expected by the encoder object. It provides information about the number of dimensions and the size of each dimension in the input data.
-
-By calling this method, you can obtain the input shape of the encoder object, which can be useful for various purposes such as setting up the input layer of a neural network or performing data preprocessing operations.
-
-#### **Method Details**
-The given code is a method definition in a Python class. The method is named `input_shape` and it takes in a parameter `self`, which refers to the instance of the class.
-
-The method returns the input shape of the `encoder_obj` attribute. The `encoder_obj` is assumed to be an object that has an `input_shape` attribute. The `input_shape` attribute is expected to be a torch.Size object.
-
-The method converts the `input_shape` attribute of `encoder_obj` to a torch.Size object using the `torch.Size()` constructor and returns it.
-
-### Method **`output_shape`** Overview
-The method `output_shape` returns the output shape of the encoder object. It is defined as a method within a class and is expected to return a `torch.Size` object. The `output_shape` method is used to retrieve the shape of the output produced by the encoder object.
-
-#### **Method Details**
-The given code is a method definition in a Python class. The method is named "output_shape" and it takes in a parameter "self" (which refers to the instance of the class).
-
-The method has a return type annotation "-> torch.Size", indicating that it should return an object of type "torch.Size".
-
-Inside the method, it returns the value of "self.encoder_obj.output_shape", which suggests that the class has an attribute named "encoder_obj" and it has a property or method named "output_shape". The value of "self.encoder_obj.output_shape" is returned as the result of the method.
-
-### Method **`update_config_after_module_init`** Overview
-The method `update_config_after_module_init` takes in a `feature_config` object as a parameter. It first checks if the `encoder_obj` attribute of the current object is a torchvision encoder. If it is, the method updates the `height`, `width`, and `num_channels` attributes of the `preprocessing` object in the `feature_config` to reflect the values used in the torchvision pretrained model. 
-
-Specifically, the `height` and `width` attributes are set to the value of the first element in the `crop_size` attribute of the `encoder_obj`. The `num_channels` attribute is set to the value of the `num_channels` attribute of the `encoder_obj`.
-
-#### **Method Details**
-The given code defines a function called `update_config_after_module_init` that takes two arguments: `self` and `feature_config`. 
-
-Inside the function, it checks if the `self.encoder_obj` is a torchvision encoder by calling the `is_torchvision_encoder` function. If it is, then it updates the `feature_config` object's preprocessing parameters based on the attributes of the `self.encoder_obj`.
-
-Specifically, it sets the `height` and `width` of the preprocessing to the first element of the `crop_size` attribute of the `self.encoder_obj`. It also sets the `num_channels` of the preprocessing to the `num_channels` attribute of the `self.encoder_obj`.
-
-### Method **`update_config_with_metadata`** Overview
-The method "update_config_with_metadata" takes in two parameters: "feature_config" and "feature_metadata". It also accepts additional arguments and keyword arguments. 
-
-The method iterates over a list of keys, which are "height", "width", "num_channels", and "standardize_image". For each key, it checks if the "feature_config.encoder" object has an attribute with that key. If it does, it updates the value of that attribute with the corresponding value from the "feature_metadata" dictionary, specifically from the "PREPROCESSING" key.
-
-In summary, the method updates certain attributes of the "feature_config.encoder" object with values from the "feature_metadata" dictionary, based on the specified keys.
-
-#### **Method Details**
-The given code defines a function called `update_config_with_metadata` that takes in three arguments: `feature_config`, `feature_metadata`, and any number of positional and keyword arguments (`*args` and `**kwargs`).
-
-Inside the function, there is a loop that iterates over the keys "height", "width", "num_channels", and "standardize_image". It checks if the `feature_config.encoder` object has an attribute with the current key using the `hasattr()` function. If the attribute exists, it sets the value of that attribute to the corresponding value from `feature_metadata[PREPROCESSING][key]` using the `setattr()` function.
-
-Note that the code snippet is incomplete as it references a variable `PREPROCESSING` which is not defined. To make the code work, `PREPROCESSING` should be defined as a string or a variable containing the desired key for accessing the metadata dictionary.
-
-### Method **`get_schema_cls`** Overview
-The method "get_schema_cls" is a function that returns the class "ImageInputFeatureConfig". This method is used to retrieve the schema class for image input feature configuration. It is likely that this class contains properties and methods related to configuring image input features, such as image size, color channels, or preprocessing options. By calling this method, the user can obtain an instance of the "ImageInputFeatureConfig" class and access its attributes and methods to configure image input features in their code.
-
-#### **Method Details**
-The given code is a function named `get_schema_cls` that returns the class `ImageInputFeatureConfig`.
-
-### Method **`create_preproc_module`** Overview
-The method `create_preproc_module` takes in a dictionary `metadata` as input and returns an instance of the `_ImagePreprocessing` class.
-
-First, it retrieves the values of `torchvision_model_type` and `torchvision_model_variant` from the `metadata` dictionary. If `model_variant` is not None, it calls the `_get_torchvision_parameters` function with `model_type` and `model_variant` as arguments to get the `torchvision_parameters`. Otherwise, it sets `torchvision_parameters` to None.
-
-Next, it checks if `torchvision_parameters` is not None. If it is not None, it calls the `_get_torchvision_transform` function with `torchvision_parameters` as an argument to get the `torchvision_transform` and `transform_metadata`. Otherwise, it sets `torchvision_transform` and `transform_metadata` to None.
-
-Finally, it creates an instance of the `_ImagePreprocessing` class with the `metadata`, `torchvision_transform`, and `transform_metadata` as arguments and returns it.
-
-#### **Method Details**
-This code defines a function called `create_preproc_module` that takes in a dictionary `metadata` and returns an instance of a torch.nn.Module subclass called `_ImagePreprocessing`.
-
-The function first checks if the `metadata` dictionary contains a key called "preprocessing" and if it does, it retrieves the values for the keys "torchvision_model_type" and "torchvision_model_variant". If the "torchvision_model_variant" value exists, it calls a function `_get_torchvision_parameters` passing in the model type and variant to retrieve the torchvision parameters. Otherwise, it sets `torchvision_parameters` to None.
-
-Next, the function checks if `torchvision_parameters` is not None. If it is not None, it calls another function `_get_torchvision_transform` passing in the torchvision parameters to retrieve the torchvision transform and transform metadata. Otherwise, it sets `torchvision_transform` and `transform_metadata` to None.
-
-Finally, the function returns an instance of `_ImagePreprocessing` passing in the `metadata`, `torchvision_transform`, and `transform_metadata` as arguments.
-
-Note: The code provided is incomplete and relies on the implementation of the `_get_torchvision_parameters` and `_get_torchvision_transform` functions, as well as the definition of the `_ImagePreprocessing` class.
-
-### Method **`get_augmentation_pipeline`** Overview
-The method "get_augmentation_pipeline" is a function defined within a class. It returns the value of the "augmentation_pipeline" attribute of the class instance.
-
-In other words, this method provides access to the augmentation pipeline that has been set for the class instance. The augmentation pipeline is likely a sequence of operations or transformations that are applied to data or objects in order to modify or enhance them. By calling this method, the user can retrieve the augmentation pipeline and use it for further processing or analysis.
-
-#### **Method Details**
-The given code is a method definition in a Python class. The method is called `get_augmentation_pipeline` and it returns the value of the `augmentation_pipeline` attribute of the class instance.
-
-Here is the code:
+Here is an example of how the `type()` method can be used:
 
 ```python
-def get_augmentation_pipeline(self):
-    return self.augmentation_pipeline
+x = 5
+y = "Hello"
+z = [1, 2, 3]
+
+print(type(x))  # Output: <class 'int'>
+print(type(y))  # Output: <class 'str'>
+print(type(z))  # Output: <class 'list'>
 ```
 
-This method can be called on an instance of the class to retrieve the value of the `augmentation_pipeline` attribute.
+In the above example, the `type()` method is used to determine the type of variables `x`, `y`, and `z`. The output shows the class or type of each object.
+
+Note: The LaTex code for displaying equations in a markdown document can vary depending on the specific equation. It is recommended to use appropriate LaTex syntax for the desired equation.
+
+### Method **`cast_column`** Overview
+The `cast_column` method in Python is a simple function that takes two parameters: `column` and `backend`. 
+
+- `column`: This parameter represents the column that needs to be cast or converted to a different data type.
+- `backend`: This parameter specifies the backend or the target data type to which the column needs to be cast.
+
+The purpose of this method is to cast a column to a different data type using the specified backend. It simply returns the `column` parameter as it is, without performing any mathematical operations or procedures.
+
+Here is the LaTex code to display the equation in a markdown document:
+
+
+$$
+\text{{def cast\_column(column, backend):}}
+$$
+
+$$
+\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\
+
+### Method **`get_feature_meta`** Overview
+The `get_feature_meta` method in Python takes four parameters: `column`, `preprocessing_parameters`, `backend`, and `is_input_feature`. 
+
+- `column` represents the column or feature for which the metadata is being retrieved.
+- `preprocessing_parameters` is a dictionary that contains the preprocessing configuration for the feature.
+- `backend` refers to the backend or library being used for the preprocessing operations.
+- `is_input_feature` is a boolean value that indicates whether the feature is an input feature or not.
+
+The purpose of this method is to retrieve the metadata for a given feature. It returns a dictionary containing the preprocessing parameters for the feature, with the key `PREPROCESSING`.
+
+The method does not perform any mathematical operations or procedures. It simply returns the preprocessing parameters for the feature.
+
+### Method **`_read_image_if_bytes_obj_and_resize`** Overview
+The `_read_image_if_bytes_obj_and_resize` method is a helper method that reads and resizes an image according to the model definition. It takes in several parameters:
+
+1. `img_entry`: The image entry, which can be a byte object, a torch tensor, or a numpy array.
+2. `img_width`: The expected width of the image.
+3. `img_height`: The expected height of the image.
+4. `should_resize`: A boolean indicating whether the image should be resized.
+5. `num_channels`: The expected number of channels in the first image.
+6. `resize_method`: The type of resizing method to use.
+7. `user_specified_num_channels`: A boolean indicating whether the user has specified the number of channels.
+8. `standardize_image`: A string specifying whether to standardize the image with imagenet1k specifications.
+
+The method performs the following mathematical operations or procedures:
+
+1. It checks the type of `img_entry` and reads the image accordingly using the appropriate helper method (`read_image_from_bytes_obj`, `read_image_from_path`, or converting a numpy array to a torch tensor).
+2. It checks if the image is a torch tensor and returns `None` with a warning if it is not.
+3. It determines the number of channels in the image and converts it to grayscale if `num_channels` is 1 and the image has more than 1 channel.
+4. If `should_resize` is `True`, it resizes the image using the specified `img_height`, `img_width`, and `resize_method`.
+5. If `user_specified_num_channels` is `True`, it pads or drops channels in the image to match the specified `num_channels`.
+6. If `user_specified_num_channels` is `False`, it raises a `ValueError` if the number of channels in the image is different from the expected `num_channels`.
+7. It raises a `ValueError` if the image dimensions are not equal to the expected `img_height` and `img_width`.
+8. It casts the image to `torch.float32` and rescales it by dividing by 255.
+9. If `standardize_image` is set to `IMAGENET1K`, it normalizes the image using the `normalize` function with the `IMAGENET1K_MEAN` and `IMAGENET1K_STD` values.
+10. It returns the image as a numpy array.
+
+The mathematical operations or procedures can be represented in LaTeX code as follows:
+
+1. Casting and rescaling:
+
+$$
+\text{{img}} = \frac{{\text{{img}}.\text{{type}}(\text{{torch.float32}})}}{{255}}
+$$
+
+2. Standardizing the image with imagenet1k specifications:
+
+$$
+\text{{img}} = \text{{normalize}}(\text{{img}}, \text{{mean}}=\text{{IMAGENET1K\_MEAN}}, \text{{std}}=\text{{IMAGENET1K\_STD}})
+$$
+
+### Method **`_read_image_with_pretrained_transform`** Overview
+The `_read_image_with_pretrained_transform` method takes in two parameters: `img_entry` and `transform_fn`. 
+
+- `img_entry` can be of type `bytes`, `torch.Tensor`, or `np.ndarray`. It represents the image data that needs to be transformed.
+- `transform_fn` is a callable function that applies a transformation to the image.
+
+The purpose of this method is to read an image and apply a pretrained transformation to it. The method first checks the type of `img_entry` and performs the appropriate action to read the image data. If `img_entry` is of type `bytes`, it calls the `read_image_from_bytes_obj` function to read the image. If `img_entry` is of type `str`, it calls the `read_image_from_path` function to read the image. If `img_entry` is of type `np.ndarray`, it converts it to a `torch.Tensor` and permutes the dimensions. If `img_entry` is already a `torch.Tensor`, it assigns it directly to `img`.
+
+Next, the method checks if `img` is a `torch.Tensor`. If it is not, a warning is issued and `None` is returned.
+
+Finally, the method applies the `transform_fn` to the `img` and returns the resulting image as a `np.ndarray`.
+
+There are no specific mathematical operations or procedures performed in this method.
+
+### Method **`_set_image_and_height_equal_for_encoder`** Overview
+The `_set_image_and_height_equal_for_encoder` method is used to set the width and height of an image to be equal, based on compatibility requirements of a downstream encoder. 
+
+Parameters:
+- `width` (int): Represents the width of the image.
+- `height` (int): Represents the height of the image.
+- `preprocessing_parameters` (dict): Parameters defining how the image feature should be preprocessed.
+- `encoder_type` (str): The name of the encoder.
+
+The method checks if the `preprocessing_parameters` require equal dimensions and if the height is not already equal to the width. If both conditions are met, the method sets the width and height to the minimum value between the two. It then updates the `preprocessing_parameters` dictionary with the new width and height values.
+
+Mathematical operations or procedures:
+- The method checks if `preprocessing_parameters[REQUIRES_EQUAL_DIMENSIONS]` is `True` and if `height != width`.
+- If both conditions are met, the method sets `width` and `height` to the minimum value between the two: `width = height = min(width, height)`.
+- The method updates the `preprocessing_parameters` dictionary with the new width and height values: `preprocessing_parameters["width"] = width` and `preprocessing_parameters["height"] = height`.
+
+LaTeX code for the mathematical operation:
+```latex
+\text{width} = \text{height} = \min(\text{width}, \text{height})
+```
+
+The method then returns the updated `width` and `height` as a tuple: `(width, height)`.
+
+### Method **`_infer_image_size`** Overview
+The `_infer_image_size` method is used to infer the size of an image based on a sample of images. It calculates the average height and width of the images in the sample and rounds them to the nearest integer. If the calculated height or width exceeds the maximum height or width specified, it sets the height or width to the maximum value.
+
+The method takes the following parameters:
+
+- `image_sample`: A list of torch.Tensor objects representing the sample of images. Each tensor should have the shape [channels, height, width].
+- `max_height`: The maximum height allowed for the inferred image size.
+- `max_width`: The maximum width allowed for the inferred image size.
+- `preprocessing_parameters`: A dictionary containing parameters defining how the image feature should be preprocessed.
+- `encoder_type`: The name of the encoder.
+
+The method performs the following mathematical operations:
+
+1. It calculates the average height and width of the images in the sample by summing up the height and width values of each image tensor and dividing by the number of images in the sample:
+   ```python
+   height_avg = sum(x.shape[1] for x in image_sample) / len(image_sample)
+   width_avg = sum(x.shape[2] for x in image_sample) / len(image_sample)
+   ```
+
+2. It rounds the average height and width to the nearest integer:
+   ```python
+   height = min(int(round(height_avg)), max_height)
+   width = min(int(round(width_avg)), max_width)
+   ```
+
+3. It calls the `_set_image_and_height_equal_for_encoder` method to update the height and width if the downstream encoder requires images with the same dimension or specific width and height values:
+   ```python
+   width, height = ImageFeatureMixin._set_image_and_height_equal_for_encoder(
+       width, height, preprocessing_parameters, encoder_type
+   )
+   ```
+
+4. It returns the inferred height and width as a tuple:
+   ```python
+   return height, width
+   ```
+
+Here is the LaTex code for the equations:
+
+
+$$
+\text{{height\_avg}} = \frac{{\sum_{{x \in \text{{image\_sample}}}} x.\text{{shape}}[1]}}{{\text{{len}}(\text{{image\_sample}})}}
+$$
+
+
+$$
+\text{{width\_avg}} = \frac{{\sum_{{x \in \text{{image\_sample}}}} x.\text{{shape}}[2]}}{{\text{{len}}(\text{{image\_sample}})}}
+$$
+
+
+$$
+\text{{height}} = \min(\text{{round}}(\text{{height\_avg}}), \text{{max\_height}})
+$$
+
+
+$$
+\text{{width}} = \min(\text{{round}}(\text{{width\_avg}}), \text{{max\_width}})
+$$
+
+### Method **`_infer_number_of_channels`** Overview
+The `_infer_number_of_channels` method is used to infer the number of channels to use from a group of images. It takes in a parameter `image_sample`, which is a list of `torch.Tensor` objects representing the images.
+
+The method starts by calculating the total number of images in the `image_sample` using the `len()` function. It then uses the `Counter()` function from the `collections` module to count the frequency of different channel depths in the `image_sample`. The `num_channels_in_image()` function is used to determine the channel depth of each image.
+
+Next, the method checks the frequency of each channel depth and determines the majority channel depth. If the majority of images have a channel depth of 1, 2, or 4, then the method sets `num_channels` to that value. Otherwise, it defaults to 3 channels.
+
+The method logs information about the inferred `num_channels` and the frequency of each channel depth using the `logger.info()` function. If the inferred `num_channels` matches the majority channel depth, it logs a message indicating that it will attempt to convert images with different depths to the inferred `num_channels`. Otherwise, it logs a message indicating that it is defaulting to the inferred `num_channels`.
+
+Finally, the method logs a message suggesting to explicitly set the number of channels in the preprocessing dictionary of the image input feature config. It then returns the inferred `num_channels`.
+
+The mathematical operations performed in this method involve counting the frequency of different channel depths in the `image_sample` using the `Counter()` function. No explicit mathematical equations are used in this method.
+
+### Method **`_finalize_preprocessing_parameters`** Overview
+The `_finalize_preprocessing_parameters` method is a helper method that determines the height, width, and number of channels for preprocessing image data. It takes three parameters:
+
+1. `preprocessing_parameters`: A dictionary containing parameters that define how the image feature should be preprocessed.
+2. `encoder_type`: The name of the encoder.
+3. `column`: The data itself, which can be a Pandas, Modin, or Dask series.
+
+The method performs the following mathematical operations or procedures:
+
+1. It checks if the `HEIGHT` or `WIDTH` parameters are explicitly provided in the `preprocessing_parameters` dictionary. If either of them is provided, it sets the `explicit_height_width` variable to `True`.
+2. It checks if the `NUM_CHANNELS` parameter is explicitly provided in the `preprocessing_parameters` dictionary. If it is provided, it sets the `explicit_num_channels` variable to `True`.
+3. It checks if the `INFER_IMAGE_DIMENSIONS` parameter is `True` and if both `explicit_height_width` and `explicit_num_channels` are `False`. If this condition is satisfied, it sets the `sample_size` variable to the minimum of the length of the `column` and the `INFER_IMAGE_SAMPLE_SIZE` parameter.
+4. If the condition in step 3 is not satisfied, it sets the `sample_size` variable to 1, indicating that only the first image in the dataset will be used.
+5. It initializes empty lists `sample` and `sample_num_bytes`, and an empty list `failed_entries`.
+6. It iterates over the first `sample_size` entries in the `column` series.
+7. For each image entry, it checks if the entry is a string. If it is, it tries to read the image as a PNG or numpy file from the path using the `read_image_from_path` function. It also keeps track of the number of bytes read for each image.
+8. If the image entry is not a string, it assumes it is already an image.
+9. If the image is a torch tensor, it appends it to the `sample` list.
+10. If the image is a numpy array, it converts it to a torch tensor and appends it to the `sample` list.
+11. If the image is neither a torch tensor nor a numpy array, it appends the image entry to the `failed_entries` list.
+12. If no images were successfully added to the `sample` list, it raises a `ValueError` indicating that the image dimensions cannot be inferred.
+13. It checks if `explicit_height_width` is `True`. If it is, it sets the `should_resize` variable to `True`.
+14. It tries to convert the `HEIGHT` and `WIDTH` parameters to integers. If successful, it updates the `height` and `width` variables. It also calls the `_set_image_and_height_equal_for_encoder` method to update the `height` and `width` if required by the downstream encoder.
+15. If the conversion to integers fails or the `height` or `width` is less than or equal to 0, it raises a `ValueError` indicating that the image height and width must be positive integers.
+16. If `explicit_height_width` is `False`, it checks if `INFER_IMAGE_DIMENSIONS` is `True`. If it is, it sets the `should_resize` variable to `True` and calls the `_infer_image_size` method to infer the `height` and `width` from the `sample` images.
+17. If `explicit_height_width` is `False` and `INFER_IMAGE_DIMENSIONS` is `False`, it raises a `ValueError` indicating that the explicit image width/height are not set, `infer_image_dimensions` is `False`, and the first image cannot be read, so the image dimensions are unknown.
+18. It checks if `explicit_num_channels` is `True`. If it is, it sets the `user_specified_num_channels` variable to `True` and assigns the `NUM_CHANNELS` parameter to the `num_channels` variable.
+19. If `explicit_num_channels` is `False`, it checks if `INFER_IMAGE_DIMENSIONS` is `True`. If it is, it sets the `user_specified_num_channels` variable to `True` and calls the `_infer_number_of_channels` method to infer the `num_channels` from the `sample` images.
+20. If `explicit_num_channels` is `False` and `INFER_IMAGE_DIMENSIONS` is `False`, it checks if the `sample` list is not empty. If it is not empty, it calls the `num_channels_in_image` function to determine the `num_channels` of the first image in the `sample` list.
+21. If the `sample` list is empty, it raises a `ValueError` indicating that the explicit image num channels is not set, `infer_image_dimensions` is `False`, and the first image cannot be read, so the image num channels is unknown.
+22. It asserts that the `num_channels` variable is an integer.
+23. It calculates the average file size of the images in the `sample_num_bytes` list, if it is not empty.
+24. It checks if the `standardize_image` parameter is set to "imagenet1k" and the `num_channels` is not 3. If this condition is satisfied, it issues a warning and sets the `standardize_image` parameter to `None`.
+25. It returns a tuple containing the following values: `should_resize`, `width`, `height`, `num_channels`, `user_specified_num_channels`, `average_file_size`, and `standardize_image`.
+
+### Method **`add_feature_data`** Overview
+The `add_feature_data` method takes several parameters and performs various mathematical operations and procedures. Here is a breakdown of the purpose of each parameter and the mathematical operations performed:
+
+Parameters:
+- `feature_config`: A dictionary containing the configuration for the feature.
+- `input_df`: The input DataFrame containing the original data.
+- `proc_df`: The processed DataFrame where the feature data will be added.
+- `metadata`: A dictionary containing metadata information.
+- `preprocessing_parameters`: A dictionary containing preprocessing parameters.
+- `backend`: The backend engine used for processing.
+- `skip_save_processed_input`: A boolean indicating whether to skip saving the processed input.
+
+Mathematical Operations/Procedures:
+1. The method sets the default value for the "in_memory" parameter in the preprocessing configuration.
+2. It retrieves the name, column, and encoder type from the feature configuration.
+3. It determines the source path and calculates the absolute path for each row in the column.
+4. It checks if the specified encoder is a torchvision model and retrieves the necessary parameters for torchvision transformations.
+5. If torchvision parameters are available, it performs torchvision model transformations using the specified torchvision transform.
+6. If torchvision parameters are not available, it performs Ludwig specified transformations using the preprocessing parameters and the absolute path column.
+7. It generates a default image based on the number of channels, height, and width.
+8. It checks if the feature data should be processed in memory or saved to disk.
+9. If the feature data should be processed in memory or skipped for saving, it reads the binary files, applies the specified transformation function, and handles failed image reads.
+10. If the feature data should be saved to disk, it creates an image dataset in an HDF5 file and saves the processed images.
+11. It handles failed image reads and logs a warning message.
+12. Finally, it returns the processed DataFrame.
+
+Here is the LaTeX code for the equations mentioned in the description:
+
+1. Default Image:
+
+$$
+\text{{default\_image}} = \text{{get\_gray\_default\_image}}(\text{{num\_channels}}, \text{{height}}, \text{{width}})
+$$
+
+2. Reshape Metadata:
+
+$$
+\text{{metadata}}[name][\text{{PREPROCESSING}}][\text{{"height"}}] = \text{{height}}
+$$
+
+$$
+\text{{metadata}}[name][\text{{PREPROCESSING}}][\text{{"width"}}] = \text{{width}}
+$$
+
+$$
+\text{{metadata}}[name][\text{{PREPROCESSING}}][\text{{"num\_channels"}}] = \text{{num\_channels}}
+$$
+
+Note: The LaTeX code assumes that the functions `get_gray_default_image` and `wrap` are defined elsewhere in the code.
+
+## Class **`ImageInputFeature`** Overview
+The `ImageInputFeature` class is a Python class that represents an input feature for image data. It is a subclass of the `ImageFeatureMixin` and `InputFeature` classes.
+
+The class has the following methods and properties:
+
+- `__init__(self, input_feature_config: ImageInputFeatureConfig, encoder_obj=None, **kwargs)`: Initializes the `ImageInputFeature` object. It takes an `input_feature_config` object and an optional `encoder_obj` as arguments.
+
+- `forward(self, inputs: torch.Tensor) -> torch.Tensor`: Performs the forward pass of the input feature. It takes a tensor `inputs` as input and returns the encoded tensor.
+
+- `input_dtype`: A property that returns the data type of the input tensor.
+
+- `input_shape`: A property that returns the shape of the input tensor.
+
+- `output_shape`: A property that returns the shape of the encoded tensor.
+
+- `update_config_after_module_init(self, feature_config)`: Updates the feature configuration after the module initialization.
+
+- `update_config_with_metadata(feature_config, feature_metadata, *args, **kwargs)`: Updates the feature configuration with metadata.
+
+- `get_schema_cls()`: Returns the schema class for the input feature.
+
+- `create_preproc_module(metadata: Dict[str, Any]) -> torch.nn.Module`: Creates a preprocessing module for the input feature.
+
+- `get_augmentation_pipeline(self)`: Returns the augmentation pipeline for the input feature.
+
+### Method **`__init__`** Overview
+The `__init__` method is a special method in Python classes that is automatically called when an object is created from a class. It is used to initialize the object's attributes and perform any necessary setup.
+
+In the given code snippet, the `__init__` method takes three parameters: `self`, `input_feature_config`, and `encoder_obj`. 
+
+- `self`: It is a reference to the instance of the class and is automatically passed as the first parameter to the method. It is used to access the attributes and methods of the class.
+
+- `input_feature_config`: It is an instance of the `ImageInputFeatureConfig` class and represents the configuration for the input feature. It is used to initialize the `input_feature_config` attribute of the class.
+
+- `encoder_obj`: It is an optional parameter that represents the encoder object. If provided, it is assigned to the `encoder_obj` attribute of the class. If not provided, the `initialize_encoder` method is called to initialize the `encoder_obj` attribute.
+
+The method performs the following mathematical operations or procedures:
+
+1. It calls the `super().__init__` method to initialize the attributes inherited from the parent class.
+
+2. It checks if the `encoder_obj` parameter is provided. If it is, the `encoder_obj` attribute of the class is assigned the value of `encoder_obj`. Otherwise, the `initialize_encoder` method is called to initialize the `encoder_obj` attribute.
+
+3. It checks if the `augmentation` attribute of the `input_feature_config` object is enabled. If it is, the method proceeds with the following steps; otherwise, it skips the augmentation setup.
+
+4. It initializes the `normalize_mean` and `normalize_std` variables to `None`.
+
+5. It checks if the `encoder_obj` is a torchvision model by calling the `is_torchvision_encoder` function. If it is, the `normalize_mean` and `normalize_std` variables are assigned the values of `self.encoder_obj.normalize_mean` and `self.encoder_obj.normalize_std`, respectively.
+
+6. If the `encoder_obj` is not a torchvision model, it checks if the `standardize_image` attribute of the `input_feature_config.preprocessing` object is set to `IMAGENET1K`. If it is, the `normalize_mean` and `normalize_std` variables are assigned the values of `IMAGENET1K_MEAN` and `IMAGENET1K_STD`, respectively.
+
+7. It creates an instance of the `ImageAugmentation` class, passing the `input_feature_config.augmentation`, `normalize_mean`, and `normalize_std` as parameters. This instance is assigned to the `augmentation_pipeline` attribute of the class.
+
+The mathematical operations or procedures in the `__init__` method do not involve any explicit mathematical calculations. Instead, they involve conditional checks and assignments based on the provided parameters and configurations. Therefore, there is no specific LaTex code to generate for mathematical equations.
+
+### Method **`forward`** Overview
+The `forward` method in Python is a method defined within a class. In this case, it takes in an input tensor `inputs` of type `torch.Tensor` and returns an encoded version of the input tensor.
+
+The purpose of each parameter in the `forward` method is as follows:
+
+- `self`: It is a reference to the instance of the class. It allows access to the attributes and methods of the class.
+
+- `inputs`: It is the input tensor that needs to be encoded. It is of type `torch.Tensor`.
+
+The method performs the following mathematical operations or procedures:
+
+1. Assertion checks: The method first performs assertion checks to ensure that the input tensor is of the correct type and dtype. It checks if `inputs` is an instance of `torch.Tensor` and if its dtype is `torch.float32`. If any of these checks fail, an assertion error is raised.
+
+2. Encoding: After the assertion checks, the method passes the input tensor `inputs` to an `encoder_obj` (which is an object of some encoder class) to encode it. The specific encoding process is not shown in the code snippet.
+
+3. Return: Finally, the method returns the encoded version of the input tensor `inputs` as `inputs_encoded`.
+
+To display the equations in a markdown document, you can use LaTeX code. However, since the code snippet does not include any specific mathematical equations, there is no need to generate LaTeX code for this particular case.
+
+### Method **`input_dtype`** Overview
+The `input_dtype` method in Python is a method that returns the data type of the input tensor. It is a method of a class and is defined using the `def` keyword. The method does not take any parameters.
+
+The purpose of the `input_dtype` method is to provide information about the data type of the input tensor. In this specific example, the method returns `torch.float32`, which indicates that the input tensor is of type float32.
+
+There are no mathematical operations or procedures performed in this method. It simply returns the data type of the input tensor.
+
+LaTeX code for displaying the equation in a markdown document:
+
+
+$$
+\text{{input\_dtype}}() \rightarrow \text{{torch.float32}}
+$$
+
+### Method **`input_shape`** Overview
+The `input_shape` method in Python is used to retrieve the input shape of a neural network model. It is typically used in deep learning frameworks such as PyTorch.
+
+The method does not take any parameters. It is a member function of a class, and the `self` parameter refers to the instance of the class.
+
+The purpose of the `input_shape` method is to return the input shape of the model. It does this by accessing the `input_shape` attribute of the `encoder_obj` object and converting it into a `torch.Size` object.
+
+The `input_shape` attribute of the `encoder_obj` object is assumed to be a tuple or list that represents the shape of the input data. For example, if the input data is a 2D image with dimensions 32x32, the `input_shape` attribute could be `(32, 32)`.
+
+The method returns a `torch.Size` object, which is a subclass of the `tuple` class. This object represents the shape of the input data in a format that is compatible with PyTorch.
+
+In terms of mathematical operations or procedures, the `input_shape` method does not perform any calculations. It simply retrieves the `input_shape` attribute of the `encoder_obj` object and returns it as a `torch.Size` object.
+
+Here is the LaTex code to display the equations in a markdown document:
+
+
+$$
+\text{{def input\_shape(self) -> torch.Size:}}
+$$
+
+$$
+\quad \quad \text{{return torch.Size(self.encoder\_obj.input\_shape)}}
+$$
+
+### Method **`output_shape`** Overview
+The `output_shape` method in Python is defined as follows:
+
+```python
+def output_shape(self) -> torch.Size:
+    return self.encoder_obj.output_shape
+```
+
+This method returns the output shape of the encoder object. The `output_shape` method does not take any parameters.
+
+The purpose of the `output_shape` method is to provide information about the shape of the output produced by the encoder object. It is useful when you need to know the dimensions of the output tensor in order to perform further operations or computations.
+
+The method simply returns the `output_shape` attribute of the `encoder_obj` object. The `output_shape` attribute is expected to be an instance of the `torch.Size` class, which represents the shape of a tensor.
+
+The `output_shape` method does not perform any mathematical operations or procedures. It simply retrieves and returns the `output_shape` attribute of the `encoder_obj` object.
+
+To display the equations in a markdown document, you can use LaTeX code. However, since the `output_shape` method does not involve any mathematical operations, there are no equations to display.
+
+### Method **`update_config_after_module_init`** Overview
+The `update_config_after_module_init` method is a method in a Python class. It takes two parameters: `self` and `feature_config`. 
+
+The purpose of this method is to update the `feature_config` object after the initialization of a module. It specifically updates the preprocessing parameters of the `feature_config` object based on the attributes of the `encoder_obj` object.
+
+The method first checks if the `encoder_obj` object is a torchvision encoder by calling the `is_torchvision_encoder` function. If it is, the method proceeds to update the preprocessing parameters.
+
+The method updates the `height`, `width`, and `num_channels` attributes of the `feature_config.preprocessing` object. The `height` and `width` attributes are set to the value of the first element in the `crop_size` attribute of the `encoder_obj` object. The `num_channels` attribute is set to the value of the `num_channels` attribute of the `encoder_obj` object.
+
+The mathematical operations or procedures performed by this method are simple assignments of values to attributes. There are no mathematical equations involved.
+
+Here is the LaTex code to display the equations in a markdown document:
+
+
+$$
+\text{{feature\_config.preprocessing.height}} = \text{{self.encoder\_obj.crop\_size[0]}}
+$$
+
+
+$$
+\text{{feature\_config.preprocessing.width}} = \text{{self.encoder\_obj.crop\_size[0]}}
+$$
+
+
+$$
+\text{{feature\_config.preprocessing.num\_channels}} = \text{{self.encoder\_obj.num\_channels}}
+$$
+
+### Method **`update_config_with_metadata`** Overview
+The `update_config_with_metadata` method takes in three parameters: `feature_config`, `feature_metadata`, and optional `*args` and `**kwargs`. 
+
+The purpose of this method is to update the `feature_config` object with metadata information from the `feature_metadata` dictionary. It specifically updates the attributes `height`, `width`, `num_channels`, and `standardize_image` of the `feature_config.encoder` object.
+
+The method iterates over the keys `["height", "width", "num_channels", "standardize_image"]` and checks if the `feature_config.encoder` object has an attribute with that key. If it does, it sets the attribute value to the corresponding value from the `feature_metadata[PREPROCESSING][key]` dictionary.
+
+The mathematical operations or procedures performed by this method are not related to mathematical calculations. Instead, it involves updating attribute values based on metadata information. Therefore, there is no need for generating LaTeX code for equations in this case.
+
+### Method **`get_schema_cls`** Overview
+The `get_schema_cls` method is a Python function that returns the `ImageInputFeatureConfig` class. This method does not take any parameters.
+
+The purpose of the `get_schema_cls` method is to provide access to the `ImageInputFeatureConfig` class, which is likely a configuration class used for defining the schema or structure of input features related to image data.
+
+As for the mathematical operations or procedures, there are none mentioned in the provided code snippet. Therefore, no LaTex code is required to display equations in a markdown document.
+
+### Method **`create_preproc_module`** Overview
+The `create_preproc_module` method is a Python function that creates a preprocessing module for image data. It takes a `metadata` parameter, which is a dictionary containing information about the preprocessing. The method returns a `torch.nn.Module` object.
+
+The purpose of each parameter is as follows:
+
+- `metadata` (Dict[str, Any]): A dictionary containing information about the preprocessing. It may include the type of torchvision model to use (`torchvision_model_type`) and the variant of the model (`torchvision_model_variant`).
+
+The method performs the following mathematical operations or procedures:
+
+1. It retrieves the `model_type` and `model_variant` from the `metadata` dictionary.
+2. If a `model_variant` is specified, it calls the `_get_torchvision_parameters` function to retrieve the parameters for the specified `model_type` and `model_variant`. These parameters are stored in the `torchvision_parameters` variable.
+3. If no `model_variant` is specified, the `torchvision_parameters` variable is set to `None`.
+4. If `torchvision_parameters` is not `None`, it calls the `_get_torchvision_transform` function to retrieve the torchvision transform and transform metadata based on the `torchvision_parameters`. These values are stored in the `torchvision_transform` and `transform_metadata` variables, respectively.
+5. If `torchvision_parameters` is `None`, the `torchvision_transform` and `transform_metadata` variables are set to `None`.
+6. It returns an instance of the `_ImagePreprocessing` class, passing the `metadata`, `torchvision_transform`, and `transform_metadata` as arguments to the constructor.
+
+### Method **`get_augmentation_pipeline`** Overview
+The `get_augmentation_pipeline` method in Python is a simple method that returns the `augmentation_pipeline` attribute of an object. It does not take any parameters.
+
+The purpose of the `get_augmentation_pipeline` method is to provide access to the `augmentation_pipeline` attribute, which is a pipeline of data augmentation operations. This pipeline can be used to apply a series of transformations to a dataset or image.
+
+The `augmentation_pipeline` attribute is typically a list or sequence of data augmentation operations, such as rotation, scaling, cropping, or flipping. Each operation in the pipeline is applied sequentially to the input data.
+
+The method does not perform any mathematical operations or procedures. It simply returns the `augmentation_pipeline` attribute, which can be used to apply data augmentation operations to a dataset or image.
+
+Here is an example of how the `get_augmentation_pipeline` method can be used:
+
+```python
+# Create an object of a class that has the get_augmentation_pipeline method
+obj = MyClass()
+
+# Get the augmentation pipeline
+pipeline = obj.get_augmentation_pipeline()
+
+# Apply the pipeline to a dataset or image
+augmented_data = pipeline(data)
+```
+
+In the above example, `obj` is an object of a class that has the `get_augmentation_pipeline` method. The method is called to obtain the `augmentation_pipeline`, which is then applied to the `data` using the `pipeline` object. The result is stored in the `augmented_data` variable.
 
