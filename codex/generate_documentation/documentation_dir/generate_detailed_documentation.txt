@@ -1,0 +1,7 @@
+This code is used to generate documentation for Python source code using the OpenAI Codex API. It takes a prompt, which is an introduction to the code, and the source code itself as input. The code then uses the OpenAI LLM (Language Model) to generate the documentation for the given source code.
+
+The main function of the code initializes variables, retrieves the API key from a JSON file, and parses the command line arguments to get the source file and documentation file names. It then reads the source file and generates high-level module documentation using the generate_documentation function. The source code is parsed into an abstract syntax tree (AST) to extract lower-level details such as functions and classes. For each function and class, the code generates documentation for their overview and details using the generate_documentation function. The generated documentation is stored in a list.
+
+After generating all the documentation, the code consolidates the documentation text into a single markdown file specified by the documentation file name. The documentation text is then written to the file. The total number of API calls made during the process is tracked and displayed at the end.
+
+Overall, this code automates the process of generating documentation for Python source code using the OpenAI Codex API.
