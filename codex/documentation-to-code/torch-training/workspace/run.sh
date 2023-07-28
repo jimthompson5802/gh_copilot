@@ -1,7 +1,3 @@
-python3 -m venv myenv
-
-source myenv/bin/activate
-
-pip install torch pandas torchvision
+pip install -r requirements.txt
 
 python main.py
