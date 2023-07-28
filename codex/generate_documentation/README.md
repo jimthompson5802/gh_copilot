@@ -38,25 +38,25 @@ python generate_documentation.py  source_files/example1.sas generated_documentat
 
 ## Observations:
 * model gpt-3.5-turbo resulted in this error, to correct used `gpt-3.5-turbo-16k`, which supports 16k tokens.
-```text
-starting to document multivariate_ols.py...with prompt 'produce a general description of the code and describe what it does'
-Traceback (most recent call last):
-  File "/opt/project/codex/generate_documentation/generate_documentation.py", line 53, in <module>
-    documentation_text = generate_documentation(prompt, source_file)
-  File "/opt/project/codex/generate_documentation/generate_documentation.py", line 19, in generate_documentation
-    response = openai.ChatCompletion.create(
-  File "/usr/local/lib/python3.9/site-packages/openai/api_resources/chat_completion.py", line 25, in create
-    return super().create(*args, **kwargs)
-  File "/usr/local/lib/python3.9/site-packages/openai/api_resources/abstract/engine_api_resource.py", line 153, in create
-    response, _, api_key = requestor.request(
-  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 298, in request
-    resp, got_stream = self._interpret_response(result, stream)
-  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 700, in _interpret_response
-    self._interpret_response_line(
-  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 763, in _interpret_response_line
-    raise self.handle_error_response(
-openai.error.InvalidRequestError: This model's maximum context length is 4097 tokens. However, you requested 5556 tokens (3508 in the messages, 2048 in the completion). Please reduce the length of the messages or completion.
-```
+  ```text
+  starting to document multivariate_ols.py...with prompt 'produce a general description of the code and describe what it does'
+  Traceback (most recent call last):
+    File "/opt/project/codex/generate_documentation/generate_documentation.py", line 53, in <module>
+      documentation_text = generate_documentation(prompt, source_file)
+    File "/opt/project/codex/generate_documentation/generate_documentation.py", line 19, in generate_documentation
+      response = openai.ChatCompletion.create(
+    File "/usr/local/lib/python3.9/site-packages/openai/api_resources/chat_completion.py", line 25, in create
+      return super().create(*args, **kwargs)
+    File "/usr/local/lib/python3.9/site-packages/openai/api_resources/abstract/engine_api_resource.py", line 153, in create
+      response, _, api_key = requestor.request(
+    File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 298, in request
+      resp, got_stream = self._interpret_response(result, stream)
+    File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 700, in _interpret_response
+      self._interpret_response_line(
+    File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 763, in _interpret_response_line
+      raise self.handle_error_response(
+  openai.error.InvalidRequestError: This model's maximum context length is 4097 tokens. However, you requested 5556 tokens (3508 in the messages, 2048 in the completion). Please reduce the length of the messages or completion.
+  ```
 * if output exceeds max token length parameter, the output is truncated.  Resolved by increasing the parameter `max_tokens` from 2K to 8K in the `openai.ChatCompletion.create()` call.
 
 * generated documentation `documentation1.txt` file, for the most part, reflects the processing in the module.  Depending on the level of detailed required, there are the missing details:
@@ -77,39 +77,39 @@ openai.error.InvalidRequestError: This model's maximum context length is 4097 to
 * addition of doctring content affects documentation generation.  With docstrings, the generated documentation contains less detail.  This may be the result of adding more context that may confuse the LLM.  More research is needed to determine if this applies to all modules or the `multievariate_ols.py` module.
 
 * Used `ChatGPT` to get initial  version of software to extract certain source code elements,i.e., function and class definitions.  prompt used: `example python program to read in another python program and to extract the source code for each function or class`
-```python
-import ast
-
-def extract_functions_and_classes(file_path):
-    with open(file_path, 'r') as file:
-        source_code = file.read()
-
-    tree = ast.parse(source_code)
-
-    functions_and_classes = []
-
-    for node in ast.walk(tree):
-        if isinstance(node, ast.FunctionDef):
-            function_name = node.name
-            function_source = ast.get_source_segment(source_code, node)
-            functions_and_classes.append((function_name, function_source))
-
-        if isinstance(node, ast.ClassDef):
-            class_name = node.name
-            class_source = ast.get_source_segment(source_code, node)
-            functions_and_classes.append((class_name, class_source))
-
-    return functions_and_classes
-
-if __name__ == "__main__":
-    python_file_path = "path/to/your/python_file.py"
-    extracted_functions_and_classes = extract_functions_and_classes(python_file_path)
-
-    for name, source in extracted_functions_and_classes:
-        print(f"Name: {name}")
-        print(f"Source code:\n{source}\n{'=' * 50}")
-
-```
+  ```python
+  import ast
+  
+  def extract_functions_and_classes(file_path):
+      with open(file_path, 'r') as file:
+          source_code = file.read()
+  
+      tree = ast.parse(source_code)
+  
+      functions_and_classes = []
+  
+      for node in ast.walk(tree):
+          if isinstance(node, ast.FunctionDef):
+              function_name = node.name
+              function_source = ast.get_source_segment(source_code, node)
+              functions_and_classes.append((function_name, function_source))
+  
+          if isinstance(node, ast.ClassDef):
+              class_name = node.name
+              class_source = ast.get_source_segment(source_code, node)
+              functions_and_classes.append((class_name, class_source))
+  
+      return functions_and_classes
+  
+  if __name__ == "__main__":
+      python_file_path = "path/to/your/python_file.py"
+      extracted_functions_and_classes = extract_functions_and_classes(python_file_path)
+  
+      for name, source in extracted_functions_and_classes:
+          print(f"Name: {name}")
+          print(f"Source code:\n{source}\n{'=' * 50}")
+  
+  ```
 
 * Ran across [reference to a plug-in](https://go.swimm.io/code_documentation?utm_term=generate%20documentation%20from%20source%20code&utm_campaign=Search-Generic-NA-Q1Y23&utm_source=adwords&utm_medium=ppc&hsa_acc=6532259166&hsa_cam=19568644920&hsa_grp=144814353589&hsa_ad=656320086155&hsa_src=g&hsa_tgt=kwd-354894782823&hsa_kw=generate%20documentation%20from%20source%20code&hsa_mt=p&hsa_net=adwords&hsa_ver=3&gclid=Cj0KCQjw2eilBhCCARIsAG0Pf8sxPi59Wvak_KSgGOJsM3g3R-iT7j0pchPeWP4pim4aN_ScDHBmWU4aAlWtEALw_wcB) that "generates" documentation in the IDE.  Sparse website.  Seems like early days start-up.
 
@@ -128,33 +128,53 @@ if __name__ == "__main__":
 | `large_modules/sequence_encoders.py` |    95     |        310         |    91     | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                            |
 | `large_modules/visualize.py`         |    169    |        587         |    138    | Token limit exception when generating module level description. Work-around with try-except wrapper.  No issues in generating rest of documentation.                            |
 
-```text
-d13a3c1aaf2c:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/sequence_encoders.py documentation_dir/large_module_sequence_encoders.md
-starting to document large_modules/sequence_encoders.py
-Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 18813 tokens. Please reduce the length of the messages.
-<ast.Import object at 0x7f5bb97a64f0>
-<ast.ImportFrom object at 0x7f5bb97a65b0>
-<ast.Import object at 0x7f5bb97a65e0>
+  ```text
+  d13a3c1aaf2c:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/sequence_encoders.py documentation_dir/large_module_sequence_encoders.md
+  starting to document large_modules/sequence_encoders.py
+  Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 18813 tokens. Please reduce the length of the messages.
+  <ast.Import object at 0x7f5bb97a64f0>
+  <ast.ImportFrom object at 0x7f5bb97a65b0>
+  <ast.Import object at 0x7f5bb97a65e0>
+  
+  
+  738b84ef2ef9:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/visualize.py documentation_dir/large_module_visualize.md
+  starting to document large_modules/visualize.py
+  Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 37728 tokens. Please reduce the length of the messages.
+  <ast.Import object at 0x7f6b1ca5fd00>
+  <ast.Import object at 0x7f6b1ca5fc40>
+  <ast.Import object at 0x7f6
+  
+  
+  f8141bedd994:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/trainer.py documentation_dir/large_module_trainer.md
+  starting to document large_modules/trainer.py
+  Error generating module level documentation: This model's maximum context length is 16385 tokens. However, you requested 19266 tokens (11170 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
+  <ast.Expr object at 0x7f86f6e04070>
+  <ast.Import object at 0x7f86f6e04100>
+  
+  <ast.Assign object at 0x7fb06579d9d0>
+  <ast.ClassDef object at 0x7fb06579d970>
+  Error generating class level documentation: This model's maximum context length is 16385 tokens. However, you requested 18488 tokens (10392 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
+  generating doc for method Trainer.get_schema_cls()
+  generating doc for method Trainer.__init__()
+  
+  ```
 
+* Using this prompt
 
-738b84ef2ef9:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/visualize.py documentation_dir/large_module_visualize.md
-starting to document large_modules/visualize.py
-Error generating module level documentation: This model's maximum context length is 16385 tokens. However, your messages resulted in 37728 tokens. Please reduce the length of the messages.
-<ast.Import object at 0x7f6b1ca5fd00>
-<ast.Import object at 0x7f6b1ca5fc40>
-<ast.Import object at 0x7f6
+    ```python
+  PROMPT_DESCRIPTION_PREFIX = "Describe the Python "
+  PROMPT_FUNCTION_DESCRIPTION_SUFFIX = (
+      " delimited by triple backticks, including the purpose of each parameter, and document " 
+      "the mathematical operations or procedures it performs.  For the mathematical operations "
+      "generate LaTex code that can be used to display the equations in a markdown document."
+  )
+  ```
+  able to function documentation with embedded LaTex with the following results:
 
-
-f8141bedd994:python -u /opt/project/codex/generate_documentation/generate_detailed_documentation.py large_modules/trainer.py documentation_dir/large_module_trainer.md
-starting to document large_modules/trainer.py
-Error generating module level documentation: This model's maximum context length is 16385 tokens. However, you requested 19266 tokens (11170 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
-<ast.Expr object at 0x7f86f6e04070>
-<ast.Import object at 0x7f86f6e04100>
-
-<ast.Assign object at 0x7fb06579d9d0>
-<ast.ClassDef object at 0x7fb06579d970>
-Error generating class level documentation: This model's maximum context length is 16385 tokens. However, you requested 18488 tokens (10392 in the messages, 8096 in the completion). Please reduce the length of the messages or completion.
-generating doc for method Trainer.get_schema_cls()
-generating doc for method Trainer.__init__()
-
-```
+  ```text
+  \[
+  \text{{Wilks' lambda}} = \prod_{i=1}^{n_e} (1 - \text{{eigv2}}_i)
+  \]
+  ```
+  
+  added code to replace the LaTex directives strings `\[` and `\]` to `$$` and `$$` respectively to be markdown compliant.
