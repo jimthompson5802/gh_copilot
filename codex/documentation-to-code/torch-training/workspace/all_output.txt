@@ -1,193 +1,172 @@
-Based on the requirements and assumptions, here are the core classes, functions, and methods that will be necessary:
+Based on the requirements and assumptions, the core classes, functions, and methods that will be necessary are:
 
-1. `data_loader.py`:
-   - `load_data()` - A function to load data from the synthetic_regression.csv file into a pandas DataFrame.
+1. `DataLoader`: A class responsible for loading the data from the CSV file into a pandas DataFrame.
+   - `load_data()`: A method to read the data from the CSV file into a pandas DataFrame.
 
-2. `dataset.py`:
-   - `RegressionDataset` - A PyTorch dataset class that converts the pandas DataFrame into a PyTorch dataset.
+2. `Dataset`: A class responsible for converting the pandas DataFrame into a PyTorch dataset.
+   - `__init__()`: Initializes the Dataset object with the input features and target variable.
+   - `__len__()`: Returns the length of the dataset.
+   - `__getitem__()`: Returns a specific instance from the dataset.
 
-3. `model.py`:
-   - `NeuralNetwork` - A class that defines the structure of the neural network.
+3. `NeuralNetwork`: A class representing the 4-layer neural network.
+   - `__init__()`: Initializes the neural network with the desired architecture.
+   - `forward()`: Performs the forward pass of the neural network.
 
-4. `train.py`:
-   - `train_model()` - A function to train the neural network on the dataset.
-   - `save_model()` - A function to save the trained model.
+4. `train()`: A function responsible for training the neural network on the dataset.
+   - `train_model()`: Trains the neural network on the training dataset for a specified number of epochs.
+   - `calculate_loss()`: Calculates the loss value for a given set of predictions and targets.
 
-Now, let's create the necessary files and implement the code.
+5. `save_model()`: A function responsible for saving the trained model.
 
-`data_loader.py`
+Now, let's proceed with creating the necessary files and implementing the code.
+
+**1. data_loader.py**
+
 ```python
 import pandas as pd
 
-def load_data(file_path):
-    """
-    Load data from the synthetic_regression.csv file into a pandas DataFrame.
+class DataLoader:
+    def __init__(self, file_path):
+        self.file_path = file_path
 
-    Args:
-        file_path (str): Path to the CSV file.
-
-    Returns:
-        pandas.DataFrame: Loaded data.
-    """
-    data = pd.read_csv(file_path)
-    return data
+    def load_data(self):
+        return pd.read_csv(self.file_path)
 ```
 
-`dataset.py`
+**2. dataset.py**
+
 ```python
 import torch
 from torch.utils.data import Dataset
 
-class RegressionDataset(Dataset):
+class CustomDataset(Dataset):
     def __init__(self, data):
-        """
-        Initialize the RegressionDataset.
-
-        Args:
-            data (pandas.DataFrame): Input data.
-        """
-        self.features = torch.tensor(data.drop('target', axis=1).values, dtype=torch.float32)
-        self.target = torch.tensor(data['target'].values, dtype=torch.float32)
+        self.features = data.drop(columns=['target']).values
+        self.target = data['target'].values
 
     def __len__(self):
-        """
-        Get the length of the dataset.
-
-        Returns:
-            int: Length of the dataset.
-        """
-        return len(self.features)
+        return len(self.target)
 
     def __getitem__(self, idx):
-        """
-        Get a sample from the dataset.
-
-        Args:
-            idx (int): Index of the sample.
-
-        Returns:
-            tuple: Tuple containing the input features and target variable.
-        """
-        return self.features[idx], self.target[idx]
+        x = torch.tensor(self.features[idx], dtype=torch.float32)
+        y = torch.tensor(self.target[idx], dtype=torch.float32)
+        return x, y
 ```
 
-`model.py`
+**3. neural_network.py**
+
 ```python
 import torch
 import torch.nn as nn
 
 class NeuralNetwork(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
-        """
-        Initialize the NeuralNetwork.
-
-        Args:
-            input_size (int): Size of the input features.
-            hidden_size (int): Size of the hidden layer.
-            output_size (int): Size of the output layer.
-        """
         super(NeuralNetwork, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
         self.fc2 = nn.Linear(hidden_size, hidden_size)
         self.fc3 = nn.Linear(hidden_size, hidden_size)
         self.fc4 = nn.Linear(hidden_size, output_size)
+        self.relu = nn.ReLU()
 
     def forward(self, x):
-        """
-        Forward pass of the neural network.
-
-        Args:
-            x (torch.Tensor): Input features.
-
-        Returns:
-            torch.Tensor: Output predictions.
-        """
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-        x = self.relu(x)
-        x = self.fc3(x)
-        x = self.relu(x)
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.relu(self.fc3(x))
         x = self.fc4(x)
         return x
 ```
 
-`train.py`
+**4. train.py**
+
 ```python
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader
+from data_loader import DataLoader
+from dataset import CustomDataset
+from neural_network import NeuralNetwork
 
-def train_model(model, dataset, num_epochs, learning_rate):
-    """
-    Train the neural network on the dataset.
-
-    Args:
-        model (torch.nn.Module): Neural network model.
-        dataset (torch.utils.data.Dataset): Training dataset.
-        num_epochs (int): Number of training epochs.
-        learning_rate (float): Learning rate for the optimizer.
-    """
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
-    criterion = nn.MSELoss()
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate)
-
+def train_model(model, train_loader, criterion, optimizer, num_epochs):
     for epoch in range(num_epochs):
-        for inputs, targets in dataloader:
+        running_loss = 0.0
+        for inputs, targets in train_loader:
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
+            running_loss += loss.item()
+        print(f"Epoch {epoch+1}: Loss = {running_loss/len(train_loader)}")
+
+def calculate_loss(model, data_loader, criterion):
+    total_loss = 0.0
+    with torch.no_grad():
+        for inputs, targets in data_loader:
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+            total_loss += loss.item()
+    return total_loss / len(data_loader)
 
 def save_model(model, file_path):
-    """
-    Save the trained model.
-
-    Args:
-        model (torch.nn.Module): Trained neural network model.
-        file_path (str): Path to save the model.
-    """
     torch.save(model.state_dict(), file_path)
 ```
 
-Now, let's create the entrypoint file `main.py` to execute the program.
+**5. main.py**
 
-`main.py`
 ```python
-import data_loader
-import dataset
-import model
-import train
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import random_split
+from data_loader import DataLoader
+from dataset import CustomDataset
+from neural_network import NeuralNetwork
+from train import train_model, calculate_loss, save_model
 
-# Step 1: Load data
-data = data_loader.load_data("../../generate-synthetic-data/workspace/data/synthetic_regression.csv")
+# Set the file path for the data
+file_path = "../../generate-synthetic-data/workspace/data/synthetic_regression.csv"
 
-# Step 2: Convert to PyTorch dataset
-dataset = dataset.RegressionDataset(data)
-
-# Step 3: Define neural network
-input_size = len(data.columns) - 1
-hidden_size = 64
-output_size = 1
-neural_network = model.NeuralNetwork(input_size, hidden_size, output_size)
-
-# Step 4: Train the neural network
-num_epochs = 10
+# Set the hyperparameters
+input_size = 10  # Assuming there are 10 input features
+hidden_size = 100
+output_size = 1  # Assuming the target variable is a single value
+batch_size = 32
 learning_rate = 0.001
-train.train_model(neural_network, dataset, num_epochs, learning_rate)
+num_epochs = 10
 
-# Step 5: Save the model
-model.save_model(neural_network, "trained_model.pt")
+# Load the data
+data_loader = DataLoader(file_path)
+data = data_loader.load_data()
+
+# Convert the data to a PyTorch dataset
+dataset = CustomDataset(data)
+
+# Split the dataset into training and test sets
+train_size = int(0.8 * len(dataset))
+test_size = len(dataset) - train_size
+train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+
+# Create data loaders for training and test sets
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+# Create the neural network model
+model = NeuralNetwork(input_size, hidden_size, output_size)
+
+# Define the loss function and optimizer
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+# Train the model
+train_model(model, train_loader, criterion, optimizer, num_epochs)
+
+# Calculate the loss on the test set
+test_loss = calculate_loss(model, test_loader, criterion)
+print(f"Test Loss: {test_loss}")
+
+# Save the trained model
+save_model(model, "trained_model.pt")
 ```
 
-Finally, let's create the `requirements.txt` file to specify the dependencies.
-
-`requirements.txt`
-```
-torch
-pandas
-```
-
-Please note that the code provided assumes that PyTorch and pandas are already installed. If they are not, you can install them by running `pip install -r requirements.txt`.
+This is the complete implementation of the program. The code is divided into separate files based on their functionality, and the main logic is in the `main.py` file. The program reads the data from the CSV file, converts it into a PyTorch dataset, trains a 4-layer neural network on the dataset, prints the loss value at the end of every epoch, calculates the loss on the test set, and saves the trained model.
