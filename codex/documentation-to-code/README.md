@@ -77,4 +77,4 @@ Test Loss: 0.32672378420829773
 root@4f2974789963:/opt/project/codex/documentation-to-code/torch-training/workspace#
 ```
 
-* `ordinary-least-square` example ran w/ some issues.  Had to minor code corrections, e.g, add missing imports and adjust synthetic data to be non-singular.
+* `ordinary-least-square` example ran w/ some issues.  Had to minor code corrections, e.g, add missing imports and adjust synthetic data to be non-singular.  Used ChatGPT to generate the `gpt-engineer` prompt, "write a gpt-engineer prompt to create a python program to perform ordinary least square model."
