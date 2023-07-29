@@ -5,6 +5,7 @@ docker run -it --rm \
   --user root:root \
   -e PYTHONPATH=/opt/project \
   --entrypoint /bin/bash \
+  -p 6000:6000 \
   -v ${PWD}:/opt/project \
   -v ${HOME}/Desktop:/openai \
   -w /opt/project/ \

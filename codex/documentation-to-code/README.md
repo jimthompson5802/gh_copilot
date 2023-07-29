@@ -7,12 +7,13 @@ Set of experiments to convert documentation to code using `gpt-engineer` package
 * Install `gpt-engineer` package.
 
 ## Examples
-|Directory| Description                                                                         |
-|---|-------------------------------------------------------------------------------------|
-|gpt-engineer-example| Example of using `gpt-engineer` package to generate code from documentation.        |
-|generate-synthetic-data| Example of using `gpt-engineer` package to generate code to generate synthetic regression data. |
-| ordinary-least-square| Example of using `gpt-engineer` package to generate code to train an OLS model.     |
+|Directory| Description                                                                                                              |
+|---|--------------------------------------------------------------------------------------------------------------------------|
+|gpt-engineer-example| Example of using `gpt-engineer` package to generate code from documentation.                                             |
+|generate-synthetic-data| Example of using `gpt-engineer` package to generate code to generate synthetic regression data.                          |
+| ordinary-least-square| Example of using `gpt-engineer` package to generate code to train an OLS model.                                          |
 |torch-training| Example of using `gpt-engineer` package to generate code to train an PyTorch model on the synthetic regression data set. |
+| web-application| Example of using `gpt-engineer` package to generate code to create a web application.  Not Working.                      |
 
 
 ## Sample execution
