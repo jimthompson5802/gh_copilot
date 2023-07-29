@@ -1,0 +1,20 @@
+**Title: Building an Ordinary Least Squares (OLS) Regression Model in Python**
+
+**Introduction:**
+As a GPT-engineer, your task is to create a Python program that implements an Ordinary Least Squares (OLS) regression model. OLS is a popular method for fitting a linear regression model to a given dataset and finding the best-fitting line through the data points. The goal is to minimize the sum of the squared differences between the predicted and actual values. The program should be able to handle multiple independent variables and perform the necessary calculations to estimate the model coefficients.
+
+**Requirements:**
+1. The program should take a dataset as input. The dataset should be in the form of two arrays (lists or NumPy arrays):
+   - `X`: A 2-dimensional array with dimensions (n_samples, n_features) representing the independent variables.
+   - `y`: A 1-dimensional array with length n_samples representing the dependent variable.
+
+2. The program should implement the OLS algorithm to calculate the coefficients for the linear regression model.
+
+3. The program should include a function to predict new values using the trained OLS model. This function should take the independent variables as input and return the corresponding predicted values.
+
+4. The program should include a function to evaluate the model's performance using the Mean Squared Error (MSE) and R-squared metrics.
+
+5. The program should provide an option to visualize the original data and the best-fitting line of the OLS model.
+
+6. You can use the libraries NumPy, Pandas, and Matplotlib (if visualization is required) to build the program.
+

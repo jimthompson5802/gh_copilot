@@ -7,10 +7,11 @@ Set of experiments to convert documentation to code using `gpt-engineer` package
 * Install `gpt-engineer` package.
 
 ## Examples
-|Directory| Description                                                                                                              |
-|---|--------------------------------------------------------------------------------------------------------------------------|
-|gpt-engineer-example| Example of using `gpt-engineer` package to generate code from documentation.                                             |
-|generate-synthetic-data| Example of using `gpt-engineer` package to generate code to generate synthetic regression data.                          |
+|Directory| Description                                                                         |
+|---|-------------------------------------------------------------------------------------|
+|gpt-engineer-example| Example of using `gpt-engineer` package to generate code from documentation.        |
+|generate-synthetic-data| Example of using `gpt-engineer` package to generate code to generate synthetic regression data. |
+| ordinary-least-square| Example of using `gpt-engineer` package to generate code to train an OLS model.     |
 |torch-training| Example of using `gpt-engineer` package to generate code to train an PyTorch model on the synthetic regression data set. |
 
 
@@ -75,3 +76,5 @@ Epoch 10: Loss = 0.4889020025730133
 Test Loss: 0.32672378420829773
 root@4f2974789963:/opt/project/codex/documentation-to-code/torch-training/workspace#
 ```
+
+* `ordinary-least-square` example ran w/ some issues.  Had to minor code corrections, e.g, add missing imports and adjust synthetic data to be non-singular.
