@@ -77,4 +77,14 @@ Test Loss: 0.32672378420829773
 root@4f2974789963:/opt/project/codex/documentation-to-code/torch-training/workspace#
 ```
 
-* `ordinary-least-square` example ran w/ some issues.  Had to minor code corrections, e.g, add missing imports and adjust synthetic data to be non-singular.  Used ChatGPT to generate the `gpt-engineer` prompt, "write a gpt-engineer prompt to create a python program to perform ordinary least square model."
+* `ordinary-least-square` example ran w/ some issues.  Had to minor code corrections, e.g, add missing imports and adjust synthetic data to be non-singular.
+  * Used ChatGPT to generate the `gpt-engineer` prompt, "write a gpt-engineer prompt to create a python program to perform ordinary least square model." 
+  * modified code to use same data set as `torch-training` example.  Results of the OLS model training with the synthetic data set:
+```text
+01d5073512b1:python -u /opt/project/codex/documentation-to-code/ordinary-least-square/workspace/main.py
+Predicted values: [1.90100206 2.31704975 2.06071171 1.87331451 2.10176641]
+Mean Squared Error: 0.17820806931665634
+R-squared: 0.3322654901993485
+
+Process finished with exit code 0
+```
