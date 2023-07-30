@@ -1,7 +1,7 @@
 # openai Python SDK
 openai
 
-# code-to-documentation generatio,
+# code-to-documentation generation
 # packages for generating LaTeX in Python
 latexify-py
 sympy
@@ -11,6 +11,7 @@ pandas
 numpy
 matplotlib
 torch
+flask
 
 # support jupyter notebook UI in the container
 jupyter
