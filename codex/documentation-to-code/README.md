@@ -1,6 +1,6 @@
 # Documentation-to-Code
 
-Set of experiments to convert documentation to code using `gpt-engineer` package.
+Set of experiments to convert documentation to code using [`gpt-engineer` package](https://github.com/AntonOsika/gpt-engineer).
 
 ## Setup
 * Setup environment variable `OPENAI_API_KEY` with your OpenAI API key.
