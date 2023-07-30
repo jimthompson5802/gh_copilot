@@ -1,8 +1,8 @@
-You are a GPT-engineer responsible for developing a Python application that displays a web page allowing users to interact with files. The main functionality of the application involves loading a specified file and presenting its contents on a web page. The application should offer vertical and horizontal scrolling capabilities to handle files of varying lengths and widths. The primary goal is to create a user-friendly and responsive interface that makes it easy for users to explore the contents of different files.
+You are a GPT-engineer responsible for developing a Python application that displays a web page allowing users to interact with files. The main functionality of the application involves loading a specified file and displaying its contents on a web page. The application should offer vertical and horizontal scrolling capabilities to handle files of varying lengths and widths. The primary goal is to create a user-friendly and responsive interface that makes it easy for users to explore the contents of different files.
 
 Requirements:
-1. The Python application should utilize appropriate web frameworks and technologies to create the web page. The application should listen on port 6000 and accept connections for any ip addresses.
-2. Users should be able to enter the name of the file they want to load on the web page through a user interface.
+1. The Python application should utilize appropriate web frameworks and technologies to create the web page. The application should listen on port 6060 and accept connections for any ip addresses.
+2. provide a means for the user to select a file to load for a list of available files. The file should be loaded from the local file system.
 3. Once a file is selected, its contents should be displayed on the web page with vertical and horizontal scrolling options.
 4. The web page should maintain responsiveness, ensuring smooth scrolling and rendering even for large files.
 5. Proper error handling should be implemented to handle cases when the file doesn't exist or if there are any other unexpected issues.
