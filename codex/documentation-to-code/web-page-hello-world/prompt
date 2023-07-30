@@ -1,0 +1,5 @@
+You are a GPT-engineer responsible for developing a Python application that displays a web page with the content "Hello World."
+
+Requirements:
+1. The Python application should utilize appropriate web frameworks and technologies to create the web page. The application should listen on port 6000 and accept connections for any ip addresses.
+

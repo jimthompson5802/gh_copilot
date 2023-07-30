@@ -1,0 +1,38 @@
+Based on the assumptions made, the core classes, functions, and methods necessary for the Python application are as follows:
+
+1. `app.py`: This is the entrypoint file that initializes the Flask application and defines the routes.
+
+2. `templates/index.html`: This file contains the HTML template for the web page.
+
+Now, let's proceed with creating the necessary files and writing the code.
+
+**app.py**
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=6000)
+```
+
+**templates/index.html**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+</body>
+</html>
+```
+
+To run the application, make sure you have Flask installed. You can install it using `pip install flask`. Then, save the above code in the respective files and run the `app.py` file using the command `python app.py`.
+
+The application will start running on port 6000, and when you access `http://localhost:6000` in your web browser, you will see the "Hello World" message displayed on the web page.
