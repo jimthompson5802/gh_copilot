@@ -1,6 +1,17 @@
-sudo apt-get update
-sudo apt-get install python3
+   # Check if Python is already installed
+   python --version
 
-python3 -m pip install pygame
+   # If Python is not installed, install it using a package manager like apt or brew
+   # For example, on Ubuntu:
+   sudo apt update
+   sudo apt install python3
 
-python3 main.py
+   # Verify the installation
+   python --version
+   
+   # Install Pygame using pip
+   python -m pip install pygame
+   
+   # Run the main.py file
+   python main.py
+   
