@@ -1,0 +1,22 @@
+import flask
+from flask import Flask, render_template, request
+from file_loader import FileLoader
+from web_page import WebPage
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/load_file', methods=['POST'])
+def load_file():
+    file_path = request.form['file_path']
+    file_loader = FileLoader()
+    file_contents = file_loader.load_file(file_path)
+    web_page = WebPage()
+    rendered_page = web_page.render(file_contents)
+    return rendered_page
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=6060)

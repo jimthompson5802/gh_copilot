@@ -1,0 +1,4 @@
+class WebPage:
+    def render(self, file_contents: str) -> str:
+        # Add logic for rendering the web page with file contents
+        return '<html><body>File Contents</body></html>'

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Viewer</title>
+    <style>
+        /* Add CSS styles for the file viewer */
+    </style>
+</head>
+<body>
+    <h1>File Viewer</h1>
+    <form action="/load_file" method="post">
+        <label for="file_path">Select a file:</label>
+        <input type="text" id="file_path" name="file_path">
+        <input type="submit" value="Load">
+    </form>
+    <div id="file_contents"></div>
+    <script>
+        // Add JavaScript code for handling file loading and displaying
+    </script>
+</body>
+</html>

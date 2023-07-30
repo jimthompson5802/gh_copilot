@@ -1,0 +1,9 @@
+class FileLoader:
+    def load_file(self, file_path: str) -> str:
+        try:
+            with open(file_path, 'r') as file:
+                return file.read()
+        except FileNotFoundError:
+            return 'File not found'
+        except Exception as e:
+            return f'Error loading file: {str(e)}'
