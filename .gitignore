@@ -1,5 +1,5 @@
 .idea
-
+.DS_Store
 .ipynb_checkpoints
 
 # data files
@@ -11,6 +11,9 @@
 
 # plot files
 *.png
+
+# binary files
+*.pyc
 
 # virtual environment
 myenv/
