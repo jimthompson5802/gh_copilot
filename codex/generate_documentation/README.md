@@ -178,5 +178,3 @@ python generate_documentation.py  source_files/example1.sas generated_documentat
   ```
   
   added code to replace the LaTex directives strings `\[` and `\]` to `$$` and `$$` respectively to be markdown compliant.
-
-* VSCode test commit
