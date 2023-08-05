@@ -1,0 +1,6 @@
+{
+    "image": "openai_codex:py3.9",
+    "mounts": [
+        "source=/Users/jim/Desktop,target=/openai,type=bind,consistency=cached"
+    ]
+}
