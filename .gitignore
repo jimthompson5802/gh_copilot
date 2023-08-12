@@ -1,7 +1,7 @@
 .idea
 .DS_Store
 .ipynb_checkpoints
-.vscode
+.vscode/launch.json
 
 # data files
 *.csv
