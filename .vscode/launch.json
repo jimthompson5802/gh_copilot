@@ -14,7 +14,9 @@
             "cwd": "${fileDirname}",
             "args": [
                 "multivariate_ols.py",
-                "documentation_dir/testbed_doc.md"
+                "documentation_dir/testbed_doc_persian.md"
+                "--prompt",
+                "produce a general description of the code and describe what it does in persian"
             ],
         }
     ]
