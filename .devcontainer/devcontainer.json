@@ -10,7 +10,8 @@
 				"GitHub.copilot",
 				"ms-azuretools.vscode-docker",
 				"ms-python.anaconda-extension-pack",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"ms-toolsai.jupyter",
 			]
 		}
 	}
