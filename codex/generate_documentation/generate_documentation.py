@@ -4,6 +4,11 @@ import json
 import os
 
 import openai
+import tiktoken
+
+# CONSTANTS
+THIS_LLM = "gpt-4"
+
 
 # Retrieve API from json file
 with open('/openai/.openai/api_key.json') as f:
@@ -36,8 +41,13 @@ def generate_documentation(prompt, source_code):
 
     completion_prompt = f'{prompt}:\n\n{source_code}\n\nPython code:'
 
+    # compute token size
+    encoding = tiktoken.encoding_for_model(THIS_LLM)
+    token_size = len(encoding.encode(completion_prompt))
+    print(f">>>model {THIS_LLM}, encoded source file token size: {token_size}")
+
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-16k",
+        model=THIS_LLM,
         messages=[{"role": "user", "content": completion_prompt}],
         max_tokens=8096,
         temperature=0.0,
@@ -67,6 +77,8 @@ if __name__ == '__main__':
     # read in sas file
     with open(args.source_file, 'r') as f:
         source_file = f.read()
+
+    # generate documentation
     print(f"starting to document {args.source_file}...with prompt '{args.prompt}'")
     # translate sas code to python
     prompt = args.prompt
