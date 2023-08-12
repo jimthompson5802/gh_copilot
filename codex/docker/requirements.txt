@@ -1,6 +1,9 @@
 # openai Python SDK
 openai
 
+# token counting
+tiktoken
+
 # code-to-documentation generation
 # packages for generating LaTeX in Python
 latexify-py
