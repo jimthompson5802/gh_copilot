@@ -7,7 +7,7 @@ import openai
 import tiktoken
 
 # CONSTANTS
-THIS_LLM = "gpt-4"
+THIS_LLM = "gpt-3.5-turbo-16k"
 
 
 # Retrieve API from json file
