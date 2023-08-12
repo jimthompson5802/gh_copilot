@@ -178,3 +178,25 @@ python generate_documentation.py  source_files/example1.sas generated_documentat
   ```
   
   added code to replace the LaTex directives strings `\[` and `\]` to `$$` and `$$` respectively to be markdown compliant.
+
+* tested gpt-4 model.  encountered token rate limit error.
+```text
+Traceback (most recent call last):
+  File "/workspaces/gh_copilot/codex/generate_documentation/generate_detailed_documentation.py", line 243, in <module>
+    main()
+  File "/workspaces/gh_copilot/codex/generate_documentation/generate_detailed_documentation.py", line 141, in main
+    documentation_text = generate_documentation(prompt, function_source)
+  File "/workspaces/gh_copilot/codex/generate_documentation/generate_detailed_documentation.py", line 47, in generate_documentation
+    response = openai.ChatCompletion.create(
+  File "/usr/local/lib/python3.9/site-packages/openai/api_resources/chat_completion.py", line 25, in create
+    return super().create(*args, **kwargs)
+  File "/usr/local/lib/python3.9/site-packages/openai/api_resources/abstract/engine_api_resource.py", line 153, in create
+    response, _, api_key = requestor.request(
+  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 298, in request
+    resp, got_stream = self._interpret_response(result, stream)
+  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 700, in _interpret_response
+    self._interpret_response_line(
+  File "/usr/local/lib/python3.9/site-packages/openai/api_requestor.py", line 763, in _interpret_response_line
+    raise self.handle_error_response(
+openai.error.RateLimitError: Rate limit reached for 10KTPM-200RPM in organization <REDACTED> on tokens per min. Limit: 10000 / min. Please try again in 6ms. Contact us through our help center at help.openai.com if you continue to have issues.
+```
