@@ -1,10 +1,50 @@
 ChatGPT prompt: "`review this code`" and provided source for function `generate_documentation` from module `generate_documentation.py`
 
+For the record, here is the function that is reviewed by ChatGPT.
 
-## Assessment of ChatGPT comments
+```python
+# Function to generate documentation for a source module
+def generate_documentation(prompt, source_code):
+    """
+    Generates Python documentation for the given prompt and source code.
 
-* Comments covered all aspects of the function
-* ChatGPT called out reasonable gaps in the "Error Handling" and "Refinements" section.
+    Args:
+        prompt (str): The description or prompt for generating the documentation.
+        source_code (str): The Python source code to be documented.
+
+    Returns:
+        str: The generated Python documentation.
+
+    Raises:
+        OpenAIError: If there is an error in the OpenAI API request.
+
+    Examples:
+        >>> prompt = "Generate Python documentation for a function"
+        >>> source_code = "def greet(name):\n    '''This function greets the given name.'''\n    print('Hello,', name)"
+        >>> documentation = generate_documentation(prompt, source_code)
+        >>> print(documentation)
+    """
+
+    completion_prompt = f'{prompt}:\n\n{source_code}\n\nPython code:'
+
+    # compute token size
+    encoding = tiktoken.encoding_for_model(THIS_LLM)
+    token_size = len(encoding.encode(completion_prompt))
+    print(f">>>model {THIS_LLM}, encoded source file token size: {token_size}")
+
+    response = openai.ChatCompletion.create(
+        model=THIS_LLM,
+        messages=[{"role": "user", "content": completion_prompt}],
+        max_tokens=8096,
+        temperature=0.0,
+        n=1,
+        stop=None,
+    )
+
+    documentation_text = response.choices[0].message.content.strip()
+    return documentation_text
+
+```
 
 ## Generated ChatGPT comments
 The provided code appears to be a function that uses an API (presumably from OpenAI) to generate documentation for a given Python source code based on a prompt. I'll go ahead and review the code:
@@ -38,3 +78,8 @@ The provided code appears to be a function that uses an API (presumably from Ope
     - The example in the docstring is valuable. It might be beneficial to have unit tests in place for this function, testing various edge cases and typical use scenarios.
 
 In summary, the code is fairly straightforward and appears to serve its purpose. The main points of concern are error handling, hardcoding of parameters, and ensuring all dependencies are addressed. With a few adjustments, the function should be robust and versatile for its intended use.
+
+## Assessment of ChatGPT comments
+
+* Comments covered all aspects of the function
+* ChatGPT called out reasonable gaps in the "Error Handling" and "Refinements" section.
