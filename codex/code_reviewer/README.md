@@ -1,5 +1,7 @@
 # Testbed for LLM generated code reviews
 
+experimental code to generate review comments for Python programs using OpenAI LLM via the API.
+
 ## Observations:
 
 * Due to randomness of LLM generated output, difficult to get consistent feedback. 
