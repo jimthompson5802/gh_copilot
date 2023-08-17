@@ -58,7 +58,7 @@ def generate_documentation(prompt, source_code):
     documentation_text = response.choices[0].message.content.strip()
     return documentation_text
 
-if __name__ == '__main__':
+def main():
     # retrieve source file name from first parameter in command line
     parser = argparse.ArgumentParser()
     parser.add_argument("source_file", help="Source file to document")
@@ -92,5 +92,5 @@ if __name__ == '__main__':
     print(f"finished documenting {args.source_file}...created {documentation_file}")
 
 
-
-
+if __name__ == '__main__':
+    main()
