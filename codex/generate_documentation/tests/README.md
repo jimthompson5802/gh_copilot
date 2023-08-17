@@ -3,21 +3,21 @@
 ## Example run of unit tests using `pytest`
 
 ```text
-root@ca771e7e3160:/workspaces/gh_copilot/codex/generate_documentation/tests# pytest -v test_generate_documentation.py 
-========================================================== test session starts ===========================================================
-platform linux -- Python 3.9.17, pytest-7.3.1, pluggy-1.2.0 -- /usr/local/bin/python
+====================================================== test session starts ======================================================
+platform linux -- Python 3.9.17, pytest-7.3.1, pluggy-1.2.0 -- /usr/local/bin/python3
 cachedir: .pytest_cache
-rootdir: /workspaces/gh_copilot/codex/generate_documentation/tests
+rootdir: /workspaces/gh_copilot/codex/generate_documentation
 plugins: anyio-3.7.1
-collected 4 items                                                                                                                        
+collected 6 items                                                                                                               
 
-test_generate_documentation.py::test_generate_documentation PASSED                                                                 [ 25%]
-test_generate_documentation.py::test_generate_documentation_failure PASSED                                                         [ 50%]
-test_generate_documentation.py::test_generate_documentation2 PASSED                                                                [ 75%]
-test_generate_documentation.py::test_generate_documentation_api_error PASSED                                                       [100%]
+tests/test_generate_documentation.py::test_generate_documentation PASSED                                                  [ 16%]
+tests/test_generate_documentation.py::test_generate_documentation_failure PASSED                                          [ 33%]
+tests/test_generate_documentation.py::test_generate_documentation2 PASSED                                                 [ 50%]
+tests/test_generate_documentation.py::test_generate_documentation_api_error PASSED                                        [ 66%]
+tests/test_generate_documentation.py::test_main_function PASSED                                                           [ 83%]
+tests/test_generate_documentation.py::test_main_function_error PASSED                                                     [100%]
 
-=========================================================== 4 passed in 0.51s ============================================================
-root@ca771e7e3160:/workspaces/gh_copilot/codex/generate_documentation/tests# 
+======================================================= 6 passed in 0.54s =======================================================
 ```
 
 
