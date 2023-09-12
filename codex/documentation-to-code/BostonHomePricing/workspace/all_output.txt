@@ -1,0 +1,98 @@
+The core classes, functions, and methods that will be necessary are:
+
+1. `preprocess_data`: This function will handle the preprocessing of the data, including filling missing values, handling outliers, and feature scaling.
+2. `evaluate_correlations`: This function will evaluate the correlations between each feature and the target feature, and remove features with low correlation.
+3. `split_data`: This function will split the data into a training set and a test set.
+4. `train_models`: This function will train multiple regression models on the training data.
+5. `evaluate_models`: This function will evaluate the models on the test data and print the loss value.
+6. `save_models`: This function will save the trained models to disk.
+
+Now, let's write the code for each of these functions.
+
+main.py
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, Lasso, ElasticNet
+from sklearn.metrics import mean_squared_error
+import pickle
+import os
+from preprocess_data import preprocess_data
+from evaluate_correlations import evaluate_correlations
+
+# Load data
+data = pd.read_csv('../../generate-synthetic-data/workspace/data/housing2.csv')
+
+# Preprocess data
+data = preprocess_data(data)
+
+# Evaluate correlations and remove low-correlation features
+data = evaluate_correlations(data, 'MEDV')
+
+# Split data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(data.drop('MEDV', axis=1), data['MEDV'], test_size=0.2, random_state=42)
+
+# Train models
+models = {
+    'LinearRegression': LinearRegression(),
+    'Lasso': Lasso(),
+    'ElasticNet': ElasticNet()
+}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+
+# Evaluate models
+for name, model in models.items():
+    predictions = model.predict(X_test)
+    loss = mean_squared_error(y_test, predictions)
+    print(f'{name} Loss: {loss}')
+
+# Save models
+for name, model in models.items():
+    with open(f'{name}.pkl', 'wb') as f:
+        pickle.dump(model, f)
+```
+
+preprocess_data.py
+```python
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+def preprocess_data(data):
+    # Fill missing values with median
+    data.fillna(data.median(), inplace=True)
+
+    # Handle outliers using IQR method
+    Q1 = data.quantile(0.25)
+    Q3 = data.quantile(0.75)
+    IQR = Q3 - Q1
+    data = data[~((data < (Q1 - 1.5 * IQR)) | (data > (Q3 + 1.5 * IQR))).any(axis=1)]
+
+    # Feature scaling
+    scaler = StandardScaler()
+    data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
+
+    return data
+```
+
+evaluate_correlations.py
+```python
+import pandas as pd
+
+def evaluate_correlations(data, target):
+    # Calculate correlations
+    correlations = data.corr()[target]
+
+    # Remove low-correlation features
+    data = data.drop(correlations[correlations.abs() < 0.5].index, axis=1)
+
+    return data
+```
+
+requirements.txt
+```
+pandas
+scikit-learn
+```
+
+This code should be fully functional and compatible with each other. The `main.py` file is the entry point of the program, and it imports functions from the `preprocess_data.py` and `evaluate_correlations.py` files. The `requirements.txt` file lists the necessary dependencies.
