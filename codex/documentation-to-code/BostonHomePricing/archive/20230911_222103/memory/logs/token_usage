@@ -1,5 +1,0 @@
-step_name,prompt_tokens_in_step,completion_tokens_in_step,total_tokens_in_step,total_prompt_tokens,total_completion_tokens,total_tokens
-clarify,321,117,438,321,117,438
-clarify,478,139,617,799,256,1055
-gen_clarified_code,2060,1011,3071,2859,1267,4126
-gen_entrypoint,1159,33,1192,4018,1300,5318
