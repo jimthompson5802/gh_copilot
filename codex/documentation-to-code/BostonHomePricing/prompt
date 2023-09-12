@@ -1,0 +1,11 @@
+write a python program to do the following:
+read data from ../../generate-synthetic-data/workspace/data/housing2.csv into a pandas dataframe 
+First row is column headings.
+Target variable is "MEDV".  
+Preprocess the data by filling missing values with the median of the respective column, handling outliers using IQR method and Feature Scaling.
+Evaluate the correlations between each feature versus target feature and remove the features that have a low correlation. 
+Create multiple regression machine learning models to predict the target variable except Ridge. 
+Create a 80% training and 20% test split.
+Do NOT use deep learning algorithms.
+print loss value at the end of model.
+Save the models.
