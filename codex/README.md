@@ -76,7 +76,7 @@ generate pytest unit test for FCStack. Parameterize for different input and outp
 ```
 
 ### Generated code 1st Draft for the second prompt
-This generate code ran w/o issue.  No modifications were needed.  To make the test a bit more robust could manually add a few more test cases by copy/paste the existing boiler plate code and changing couple of parameters values.
+Generated code ran w/o issue.  No modifications were needed.  To make the test a bit more robust could manually add a few more test cases by copy/paste the existing boiler plate code and changing parameters values.
 
 ```python
 import torch
