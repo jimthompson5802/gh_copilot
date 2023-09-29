@@ -21,6 +21,7 @@ myenv/
 
 # allow these files
 !codex/generate_documentation/images/*.png
+!codex/unit_tests/images/*.png
 !codex/documentation-to-code/generate-synthetic-data/workspace/data/synthetic_regresssion.csv
 
 
