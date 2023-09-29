@@ -17,3 +17,53 @@ Example code for using Codex API
 
 ## Setup
 `Dockerfile` in directory `docker` contains the setup for running the example code.  Run `build_image.sh` to create docker image and run example code in the container.  `run_codex.sh` starts a docker container with openai environment.
+
+
+## Unit test example with Copilot X Chat Feature
+
+Unit test for this Module: https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example0.py
+
+![](./images/copilot_x_chat.png)
+
+### Prompt
+```
+generate pytest unit test for FCStack. Parameterize for different input and output sizes and test one or more layers
+```
+
+### Generated code 1st Draft
+```python
+import torch
+import pytest
+from ludwig.modules.fully_connected_modules import FCStack
+
+@pytest.mark.parametrize("layers", [
+    [{"input_size": 10, "output_size": 5}],
+    [{"input_size": 20, "output_size": 10}, {"output_size": 5}],
+    [{"input_size": 30, "output_size": 15}, {"output_size": 10}, {"output_size": 5}]
+])
+def test_output_shape(layers):
+    fc_stack = FCStack(layers)
+    input_tensor = torch.randn(1, layers[0]["input_size"])
+    output_tensor = fc_stack(input_tensor)
+    expected_output_shape = torch.Size([1, layers[-1]["output_size"]])
+    assert output_tensor.shape == expected_output_shape
+```
+
+### Modified code to run
+```python
+import torch
+import pytest
+from ludwig.modules.fully_connected_modules import FCStack
+
+@pytest.mark.parametrize("layers", [
+    [{"input_size": 10, "output_size": 5}],
+    [{"input_size": 20, "output_size": 10}, {"output_size": 5}],
+    [{"input_size": 30, "output_size": 15}, {"output_size": 10}, {"output_size": 5}]
+])
+def test_output_shape(layers):
+    fc_stack = FCStack(first_layer_input_size=layers[0]["input_size"], layers=layers) # <== modified
+    input_tensor = torch.randn(1, layers[0]["input_size"])
+    output_tensor = fc_stack(input_tensor)
+    expected_output_shape = torch.Size([1, layers[-1]["output_size"]])
+    assert output_tensor.shape == expected_output_shape
+```
