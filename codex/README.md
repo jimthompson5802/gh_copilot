@@ -23,7 +23,7 @@ Example code for using Codex API
 
 Unit test for this Module: https://github.com/jimthompson5802/gh_copilot/blob/main/codex/sample_code/ludwig_example0.py
 
-![](./codex/images/copilot_x_chat.png)
+![](./unit_tests/images/copilot_x_unit_test.png)
 
 ### Prompt
 ```
