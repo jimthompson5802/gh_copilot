@@ -50,6 +50,8 @@ def test_output_shape(layers):
 ```
 
 ### Modified code to run
+A small change to the generated code is needed to run the unit test.  The first layer input size is not included in the layers list.  The first layer input size is needed to create the first layer of the FCStack.  The modified code is shown below.
+
 ```python
 import torch
 import pytest
