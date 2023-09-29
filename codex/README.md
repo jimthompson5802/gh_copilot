@@ -69,3 +69,29 @@ def test_output_shape(layers):
     expected_output_shape = torch.Size([1, layers[-1]["output_size"]])
     assert output_tensor.shape == expected_output_shape
 ```
+
+### Second Prompt
+```text
+generate pytest unit test for FCStack. Parameterize for different input and output sizes and test one or more layers. Test combinations of the other parameters.
+```
+
+### Generated code 1st Draft for the second prompt
+This generate code ran w/o issue.  No modifications were needed.  To make the test a bit more robust could manually add a few more test cases by copy/paste the existing boiler plate code and changing couple of parameters values.
+
+```python
+import torch
+import pytest
+from ludwig.modules.fully_connected_modules import FCStack
+
+@pytest.mark.parametrize("input_size, output_size, layers, use_bias, activation", [
+    (10, 5, [{"output_size": 5}], True, "relu"),
+    (20, 5, [{"output_size": 10}, {"output_size": 5}], False, "sigmoid"),
+    (30, 5, [{"output_size": 15}, {"output_size": 10}, {"output_size": 5}], True, "tanh")
+])
+def test_output_shape(input_size, output_size, layers, use_bias, activation):
+    fc_stack = FCStack(input_size, layers=layers, default_output_size=output_size, default_use_bias=use_bias, default_activation=activation)
+    input_tensor = torch.randn(1, input_size)
+    output_tensor = fc_stack(input_tensor)
+    expected_output_shape = torch.Size([1, output_size])
+    assert output_tensor.shape == expected_output_shape
+```
