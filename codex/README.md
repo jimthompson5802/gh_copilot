@@ -138,7 +138,7 @@ def test_output_shape(input_size, output_size, use_bias, activation):
 
 ### Actual Unit Test Code for FCLayer and FCStack in Ludwig
 
-Following are the actual Ldwig unit tests for the two classes.
+Following are the actual Ludwig unit tests for the two classes.
 
 ```python
 BATCH_SIZE = 2
