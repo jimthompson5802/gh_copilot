@@ -10,4 +10,4 @@ docker run -it --rm \
   -v ${PWD}:/opt/project \
   -v ${HOME}/Desktop:/openai \
   -w /opt/project/ \
-  openai_codex:py3.9
+  openai_codex:py3.10

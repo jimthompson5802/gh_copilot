@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-python_version=${1:-3.9}
+python_version=${1:-3.10}
 
 # other valid value is 'plain'
 progress=${2:-auto}

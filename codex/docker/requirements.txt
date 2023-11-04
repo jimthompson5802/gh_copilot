@@ -22,4 +22,4 @@ nbconvert
 ipywidgets
 
 # testing for documentation-to-code generation
-gpt-engineer
+# gpt-engineer
