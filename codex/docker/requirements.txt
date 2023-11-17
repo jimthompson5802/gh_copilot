@@ -15,6 +15,7 @@ numpy
 matplotlib
 torch
 flask
+scikit-learn
 
 # support jupyter notebook UI in the container
 jupyter

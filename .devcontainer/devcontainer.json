@@ -1,5 +1,5 @@
 {
-    "image": "openai_codex:py3.9",
+    "image": "openai_codex:py3.10",
     "mounts": [
         "source=${localEnv:HOME}/Desktop,target=/openai,type=bind,consistency=cached"
 	],
