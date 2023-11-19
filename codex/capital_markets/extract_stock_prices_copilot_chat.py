@@ -1,76 +1,84 @@
 # code generated with the use of GH Copilot and GH Copilot Chat
 
-import yfinance as yf
-from datetime import datetime
 import pandas as pd
+import yfinance as yf
+import numpy as np
+
 import matplotlib.pyplot as plt
 
-import math
 from scipy.stats import norm
+import math
 
-# Define the start and end dates
-start_date = datetime(2023, 1, 1)
-end_date = datetime(2023, 11, 18)
+# Define the ticker symbol
+tickerSymbol = 'AAPL'
 
-# Specify the company's ticker symbol
-ticker_symbol = "AAPL"  # Replace with the desired company's ticker symbol
+# Get the data
+tickerData = yf.download(tickerSymbol, start='2023-01-01', end='2023-11-18')
 
-# Fetch the stock data for the specified company and period
-stock_data = yf.download(ticker_symbol, start=start_date, end=end_date)
+# Print the closing prices
+print("Closing Prices:")
+print(tickerData['Close'])
 
-# Extract the closing prices
-closing_prices = stock_data["Close"]
+# Compute daily returns
+daily_returns = tickerData['Close'].pct_change()
 
-# Print or process the extracted stock prices as needed
-print(closing_prices)
-
-
-# compute the daily returns
-daily_returns = closing_prices.pct_change()
-
-# compute the cumulative returns
+# Compute cumulative returns
 cumulative_returns = (1 + daily_returns).cumprod()
 
-# combine the closing prices, daily returns, and cumulative returns into a single DataFrame
-combined_df = pd.concat([closing_prices, daily_returns, cumulative_returns], axis=1)
+# Combine into a single dataframe
+combined_df = pd.DataFrame({
+    'Closing Prices': tickerData['Close'],
+    'Daily Returns': daily_returns,
+    'Cumulative Returns': cumulative_returns
+})
 
-# rename the columns
-combined_df.columns = ["Closing Price", "Daily Return", "Cumulative Return"]
-
-# print the combined DataFrame
+# Print the combined dataframe
+print("\nCombined Dataframe:")
 print(combined_df)
 
-# plot the daily and cumulative returns and save as a PNG image
-combined_df.plot(y=["Daily Return", "Cumulative Return"], kind="line", title=ticker_symbol)
+# Plot the daily and cumulative returns
+combined_df.plot(y=["Daily Returns", "Cumulative Returns"], kind="line", title=tickerSymbol)
+
+# Save the plot as a PNG image
 plt.savefig("./codex/capital_markets/images/stock_returns.png")
+
+# Display the plot
 plt.show()
 
 
-# Define the parameters
-# get last closing price from the stock data
-S = closing_prices.iloc[-1]
+
+# Get the last closing price
+S = combined_df['Closing Prices'].iloc[-1]
+
+# Compute the volatility
+volatility = combined_df['Daily Returns'].std()
+
+# Define the Black-Scholes formula for call and put options
+def black_scholes_call(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2)
+
+def black_scholes_put(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return K * math.exp(-r * T) - S * norm.cdf(-d1) + S * norm.cdf(-d2)
+
+# Compute the call and put options
 K = 185  # strike price
+T = 1  # one year
 r = 0.02  # risk-free rate
-days = 365
-T = days / 365  # time to expiration in years
-# compute volatility from the daily returns
-sigma = daily_returns.std() * math.sqrt(252)
 
-# print the paramters from the Black-Scholes formula
-print(f"Last closing price: {S}")
-print(f"Strike price: {K}")
-print(f"Risk-free rate: {r}")
-print(f"Days to expiration: {days}")
-print(f"Time to expiration: {T}")
-print(f"Volatility: {sigma}")
+# print parameters for black-scholes formula
+print(f"Stock Price: {S}")
+print(f"Strike Price: {K}")
+print(f"Time to Maturity: {T}")
+print(f"Risk-Free Rate: {r}")
+print(f"Volatility: {volatility}")
 
-# Black-Scholes formula for call option
-d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
-d2 = d1 - sigma * math.sqrt(T)
-call_option = S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2)
 
-# Black-Scholes formula for put option
-put_option = K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+call_option = black_scholes_call(S, K, T, r, volatility)
+put_option = black_scholes_put(S, K, T, r, volatility)
 
-print(f"The price of the {days}-day call option with a strike price of ${K} is: ${call_option}")
-print(f"The price of the {days}-day put option with a strike price of ${K} is: ${put_option}")
+print(f"Call Option: {call_option}")
+print(f"Put Option: {put_option}")
