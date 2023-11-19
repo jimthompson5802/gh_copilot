@@ -4,6 +4,9 @@ from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import math
+from scipy.stats import norm
+
 # Define the start and end dates
 start_date = datetime(2023, 1, 1)
 end_date = datetime(2023, 11, 18)
@@ -41,3 +44,32 @@ combined_df.plot(y=["Daily Return", "Cumulative Return"], kind="line", title=tic
 plt.savefig("./codex/capital_markets/images/stock_returns.png")
 plt.show()
 
+
+# Define the parameters
+# get last closing price from the stock data
+S = closing_prices.iloc[-1]
+K = 185  # strike price
+r = 0.05  # risk-free rate
+days = 30
+T = days / 365  # time to expiration in years
+# compute volatility from the daily returns
+sigma = daily_returns.std() * math.sqrt(252)
+
+# print the paramters from the Black-Scholes formula
+print(f"Last closing price: {S}")
+print(f"Strike price: {K}")
+print(f"Risk-free rate: {r}")
+print(f"Days to expiration: {days}")
+print(f"Time to expiration: {T}")
+print(f"Volatility: {sigma}")
+
+# Black-Scholes formula for call option
+d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+d2 = d1 - sigma * math.sqrt(T)
+call_option = S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2)
+
+# Black-Scholes formula for put option
+put_option = K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+
+print(f"The price of the {days}-day call option with a strike price of ${K} is: {call_option}")
+print(f"The price of the {days}-day put option with a strike price of ${K} is: {put_option}")
