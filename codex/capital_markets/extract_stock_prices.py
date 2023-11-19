@@ -1,3 +1,4 @@
+# code generated with the use of GH Copilot and GH Copilot Chat
 
 import yfinance as yf
 from datetime import datetime
