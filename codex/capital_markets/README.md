@@ -89,7 +89,7 @@ GitHub Copilot: This Python script does the following:
 ![Sample Plot](./images/stock_returns2.png)
 
 ## Observations
-While the generated code is similar, there is a difference in out the volitiaty was computed and the put option.
+While the generated code is similar, there are differences in the volitiaty and put option calculations that require an knowledgeable perons to resolve.
 
 ## Volatility computation:
 ### Copilot Chat version
