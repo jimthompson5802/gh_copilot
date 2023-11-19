@@ -87,3 +87,62 @@ GitHub Copilot: This Python script does the following:
 
 ## Sample Plot
 ![Sample Plot](./images/stock_returns2.png)
+
+## Observations
+While the generated code is similar, there is a difference in out the volitiaty was computed and the put option.
+
+## Volatility computation:
+### Copilot Chat version
+```python
+# Compute the volatility
+volatility = combined_df['Daily Returns'].std()
+```
+
+### Copilot only version
+```python
+sigma = daily_returns.std() * np.sqrt(252)
+```
+
+## Put option computation:
+### Copilot Chat version
+```python
+def black_scholes_put(S, K, T, r, sigma):
+    d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
+    d2 = d1 - sigma * math.sqrt(T)
+    return K * math.exp(-r * T) - S * norm.cdf(-d1) + S * norm.cdf(-d2)
+```
+
+### Copilot only version
+```python
+def black_scholes_put(S, K, T, r, sigma):
+    """Computes the Black-Scholes put option price for a European option."""
+    d1 = (np.log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    return K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+```
+
+## Differences in the Call/Put option computations
+### Copilot Chat version
+```
+Stock Price: 189.69000244140625
+Strike Price: 185
+Time to Maturity: 1
+Risk-Free Rate: 0.02
+Volatility: 0.01302553541567368
+Call Option: 8.353415062945686
+Put Option: 181.33925484864466
+```
+
+### Copilot only version
+```
+Last closing price: 189.69000244140625
+Strike price: 185
+Risk-free rate: 0.02
+Time to expiration: 1
+Volatility: 0.2067739644200214
+The call option price is $19.81
+The put option price is $11.46
+```
+
+
+
