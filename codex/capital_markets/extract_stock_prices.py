@@ -50,8 +50,8 @@ plt.show()
 # get last closing price from the stock data
 S = closing_prices.iloc[-1]
 K = 185  # strike price
-r = 0.05  # risk-free rate
-days = 30
+r = 0.02  # risk-free rate
+days = 365
 T = days / 365  # time to expiration in years
 # compute volatility from the daily returns
 sigma = daily_returns.std() * math.sqrt(252)
@@ -72,5 +72,5 @@ call_option = S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2)
 # Black-Scholes formula for put option
 put_option = K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
 
-print(f"The price of the {days}-day call option with a strike price of ${K} is: {call_option}")
-print(f"The price of the {days}-day put option with a strike price of ${K} is: {put_option}")
+print(f"The price of the {days}-day call option with a strike price of ${K} is: ${call_option}")
+print(f"The price of the {days}-day put option with a strike price of ${K} is: ${put_option}")
