@@ -1,5 +1,6 @@
 import re
 import numpy as np
+import pandas as pd
 
 def extract_response_times(log_file):
     response_times = []
@@ -13,19 +14,11 @@ def extract_response_times(log_file):
     return response_times
 
 
-def analyze_response_times(response_times):
-    avg_response_time = np.mean(response_times)
-    min_response_time = np.min(response_times)
-    max_response_time = np.max(response_times)
-
-    print(f'Average Response Time: {avg_response_time} ms')
-    print(f'Minimum Response Time: {min_response_time} ms')
-    print(f'Maximum Response Time: {max_response_time} ms')
-
-
 if __name__ == '__main__':
     response_times = extract_response_times('sandbox/gh_copilot_log.txt')
-    # Assuming response_times is the list of response times extracted from the log file
-    analyze_response_times(response_times)
+    
+    # convert response times to pandas series
+    response_times = pd.Series(response_times)
 
-
+    # analyze response times
+    print(f"Times msec:\n{response_times.describe()}")
