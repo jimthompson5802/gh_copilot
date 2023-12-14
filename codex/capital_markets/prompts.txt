@@ -1,0 +1,64 @@
+/explain selected data
+
+
+generate python code to read in the data and print out statistics about the closing price
+
+/fix 
+<paste error message>
+
+
+compute european call and put options for the stock
+
+
+generte python code to compute european call and put options
+
+
+######FORTRAN#######
+
+generate fortran code to read in the file and print the closing price
+
+
+/fix 
+stock_analyzer.f90:14:29:
+
+         read(10, *, iostat=io) date, open, high, low, close, adj_close, volume
+                             1
+Error: Symbol ‘io’ at (1) has no IMPLICIT type
+
+More /fix for other errors
+
+
+
+add code to compute european call and put options
+
+
+collect the closing price in an array and then print statistics about closing price and compute european call and put options
+
+
+/fix 
+stock_analyzer.f90:47:132:
+
+         d1 = (log(mean_val / strike_price) + (risk_free_rate + 0.5 * volatility**2) * time_to_maturity) / (volatility * sqrt(time_to_maturity))
+                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+
+several more /fix for other errors
+
+/fix 
+stock_analyzer.f90:50:43:
+
+         call_option = mean_val * cdf_normal(d1) - strike_price * &
+                                           1
+Error: Return type mismatch of function ‘cdf_normal’ at (1) (UNKNOWN/REAL(4))
+
+several more /fix to invoke the subroutine correctly
+
+
+show example fortran program that calls a user defined function from the main program
+
+
+generate comments for the selected code
+
+
+
+
